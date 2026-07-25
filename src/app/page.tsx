@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { prisma } from '@/lib/prisma';
 import { BannerSlider } from '@/components/BannerSlider';
 import { ProductCard } from '@/components/ProductCard';
 import { ShieldCheck, Truck, Clock, ThumbsUp, ArrowRight, Layers } from 'lucide-react';
@@ -81,34 +80,34 @@ const FALLBACK_PRODUCTS: any[] = [
 ];
 
 export default async function HomePage() {
-  let banners: any[] = [];
-  let categories: any[] = [];
-  let products: any[] = [];
+  let banners: any[] = FALLBACK_BANNERS;
+  let categories: any[] = FALLBACK_CATEGORIES;
+  let products: any[] = FALLBACK_PRODUCTS;
 
-  try {
-    const [b, c, p] = await Promise.all([
-      prisma.banner.findMany({ where: { isActive: true }, orderBy: { sortOrder: 'asc' } }),
-      prisma.category.findMany({ where: { isFeatured: true }, take: 8 }),
-      prisma.product.findMany({ where: { isFeatured: true }, take: 12, include: { category: true } }),
-    ]);
-    banners = b;
-    categories = c;
-    products = p;
-  } catch (e) {
-    console.error('Prisma homepage fetch failed, using fallback data:', e);
-    banners = FALLBACK_BANNERS;
-    categories = FALLBACK_CATEGORIES;
-    products = FALLBACK_PRODUCTS;
+  if (!process.env.VERCEL) {
+    try {
+      const { prisma } = await import('@/lib/prisma');
+      const [b, c, p] = await Promise.all([
+        prisma.banner.findMany({ where: { isActive: true }, orderBy: { sortOrder: 'asc' } }),
+        prisma.category.findMany({ where: { isFeatured: true }, take: 8 }),
+        prisma.product.findMany({ where: { isFeatured: true }, take: 12, include: { category: true } }),
+      ]);
+      if (b && b.length > 0) banners = b;
+      if (c && c.length > 0) categories = c;
+      if (p && p.length > 0) products = p;
+    } catch (e) {
+      console.error('Prisma homepage fetch failed, using fallback data:', e);
+    }
   }
 
-  if (!banners || banners.length === 0) banners = FALLBACK_BANNERS;
-  if (!categories || categories.length === 0) categories = FALLBACK_CATEGORIES;
-  if (!products || products.length === 0) products = FALLBACK_PRODUCTS;
+  const safeBanners: Banner[] = JSON.parse(JSON.stringify(banners));
+  const safeCategories: Category[] = JSON.parse(JSON.stringify(categories));
+  const safeProducts: Product[] = JSON.parse(JSON.stringify(products));
 
   return (
     <div className="space-y-12 pb-12">
       {/* Hero Banner Slider */}
-      <BannerSlider banners={banners as unknown as Banner[]} />
+      <BannerSlider banners={safeBanners} />
 
       {/* Trust Badges */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -173,7 +172,7 @@ export default async function HomePage() {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-          {categories.map((cat) => (
+          {safeCategories.map((cat) => (
             <Link
               key={cat.id}
               href={`/catalog?category=${cat.slug}`}
@@ -213,8 +212,8 @@ export default async function HomePage() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product as unknown as Product} />
+          {safeProducts.map((product) => (
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </section>

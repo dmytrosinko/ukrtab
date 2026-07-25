@@ -1,22 +1,20 @@
-import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { prisma } from '@/lib/prisma';
 import { ProductCard } from '@/components/ProductCard';
 import { ProductDetailClient } from './ProductDetailClient';
 import { Product } from '@/lib/types';
-import { ArrowLeft, ShieldCheck, Truck, Clock } from 'lucide-react';
+import { ShieldCheck, Truck, Clock } from 'lucide-react';
 import { INITIAL_PRODUCTS } from '@/lib/store';
 
-export const revalidate = 30;
+export const revalidate = 60;
 
 export default async function ProductDetailPage({
   params,
 }: {
-  params?: Promise<{ id: string }>;
+  params?: Promise<{ id: string }> | { id: string };
 }) {
   let id = '';
   try {
-    const resolved = params ? await params : { id: '' };
+    const resolved = params instanceof Promise ? await params : (params || { id: '' });
     id = resolved.id || '';
   } catch (e) {
     id = '';
@@ -25,33 +23,32 @@ export default async function ProductDetailPage({
   let product: any = null;
   let relatedProducts: any[] = [];
 
-  try {
-    if (id) {
+  // Try store first for 100% fail-safe Vercel serverless execution
+  product = INITIAL_PRODUCTS.find((p) => p.id === id || p.slug === id);
+
+  if (!product && !process.env.VERCEL) {
+    try {
+      const { prisma } = await import('@/lib/prisma');
       product = await prisma.product.findFirst({
-        where: {
-          OR: [{ id }, { slug: id }],
-        },
+        where: { OR: [{ id }, { slug: id }] },
         include: { category: true },
       });
-
-      if (product) {
-        relatedProducts = await prisma.product.findMany({
-          where: {
-            categoryId: product.categoryId,
-            NOT: { id: product.id },
-          },
-          take: 4,
-        });
-      }
+    } catch (e) {
+      console.error('Prisma query failed on product detail:', e);
     }
-  } catch (e) {
-    console.error('Prisma query failed on product detail, using fallback:', e);
-    product = INITIAL_PRODUCTS.find((p) => p.id === id || p.slug === id) || INITIAL_PRODUCTS[0];
   }
 
   if (!product) {
-    product = INITIAL_PRODUCTS.find((p) => p.id === id || p.slug === id) || INITIAL_PRODUCTS[0];
+    product = INITIAL_PRODUCTS[0];
   }
+
+  // Related products from store
+  relatedProducts = INITIAL_PRODUCTS.filter(
+    (p) => p.id !== product.id && p.categoryId === product.categoryId
+  );
+
+  const safeProduct: Product = JSON.parse(JSON.stringify(product));
+  const safeRelated: Product[] = JSON.parse(JSON.stringify(relatedProducts));
 
   return (
     <div className="space-y-8 pb-12">
@@ -64,23 +61,23 @@ export default async function ProductDetailPage({
         <Link href="/catalog" className="hover:text-emerald-600">
           Каталог
         </Link>
-        {product.category && (
+        {safeProduct.category && (
           <>
             <span>/</span>
             <Link
-              href={`/catalog?category=${product.category.slug}`}
+              href={`/catalog?category=${safeProduct.category.slug}`}
               className="hover:text-emerald-600"
             >
-              {product.category.name}
+              {safeProduct.category.name}
             </Link>
           </>
         )}
         <span>/</span>
-        <span className="text-slate-900 font-bold truncate max-w-xs">{product.name}</span>
+        <span className="text-slate-900 font-bold truncate max-w-xs">{safeProduct.name}</span>
       </div>
 
       {/* Main Detail Client Component */}
-      <ProductDetailClient product={product as unknown as Product} />
+      <ProductDetailClient product={safeProduct} />
 
       {/* Trust & Shipping info */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
@@ -122,12 +119,12 @@ export default async function ProductDetailPage({
       </div>
 
       {/* Related Products */}
-      {relatedProducts.length > 0 && (
+      {safeRelated.length > 0 && (
         <div className="space-y-4 pt-6 border-t border-slate-200">
           <h3 className="text-xl font-black text-slate-900">Схожі товари з категорії</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {relatedProducts.map((rel) => (
-              <ProductCard key={rel.id} product={rel as unknown as Product} />
+            {safeRelated.map((rel) => (
+              <ProductCard key={rel.id} product={rel} />
             ))}
           </div>
         </div>
