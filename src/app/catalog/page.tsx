@@ -3,80 +3,26 @@ import { prisma } from '@/lib/prisma';
 import { ProductCard } from '@/components/ProductCard';
 import { Product } from '@/lib/types';
 import { Filter, Search } from 'lucide-react';
+import { INITIAL_CATEGORIES, INITIAL_PRODUCTS } from '@/lib/store';
 
 export const revalidate = 30;
-
-const FALLBACK_CATEGORIES = [
-  { id: 'cat-1', name: 'Магнітні наліпки на авто', slug: 'magnitni-nalipki-na-avto', _count: { products: 2 } },
-  { id: 'cat-2', name: 'Магніти ЗСУ', slug: 'magniti-zsu', _count: { products: 3 } },
-  { id: 'cat-3', name: 'Попереджувальні знаки', slug: 'poperedzhuvalni-znaki', _count: { products: 1 } },
-  { id: 'cat-4', name: 'Таблички адресні', slug: 'tablichki-adresni', _count: { products: 1 } },
-];
-
-const FALLBACK_PRODUCTS: any[] = [
-  {
-    id: 'prod-1',
-    name: 'Магнітна наклейка Морська піхота 25*25см',
-    slug: 'magnitna-naklejka-morska-pihota-25x25',
-    price: 250,
-    oldPrice: 300,
-    sku: 'MP-2525',
-    status: 'В наявності',
-    image: 'https://images.prom.ua/6793582624_w640_h640_magnitna-naklejka-morska.jpg',
-    unit: 'шт.',
-  },
-  {
-    id: 'prod-2',
-    name: 'Наклейка магнітна Каблук 15*15см',
-    slug: 'naklejka-magnitna-kabluk-15x15',
-    price: 150,
-    oldPrice: 180,
-    sku: 'KAB-1515',
-    status: 'В наявності',
-    image: 'https://images.prom.ua/6793705342_w640_h640_naklejka-magnitna-kabluk.jpg',
-    unit: 'шт.',
-  },
-  {
-    id: 'prod-3',
-    name: 'Наклейка ЗСУ квадрат синьо-жовтий 30*30см',
-    slug: 'naklejka-zsu-kvadrat-30x30',
-    price: 125,
-    oldPrice: 150,
-    sku: 'ZSU-3030',
-    status: 'В наявності',
-    image: 'https://images.prom.ua/6794611879_w640_h640_naklejka-zsu-kvadrat.jpg',
-    unit: 'шт.',
-  },
-  {
-    id: 'prod-4',
-    name: 'Попереджувальний знак ⚠️ ОБЕРЕЖНО МІНИ! (30х20см)',
-    slug: 'sign-mines-warning-30x20',
-    price: 120,
-    oldPrice: 140,
-    sku: 'SIGN-MINE',
-    status: 'В наявності',
-    image: 'https://images.prom.ua/6964429952_w297_h200_poperedzhuvalni-znaki-.jpg',
-    unit: 'шт.',
-  },
-  {
-    id: 'prod-5',
-    name: 'Адресна табличка з металопластику "Класична"',
-    slug: 'adresna-tablichka-klassik',
-    price: 450,
-    oldPrice: 520,
-    sku: 'TAB-ADR-01',
-    status: 'В наявності',
-    image: 'https://images.prom.ua/3984689222_w297_h200_tablichki-adresni.jpg',
-    unit: 'шт.',
-  },
-];
 
 export default async function CatalogPage({
   searchParams,
 }: {
-  searchParams: Promise<{ category?: string; search?: string }>;
+  searchParams?: Promise<{ category?: string; search?: string }>;
 }) {
-  const { category: categorySlug, search } = await searchParams;
+  let categorySlug: string | undefined;
+  let search: string | undefined;
+
+  try {
+    const resolved = searchParams ? await searchParams : {};
+    categorySlug = resolved.category;
+    search = resolved.search;
+  } catch (e) {
+    categorySlug = undefined;
+    search = undefined;
+  }
 
   let categories: any[] = [];
   let products: any[] = [];
@@ -108,13 +54,12 @@ export default async function CatalogPage({
       orderBy: { createdAt: 'desc' },
     });
   } catch (e) {
-    console.error('Prisma query failed on catalog, using fallback data:', e);
-    categories = FALLBACK_CATEGORIES;
-    products = FALLBACK_PRODUCTS;
+    console.error('Prisma query failed on catalog, using fallback store:', e);
+    categories = INITIAL_CATEGORIES.map((c) => ({ ...c, _count: { products: 2 } }));
+    products = INITIAL_PRODUCTS;
     if (search) {
-      products = products.filter((p) =>
-        p.name.toLowerCase().includes(search.toLowerCase())
-      );
+      const query = search.toLowerCase();
+      products = products.filter((p) => p.name.toLowerCase().includes(query));
     }
   }
 

@@ -5,57 +5,52 @@ import { ProductCard } from '@/components/ProductCard';
 import { ProductDetailClient } from './ProductDetailClient';
 import { Product } from '@/lib/types';
 import { ArrowLeft, ShieldCheck, Truck, Clock } from 'lucide-react';
+import { INITIAL_PRODUCTS } from '@/lib/store';
 
 export const revalidate = 30;
-
-const FALLBACK_PRODUCT: any = {
-  id: 'prod-1',
-  name: 'Магнітна наклейка Морська піхота 25*25см',
-  slug: 'magnitna-naklejka-morska-pihota-25x25',
-  price: 250,
-  oldPrice: 300,
-  sku: 'MP-2525',
-  status: 'В наявності',
-  description: 'Якісна магнітна наклейка "Морська піхота" розміром 25х25 см. Виготовлена з міцного вінілового магніту товщиною 0.8 мм з ламінацією.',
-  image: 'https://images.prom.ua/6793582624_w640_h640_magnitna-naklejka-morska.jpg',
-  images: JSON.stringify(['https://images.prom.ua/6793582624_w640_h640_magnitna-naklejka-morska.jpg']),
-  unit: 'шт.',
-};
 
 export default async function ProductDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params?: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
+  let id = '';
+  try {
+    const resolved = params ? await params : { id: '' };
+    id = resolved.id || '';
+  } catch (e) {
+    id = '';
+  }
 
   let product: any = null;
   let relatedProducts: any[] = [];
 
   try {
-    product = await prisma.product.findFirst({
-      where: {
-        OR: [{ id }, { slug: id }],
-      },
-      include: { category: true },
-    });
-
-    if (product) {
-      relatedProducts = await prisma.product.findMany({
+    if (id) {
+      product = await prisma.product.findFirst({
         where: {
-          categoryId: product.categoryId,
-          NOT: { id: product.id },
+          OR: [{ id }, { slug: id }],
         },
-        take: 4,
+        include: { category: true },
       });
+
+      if (product) {
+        relatedProducts = await prisma.product.findMany({
+          where: {
+            categoryId: product.categoryId,
+            NOT: { id: product.id },
+          },
+          take: 4,
+        });
+      }
     }
   } catch (e) {
     console.error('Prisma query failed on product detail, using fallback:', e);
-    product = FALLBACK_PRODUCT;
+    product = INITIAL_PRODUCTS.find((p) => p.id === id || p.slug === id) || INITIAL_PRODUCTS[0];
   }
 
   if (!product) {
-    product = FALLBACK_PRODUCT;
+    product = INITIAL_PRODUCTS.find((p) => p.id === id || p.slug === id) || INITIAL_PRODUCTS[0];
   }
 
   return (
