@@ -1,36 +1,25 @@
+'use client';
+
+import React, { Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { ProductCard } from '@/components/ProductCard';
 import { Product } from '@/lib/types';
 import { Filter, Search } from 'lucide-react';
 import { INITIAL_CATEGORIES, INITIAL_PRODUCTS } from '@/lib/store';
 
-export const revalidate = 60;
-
-export default async function CatalogPage({
-  searchParams,
-}: {
-  searchParams?: any;
-}) {
-  let categorySlug: string | undefined;
-  let search: string | undefined;
-
-  try {
-    const resolved = searchParams instanceof Promise ? await searchParams : (searchParams || {});
-    categorySlug = resolved?.category;
-    search = resolved?.search;
-  } catch (e) {
-    categorySlug = undefined;
-    search = undefined;
-  }
+function CatalogContent() {
+  const searchParams = useSearchParams();
+  const categorySlug = searchParams.get('category') || undefined;
+  const search = searchParams.get('search') || undefined;
 
   let categories = INITIAL_CATEGORIES.map((c) => ({ ...c, _count: { products: 2 } }));
   let products = INITIAL_PRODUCTS;
 
-  // Filter in-memory for 100% fail-safe Vercel serverless execution
   if (categorySlug) {
-    const activeCat = categories.find((c) => c && c.slug === categorySlug);
+    const activeCat = categories.find((c) => c.slug === categorySlug);
     if (activeCat) {
-      products = products.filter((p) => p && p.categoryId === activeCat.id);
+      products = products.filter((p) => p.categoryId === activeCat.id);
     }
   }
 
@@ -38,18 +27,13 @@ export default async function CatalogPage({
     const query = search.toLowerCase();
     products = products.filter(
       (p) =>
-        p &&
-        ((p.name && p.name.toLowerCase().includes(query)) ||
-          (p.sku && p.sku.toLowerCase().includes(query)))
+        p.name.toLowerCase().includes(query) ||
+        (p.sku && p.sku.toLowerCase().includes(query))
     );
   }
 
-  // Sanitize objects to plain JSON to prevent Date/RSC serialization errors
-  const safeProducts: Product[] = JSON.parse(JSON.stringify(products));
-  const safeCategories = JSON.parse(JSON.stringify(categories));
-
   const activeCategoryName = categorySlug
-    ? safeCategories.find((c: any) => c && c.slug === categorySlug)?.name || 'Каталог'
+    ? categories.find((c) => c.slug === categorySlug)?.name || 'Каталог'
     : 'Всі товари';
 
   return (
@@ -60,7 +44,7 @@ export default async function CatalogPage({
           {search ? `Пошук за запитом: "${search}"` : activeCategoryName}
         </h1>
         <p className="text-xs text-slate-500">
-          Знайдено товарів: <span className="font-bold text-emerald-600">{safeProducts.length}</span>
+          Знайдено товарів: <span className="font-bold text-emerald-600">{products.length}</span>
         </p>
       </div>
 
@@ -84,7 +68,7 @@ export default async function CatalogPage({
               >
                 Всі категорії
               </Link>
-              {safeCategories.map((cat: any) => (
+              {categories.map((cat) => (
                 <Link
                   key={cat.id || cat.slug}
                   href={`/catalog?category=${cat.slug}`}
@@ -104,7 +88,7 @@ export default async function CatalogPage({
 
         {/* Product Grid */}
         <main className="md:col-span-3">
-          {safeProducts.length === 0 ? (
+          {products.length === 0 ? (
             <div className="bg-white rounded-3xl p-12 text-center border border-slate-100 space-y-4">
               <div className="w-16 h-16 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center mx-auto">
                 <Search className="w-8 h-8" />
@@ -122,7 +106,7 @@ export default async function CatalogPage({
             </div>
           ) : (
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-              {safeProducts.map((product) => (
+              {products.map((product) => (
                 <ProductCard key={product.id || product.slug} product={product} />
               ))}
             </div>
@@ -130,5 +114,13 @@ export default async function CatalogPage({
         </main>
       </div>
     </div>
+  );
+}
+
+export default function CatalogPage() {
+  return (
+    <Suspense fallback={<div className="p-12 text-center text-xs text-slate-400">Завантаження каталогу...</div>}>
+      <CatalogContent />
+    </Suspense>
   );
 }
