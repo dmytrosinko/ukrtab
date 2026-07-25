@@ -4,7 +4,7 @@ import { INITIAL_CATEGORIES, INITIAL_PRODUCTS } from '../src/lib/store';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('Seeding database with full Prom.ua catalog...');
+  console.log('Seeding database with full 117 Prom.ua catalog products...');
 
   // Seed Categories
   for (const cat of INITIAL_CATEGORIES) {
@@ -64,7 +64,7 @@ async function main() {
     });
   }
 
-  console.log(`Seeding complete! Added ${INITIAL_PRODUCTS.length} products.`);
+  console.log(`Seeding complete! Successfully seeded ${INITIAL_PRODUCTS.length} products.`);
 }
 
 main()

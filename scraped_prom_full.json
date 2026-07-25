@@ -1,0 +1,2147 @@
+[
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітні візитки для майстрів: сантехнік | електрик | опалення | ремонт",
+    "description": "Магнітні візитки для майстрів: сантехнік | електрик | опалення | ремонт",
+    "image": "https://images.prom.ua/6972629971_w500_h500_magnitni-vizitki-dlya.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "20.00",
+      "url": "/ua/p2851787526-magnitnye-vizitki-dlya.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітний рекламний постер — Вугілля / Дрова / Брикети",
+    "description": "Магнітний рекламний постер — Вугілля / Дрова / Брикети",
+    "image": "https://images.prom.ua/6964220216_w500_h500_magnitnij-reklamnij-poster.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "100.00",
+      "url": "/ua/p2845969109-magnitnyj-reklamnyj-poster.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніти для Служб Охорони",
+    "description": "Магніти для Служб Охорони",
+    "image": "https://images.prom.ua/6964688153_w500_h500_magniti-dlya-sluzhb.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "100.00",
+      "url": "/ua/p2846338378-magnity-dlya-sluzhb.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Смішний магніт на авто “ГороПчик, а шо ти робиш?” | Український гумор мем",
+    "description": "Смішний магніт на авто “ГороПчик, а шо ти робиш?” | Український гумор мем",
+    "image": "https://images.prom.ua/6971735141_w500_h500_smishnij-magnit-na.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "100.00",
+      "url": "/ua/p2846576177-smeshnoj-magnit-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Патріотичний магніт на авто Тризуб | Магнітні наклейки ЗСУ | Сотні варіантів герба України | Доставка по Україні",
+    "description": "Патріотичний магніт на авто Тризуб | Магнітні наклейки ЗСУ | Сотні варіантів герба України | Доставка по Україні",
+    "image": "https://images.prom.ua/6974843980_w500_h500_patriotichnij-magnit-na.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "100.00",
+      "url": "/ua/p2853083971-patrioticheskij-magnit-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Наклейка ЗСУ квадрат сине жовтий 30*30см",
+    "description": "Наклейка ЗСУ квадрат сине жовтий 30*30см",
+    "image": "https://images.prom.ua/6794611879_w500_h500_naklejka-zsu-kvadrat.jpg",
+    "sku": "квадрат",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "125.00",
+      "url": "/ua/p2717952132-naklejka-zsu-kvadrat.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Наклейка магнітна на авто Колона 15*15см",
+    "description": "Наклейка магнітна на авто Колона 15*15см",
+    "image": "https://images.prom.ua/6809609685_w500_h500_naklejka-magnitna-na.jpg",
+    "sku": "колона",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "130.00",
+      "url": "/ua/p2735821997-naklejka-magnitna-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Наклейка магнітна на авто Колона 15*15см",
+    "description": "Наклейка магнітна на авто Колона 15*15см",
+    "image": "https://images.prom.ua/6809609685_w500_h500_naklejka-magnitna-na.jpg",
+    "sku": "колона",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "130.00",
+      "url": "/ua/p2735822254-naklejka-magnitna-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Наклейка магнітна Каблук 15*15см",
+    "description": "Наклейка магнітна Каблук 15*15см",
+    "image": "https://images.prom.ua/6793705342_w500_h500_naklejka-magnitna-kabluk.jpg",
+    "sku": "каблук",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "150.00",
+      "url": "/ua/p2716395430-naklejka-magnitna-kabluk.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Наклейка квадрат ЗСУ стрілка 40*40см",
+    "description": "Наклейка квадрат ЗСУ стрілка 40*40см",
+    "image": "https://images.prom.ua/6793762684_w500_h500_naklejka-kvadrat-zsu.jpg",
+    "sku": "наклейка",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "150.00",
+      "url": "/ua/p2716465738-naklejka-kvadrat-zsu.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Наклейка магнітна Вовки Да Вінчі 15*15см",
+    "description": "Наклейка магнітна Вовки Да Вінчі 15*15см",
+    "image": "https://images.prom.ua/6794528403_w500_h500_naklejka-magnitna-vovki.jpg",
+    "sku": "да вінчі",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "150.00",
+      "url": "/ua/p2717729965-naklejka-magnitna-vovki.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Наклейка магнітна на авто",
+    "description": "Наклейка магнітна на авто",
+    "image": "https://images.prom.ua/6959027759_w500_h500_naklejka-magnitna-na.jpg",
+    "sku": "20*20см",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "150.00",
+      "url": "/ua/p2739844214-naklejka-magnitna-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт на авто Герб Микуличин | Магнітний герб міста | Виготовлення гербів міст під замовлення",
+    "description": "Магніт на авто Герб Микуличин | Магнітний герб міста | Виготовлення гербів міст під замовлення",
+    "image": "https://images.prom.ua/6963042275_w500_h500_magnit-na-avto.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "150.00",
+      "url": "/ua/p2845101710-magnit-avto-gerb.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Табличка з пластику Паркування заборонено 30*20см",
+    "description": "Табличка з пластику Паркування заборонено 30*20см",
+    "image": "https://images.prom.ua/6795155337_w500_h500_tablichka-z-plastiku.jpg",
+    "sku": "паркування",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "180.00",
+      "url": "/ua/p2718682424-tablichka-plastiku-parkuvannya.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт на авто Єгерська служба | Щит з гербом України | Мисливці, УТМР 20х15см",
+    "description": "Магніт на авто Єгерська служба | Щит з гербом України | Мисливці, УТМР 20х15см",
+    "image": "https://images.prom.ua/6960970817_w500_h500_magnit-na-avto.jpg",
+    "sku": "ег",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "180.00",
+      "url": "/ua/p2843193642-magnit-avto-egerskaya.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Сувенірні автономера з позивним",
+    "description": "Сувенірні автономера з позивним",
+    "image": "https://images.prom.ua/6960951508_w500_h500_suvenirni-avtonomera-z.jpg",
+    "sku": "позивний",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "200.00",
+      "url": "/ua/p2713534620-suvenirnye-avtonomera-pozyvnym.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Транзитні автономера пластикові",
+    "description": "Транзитні автономера пластикові",
+    "image": "https://images.prom.ua/6794393214_w500_h500_tranzitni-avtonomera-plastikovi.jpg",
+    "sku": "транзитні ",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "200.00",
+      "url": "/ua/p2717507021-tranzitni-avtonomera-plastikovi.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітна наклейка на авто 1 ОШП «Да Вінчі» 25*20см",
+    "description": "Магнітна наклейка на авто 1 ОШП «Да Вінчі» 25*20см",
+    "image": "https://images.prom.ua/6841302692_w500_h500_magnitna-naklejka-na.jpg",
+    "sku": "1ошп",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "200.00",
+      "url": "/ua/p2762673304-magnitna-naklejka-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Волонтер магнітна наліпка на авто",
+    "description": "Волонтер магнітна наліпка на авто",
+    "image": "https://images.prom.ua/6844236685_w500_h500_volonter-magnitna-nalipka.jpg",
+    "sku": "волонтер",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "200.00",
+      "url": "/ua/p2764392664-volonter-magnitna-nalipka.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Волонтер магнітна наліпка на авто",
+    "description": "Волонтер магнітна наліпка на авто",
+    "image": "https://images.prom.ua/6844236685_w500_h500_volonter-magnitna-nalipka.jpg",
+    "sku": "волонтер",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "200.00",
+      "url": "/ua/p2764392673-volonter-magnitna-nalipka.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Сувенірний номер EUROCAR  CARZONE — 519×112 мм  УФ-друк | Пластик Алюмінієвий композит",
+    "description": "Сувенірний номер EUROCAR  CARZONE — 519×112 мм  УФ-друк | Пластик Алюмінієвий композит",
+    "image": "https://images.prom.ua/6871345002_w500_h500_suvenirnij-nomer-eurocar.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "200.00",
+      "url": "/ua/p2784266269-suvenirnij-nomer-eurocar.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Сувенірний номер  (ДШВ ЗСУ) | 519×112 мм Пластик Алюмінієвий композит",
+    "description": "Сувенірний номер  (ДШВ ЗСУ) | 519×112 мм Пластик Алюмінієвий композит",
+    "image": "https://images.prom.ua/6872756468_w500_h500_suvenirnij-nomer-dshv.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "200.00",
+      "url": "/ua/p2785004530-suvenirnij-nomer-dshv.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Сувенірний номер на авто «МЕХАНІК» | УФ друк, пластик стандартний розмір 52×11 см | Патріотична табличка на машину",
+    "description": "Сувенірний номер на авто «МЕХАНІК» | УФ друк, пластик стандартний розмір 52×11 см | Патріотична табличка на машину",
+    "image": "https://images.prom.ua/6983588355_w500_h500_suvenirnij-nomer-na.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "200.00",
+      "url": "/ua/p2858010933-suvenirnyj-nomer-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Сувенірні авто номери на алюмінієвому композиті | Для військових, автошкіл, оренди авто, позивних | УФ друк пластик",
+    "description": "Сувенірні авто номери на алюмінієвому композиті | Для військових, автошкіл, оренди авто, позивних | УФ друк пластик",
+    "image": "https://images.prom.ua/6984586040_w500_h500_suvenirni-avto-nomeri.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "200.00",
+      "url": "/ua/p2858591923-suvenirnye-avto-nomera.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітна наклейка на авто ЗСУ 25*25см",
+    "description": "Магнітна наклейка на авто ЗСУ 25*25см",
+    "image": "https://images.prom.ua/6843747891_w500_h500_magnitna-naklejka-na.jpg",
+    "sku": "ЗСУ 25",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "220.00",
+      "url": "/ua/p2764161335-magnitna-naklejka-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Авто номер військовий з алюмінію композиту",
+    "description": "Авто номер військовий з алюмінію композиту",
+    "image": "https://images.prom.ua/6809283765_w500_h500_avto-nomer-vijskovij.jpg",
+    "sku": "композит",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "230.00",
+      "url": "/ua/p2735613139-avto-nomer-vijskovij.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Світловідбиваючий магніт на авто “К” | Reflective Edition Попереджувальний знак | УФ-друк | 15×15 см",
+    "description": "Світловідбиваючий магніт на авто “К” | Reflective Edition Попереджувальний знак | УФ-друк | 15×15 см",
+    "image": "https://images.prom.ua/6976967220_w500_h500_svitlovidbivayuchij-magnit-na.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "230.00",
+      "url": "/ua/p2854299656-svetootrazhayuschij-magnit-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Холодний яр 93 бригада магнітна наклейка на авто 30*25см",
+    "description": "Холодний яр 93 бригада магнітна наклейка на авто 30*25см",
+    "image": "https://images.prom.ua/6848857086_w500_h500_holodnij-yar-93.jpg",
+    "sku": "93 омбр",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "240.00",
+      "url": "/ua/p2767106194-holodnij-yar-brigada.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітна наклейка Морська піхота 25*25см",
+    "description": "Магнітна наклейка Морська піхота 25*25см",
+    "image": "https://images.prom.ua/6793582624_w500_h500_magnitna-naklejka-morska.jpg",
+    "sku": "морська піхота",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "250.00",
+      "url": "/ua/p2716279483-magnitna-naklejka-morska.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітна наклейка Морська піхота 25*25см",
+    "description": "Магнітна наклейка Морська піхота 25*25см",
+    "image": "https://images.prom.ua/6793582624_w500_h500_magnitna-naklejka-morska.jpg",
+    "sku": "морська піхота",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "250.00",
+      "url": "/ua/p2716279485-magnitna-naklejka-morska.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Наклейка магнітна на авто не тцк",
+    "description": "Наклейка магнітна на авто не тцк",
+    "image": "https://images.prom.ua/6794796469_w500_h500_naklejka-magnitna-na.jpg",
+    "sku": "стандарт магніт",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "250.00",
+      "url": "/ua/p2718235525-naklejka-magnitna-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Наклейка магнітна на авто Чеченський Батальйон імені Шейха Мансури",
+    "description": "Наклейка магнітна на авто Чеченський Батальйон імені Шейха Мансури",
+    "image": "https://images.prom.ua/6794832854_w500_h500_naklejka-magnitna-na.jpg",
+    "sku": "чеченський батальйон",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "250.00",
+      "url": "/ua/p2718330310-naklejka-magnitna-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Наклейка магнітна на авто Чеченський Батальйон імені Шейха Мансури",
+    "description": "Наклейка магнітна на авто Чеченський Батальйон імені Шейха Мансури",
+    "image": "https://images.prom.ua/6794832854_w500_h500_naklejka-magnitna-na.jpg",
+    "sku": "чеченський батальйон",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "250.00",
+      "url": "/ua/p2718330311-naklejka-magnitna-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Наклейка магнітна на авто Герб",
+    "description": "Наклейка магнітна на авто Герб",
+    "image": "https://images.prom.ua/6809275833_w500_h500_naklejka-magnitna-na.jpg",
+    "sku": "Герб 30*25см",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "250.00",
+      "url": "/ua/p2735605646-naklejka-magnitna-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Наклейка магнітна на авто Герб",
+    "description": "Наклейка магнітна на авто Герб",
+    "image": "https://images.prom.ua/6809275833_w500_h500_naklejka-magnitna-na.jpg",
+    "sku": "Герб 30*25см",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "250.00",
+      "url": "/ua/p2735605662-naklejka-magnitna-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Наклейка магнітна на авто 214 ошб Опфор",
+    "description": "Наклейка магнітна на авто 214 ошб Опфор",
+    "image": "https://images.prom.ua/6811237861_w500_h500_naklejka-magnitna-na.jpg",
+    "sku": "214 ошб 30*20см",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "250.00",
+      "url": "/ua/p2736888342-naklejka-magnitna-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітна наклейка на авто з назвою Міста 15*50см",
+    "description": "Магнітна наклейка на авто з назвою Міста 15*50см",
+    "image": "https://images.prom.ua/6842099578_w500_h500_magnitna-naklejka-na.jpg",
+    "sku": "місто 15*50см",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "250.00",
+      "url": "/ua/p2763120359-magnitna-naklejka-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітна наклейка на авто Волонтер 20*50см",
+    "description": "Магнітна наклейка на авто Волонтер 20*50см",
+    "image": "https://images.prom.ua/6850199197_w500_h500_magnitna-naklejka-na.jpg",
+    "sku": "20*50",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "250.00",
+      "url": "/ua/p2767863447-magnitna-naklejka-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітна наклейка на авто Волонтер 20*50см",
+    "description": "Магнітна наклейка на авто Волонтер 20*50см",
+    "image": "https://images.prom.ua/6850199197_w500_h500_magnitna-naklejka-na.jpg",
+    "sku": "20*50",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "250.00",
+      "url": "/ua/p2767863448-magnitna-naklejka-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Сувенірний номер  з логотипом TikTok  519×112 мм Пластик Алюмінієвий композит на авто",
+    "description": "Сувенірний номер  з логотипом TikTok  519×112 мм Пластик Алюмінієвий композит на авто",
+    "image": "https://images.prom.ua/6872750324_w500_h500_suvenirnij-nomer-z.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "250.00",
+      "url": "/ua/p2784998410-suvenirnij-nomer-logotipom.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Сувенірний номер з позивним ДШВ ЗСУ 519×112 мм | Пластик  Алюмінієвий композит",
+    "description": "Сувенірний номер з позивним ДШВ ЗСУ 519×112 мм | Пластик  Алюмінієвий композит",
+    "image": "https://images.prom.ua/6872759938_w500_h500_suvenirnij-nomer-z.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "250.00",
+      "url": "/ua/p2785005575-suvenirnij-nomer-pozivnim.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт на авто «Охорона мисливського фонду» | МРК «Дружба»",
+    "description": "Магніт на авто «Охорона мисливського фонду» | МРК «Дружба»",
+    "image": "https://images.prom.ua/6964189924_w500_h500_magnit-na-avto.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "250.00",
+      "url": "/ua/p2845932307-magnit-avto-ohrannika.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "СУВЕНІРНІ АВТОНОМЕРИ УФ-друк | Пластик ПВХ 4 мм | Алюмінієвий композит",
+    "description": "СУВЕНІРНІ АВТОНОМЕРИ УФ-друк | Пластик ПВХ 4 мм | Алюмінієвий композит",
+    "image": "https://images.prom.ua/6964512384_w500_h500_suvenirni-avtonomeri-uf-druk.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "250.00",
+      "url": "/ua/p2846253851-sovrenirnye-avtonomery-pechat.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт “НАВЧАЛЬНИЙ” на авто | Ученик за рулем | Знак Учбовий автомобіль, знімний магніт",
+    "description": "Магніт “НАВЧАЛЬНИЙ” на авто | Ученик за рулем | Знак Учбовий автомобіль, знімний магніт",
+    "image": "https://images.prom.ua/6971790306_w500_h500_magnit-navchalnij-na.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "250.00",
+      "url": "/ua/p2851307059-magnit-navchalnyj-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт на авто НКБК | Національний комітет по боротьбі з корупцією 🚔 Щит меч Тризуб | Патріотичний автомагніт",
+    "description": "Магніт на авто НКБК | Національний комітет по боротьбі з корупцією 🚔 Щит меч Тризуб | Патріотичний автомагніт",
+    "image": "https://images.prom.ua/6971867404_w500_h500_magnit-na-avto.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "250.00",
+      "url": "/ua/p2851333308-magnit-avto-nkbk.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт / Наліпка для авто “Риболовля у Лиса” | Подарунок рибалці | Реклама форелевих ставків",
+    "description": "Магніт / Наліпка для авто “Риболовля у Лиса” | Подарунок рибалці | Реклама форелевих ставків",
+    "image": "https://images.prom.ua/6972688910_w500_h500_magnit--nalipka.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "250.00",
+      "url": "/ua/p2851816163-magnit-naklejka-dlya.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "УФ-друк на пластику – таблички, шеврони, емблеми під ваш підрозділ",
+    "description": "УФ-друк на пластику – таблички, шеврони, емблеми під ваш підрозділ",
+    "image": "https://images.prom.ua/6974979331_w500_h500_uf-druk-na-plastiku.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "250.00",
+      "url": "/ua/p2853137920-pechat-plastike-tablichka.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Шеврон 39 Окрема Бригада – УФ друк на пластику | Настінна табличка для підрозділу",
+    "description": "Шеврон 39 Окрема Бригада – УФ друк на пластику | Настінна табличка для підрозділу",
+    "image": "https://images.prom.ua/6974993061_w500_h500_shevron-39-okrema.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "250.00",
+      "url": "/ua/p2853141514-shevron-otdelnaya-briga.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт на авто  | Патріотичний гумор | Прикольний магніт | УФ-друк | 50х12 см",
+    "description": "Магніт на авто  | Патріотичний гумор | Прикольний магніт | УФ-друк | 50х12 см",
+    "image": "https://images.prom.ua/6976962824_w500_h500_magnit-na-avto.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "250.00",
+      "url": "/ua/p2854299476-magnit-avto-patrioticheskij.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Сувенірний номер 52×12 см • Ультрафіолетовий друк • Алюмінієвий композит",
+    "description": "Сувенірний номер 52×12 см • Ультрафіолетовий друк • Алюмінієвий композит",
+    "image": "https://images.prom.ua/6980266248_w500_h500_suvenirnij-nomer-5212.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "250.00",
+      "url": "/ua/p2856003177-suvenirnyj-nomer-5212.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Іменні сувенірні авто номери | Металеві таблички | Композит, ультрафіолетовий друк",
+    "description": "Іменні сувенірні авто номери | Металеві таблички | Композит, ультрафіолетовий друк",
+    "image": "https://images.prom.ua/6984560673_w500_h500_imenni-suvenirni-avto.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "250.00",
+      "url": "/ua/p2858585428-imennye-suvenirnye-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітний розпізнавальний знак ЗСУ «Стрілки» нова пошта 30х30см  для авто",
+    "description": "Магнітний розпізнавальний знак ЗСУ «Стрілки» нова пошта 30х30см  для авто",
+    "image": "https://images.prom.ua/6979540477_w500_h500_magnitnij-rozpiznavalnij-znak.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "260.00",
+      "url": "/ua/p2855610493-magnitnyj-otlichitelnyj-znak.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітний розпізнавальний знак КРУГ 30х30см на авто | Білий / Чорний / Оливковий",
+    "description": "Магнітний розпізнавальний знак КРУГ 30х30см на авто | Білий / Чорний / Оливковий",
+    "image": "https://images.prom.ua/6979546265_w500_h500_magnitnij-rozpiznavalnij-znak.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "260.00",
+      "url": "/ua/p2855621359-magnitnyj-opoznavatelnyj-znak.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітний розпізнавальний знак “Три стрілки” 30х30 см | Білий / Чорний / Оливковий",
+    "description": "Магнітний розпізнавальний знак “Три стрілки” 30х30 см | Білий / Чорний / Оливковий",
+    "image": "https://images.prom.ua/6979724586_w500_h500_magnitnij-rozpiznavalnij-znak.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "260.00",
+      "url": "/ua/p2855717564-magnitnyj-otlichitelnyj-znak.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітний розпізнавальний знак “Дві стрілки” 30х30 см | Чорний / Білий / Оливковий",
+    "description": "Магнітний розпізнавальний знак “Дві стрілки” 30х30 см | Чорний / Білий / Оливковий",
+    "image": "https://images.prom.ua/6979730435_w500_h500_magnitnij-rozpiznavalnij-znak.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "260.00",
+      "url": "/ua/p2855721505-magnitnyj-opoznavatelnyj-znak.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Розпізнавальний знак ЗСУ «Синій квадрат з жовтим центром» — магнітна наліпка для авто, броні, техніки 30х30см",
+    "description": "Розпізнавальний знак ЗСУ «Синій квадрат з жовтим центром» — магнітна наліпка для авто, броні, техніки 30х30см",
+    "image": "https://images.prom.ua/6983166722_w500_h500_rozpiznavalnij-znak-zsu.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "270.00",
+      "url": "/ua/p2857819029-raspoznavatelnyj-znak-zsu.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Табличка на могилу з ПІБ та датами Металева ритуальна табличка Виготовлення під замовлення",
+    "description": "Табличка на могилу з ПІБ та датами Металева ритуальна табличка Виготовлення під замовлення",
+    "image": "https://images.prom.ua/6953913321_w500_h500_tablichka-na-mogilu.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "290.00",
+      "url": "/ua/p2836849539-tablichka-mogilu-pib.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Новорічні магніти на авто та холодильник | Святковий декор 2025 🎄",
+    "description": "Новорічні магніти на авто та холодильник | Святковий декор 2025 🎄",
+    "image": "https://images.prom.ua/6959200222_w500_h500_novorichni-magniti-na.jpg",
+    "sku": "Н\\Г",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "300.00",
+      "url": "/ua/p2841495496-novogodnie-magnity-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт на авто RADAR Rivne | Моніторинговий канал | Патріотичний магніт",
+    "description": "Магніт на авто RADAR Rivne | Моніторинговий канал | Патріотичний магніт",
+    "image": "https://images.prom.ua/6964172662_w500_h500_magnit-na-avto.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "300.00",
+      "url": "/ua/p2845906340-magnit-avto-radar.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітний попереджувальний знак  “НЕБЕЗПЕЧНО МІНИ! / DANGER MINES!”",
+    "description": "Магнітний попереджувальний знак  “НЕБЕЗПЕЧНО МІНИ! / DANGER MINES!”",
+    "image": "https://images.prom.ua/6964342845_w500_h500_magnitnij-poperedzhuvalnij-znak.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "300.00",
+      "url": "/ua/p2846080191-magnitnyj-preduprezhdayuschij-znak.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт «Хрест ЗСУ»",
+    "description": "Магніт «Хрест ЗСУ»",
+    "image": "https://images.prom.ua/6974968945_w500_h500_magnit-hrest-zsu.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "300.00",
+      "url": "/ua/p2853128875-magnit-hrest-zsu.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітний розпізнавальний на капот ромб 30×30 см з жовтим центром та синьою окантовкою — магніт на авто",
+    "description": "Магнітний розпізнавальний на капот ромб 30×30 см з жовтим центром та синьою окантовкою — магніт на авто",
+    "image": "https://images.prom.ua/6979401473_w500_h500_magnitnij-rozpiznavalnij-na.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "300.00",
+      "url": "/ua/p2855401139-magnitnyj-opoznavatelnyj-kapot.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Наклейка магнітна 3су квадрат чорний 40*40см",
+    "description": "Наклейка магнітна 3су квадрат чорний 40*40см",
+    "image": "https://images.prom.ua/6793599433_w500_h500_naklejka-magnitna-3su.jpg",
+    "sku": "квадрат",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "350.00",
+      "url": "/ua/p2716301832-naklejka-magnitna-3su.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Наклейка магнітна На Щиті",
+    "description": "Наклейка магнітна На Щиті",
+    "image": "https://images.prom.ua/6802740870_w500_h500_naklejka-magnitna-na.jpg",
+    "sku": "на щиті",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "350.00",
+      "url": "/ua/p2731079224-naklejka-magnitna-schiti.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітна наклейка на авто Народна варта 40*35см",
+    "description": "Магнітна наклейка на авто Народна варта 40*35см",
+    "image": "https://images.prom.ua/6843738795_w500_h500_magnitna-naklejka-na.jpg",
+    "sku": "народна варта",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "350.00",
+      "url": "/ua/p2764155441-magnitna-naklejka-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт на авто «През шаблі маєм право» 40×30 см | Історичний герб | Патріотичний магніт",
+    "description": "Магніт на авто «През шаблі маєм право» 40×30 см | Історичний герб | Патріотичний магніт",
+    "image": "https://images.prom.ua/6871162471_w500_h500_magnit-na-avto.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "350.00",
+      "url": "/ua/p2784169432-magnit-avto-prez.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт на капот 1 ОШБ «Вовк» 40×30 см | Символ штурмовиків | Патріотичний магніт",
+    "description": "Магніт на капот 1 ОШБ «Вовк» 40×30 см | Символ штурмовиків | Патріотичний магніт",
+    "image": "https://images.prom.ua/6871193113_w500_h500_magnit-na-kapot.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "350.00",
+      "url": "/ua/p2784185322-magnit-oshb-vovk.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт «Народна Варта» 40×30 см  Символ захисту  Патріотичний магніт",
+    "description": "Магніт «Народна Варта» 40×30 см  Символ захисту  Патріотичний магніт",
+    "image": "https://images.prom.ua/6871209409_w500_h500_magnit-narodna-varta.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "350.00",
+      "url": "/ua/p2784194189-magnit-narodna-varta.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт Морська піхота ЗСУ «Вірний завжди» 40×30 см | Офіційна емблема | Магніт на авто",
+    "description": "Магніт Морська піхота ЗСУ «Вірний завжди» 40×30 см | Офіційна емблема | Магніт на авто",
+    "image": "https://images.prom.ua/6871227674_w500_h500_magnit-morska-pihota.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "350.00",
+      "url": "/ua/p2784212576-magnit-morska-pihota.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт «Холодний Яр» 40×30 см | Історичний символ | Патріотичний магніт України",
+    "description": "Магніт «Холодний Яр» 40×30 см | Історичний символ | Патріотичний магніт України",
+    "image": "https://images.prom.ua/6871245461_w500_h500_magnit-holodnij-yar.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "350.00",
+      "url": "/ua/p2784223065-magnit-holodnij-yar.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт «Серце і меч» 40×30 см Символ воїна  Патріотичний сувенір 39 бригада",
+    "description": "Магніт «Серце і меч» 40×30 см Символ воїна  Патріотичний сувенір 39 бригада",
+    "image": "https://images.prom.ua/6871305523_w500_h500_magnit-sertse-i.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "350.00",
+      "url": "/ua/p2784237923-magnit-sertse-mech.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт Добровольчий батальйон УЦМ 40×30 см | Символ підрозділу | Магніт на авто",
+    "description": "Магніт Добровольчий батальйон УЦМ 40×30 см | Символ підрозділу | Магніт на авто",
+    "image": "https://images.prom.ua/6960906056_w500_h500_magnit-dobrovolchij-bataljon.jpg",
+    "sku": "уцм 40*30",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "350.00",
+      "url": "/ua/p2796682515-magnit-dobrovolnyj-batalon.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітна наклейка на капот «Й…аний цирк» | Патріотичний гумор | Магніт 30×20 / 40×30 / 50×40 см",
+    "description": "Магнітна наклейка на капот «Й…аний цирк» | Патріотичний гумор | Магніт 30×20 / 40×30 / 50×40 см",
+    "image": "https://images.prom.ua/6955671160_w500_h500_magnitna-naklejka-na.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "350.00",
+      "url": "/ua/p2838747503-magnitnaya-naklejka-kapot.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Рекламний магніт для бізнесу «Пивна Бухта №1»  Магніт-табличка на авто/холодильник  Реклама магазину",
+    "description": "Рекламний магніт для бізнесу «Пивна Бухта №1»  Магніт-табличка на авто/холодильник  Реклама магазину",
+    "image": "https://images.prom.ua/6955704240_w500_h500_reklamnij-magnit-dlya.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "350.00",
+      "url": "/ua/p2838777330-reklamnij-magnit-dlya.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт на ворота “Паркування заборонено” | Попереджувальна табличка No Parking",
+    "description": "Магніт на ворота “Паркування заборонено” | Попереджувальна табличка No Parking",
+    "image": "https://images.prom.ua/6964922718_w500_h500_magnit-na-vorota.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "350.00",
+      "url": "/ua/p2846513929-magnit-vorotah-parkaly.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт на авто “Не бійся! Я не з ТЦК” | Військовий шеврон на машину ЗСУ | Велика магнітна наклейка на авто",
+    "description": "Магніт на авто “Не бійся! Я не з ТЦК” | Військовий шеврон на машину ЗСУ | Велика магнітна наклейка на авто",
+    "image": "https://images.prom.ua/6972615205_w500_h500_magnit-na-avto.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "350.00",
+      "url": "/ua/p2851776483-magnit-avto-bijsya.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітна наліпка Воїн з бородою — череп у шоломі магніти на авто авто магніти",
+    "description": "Магнітна наліпка Воїн з бородою — череп у шоломі магніти на авто авто магніти",
+    "image": "https://images.prom.ua/6890852146_w500_h500_magnitna-nalipka-voyin.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "360.00",
+      "url": "/ua/p2796670243-magnitna-nalipka-voyin.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Табличка на могилу з квітами і свічками  Металева пам’ятна табличка 20×30 см",
+    "description": "Табличка на могилу з квітами і свічками  Металева пам’ятна табличка 20×30 см",
+    "image": "https://images.prom.ua/6954006395_w500_h500_tablichka-na-mogilu.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "380.00",
+      "url": "/ua/p2836921956-tablichka-mogilu-kvitami.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт 14 ОМБр ім. князя Романа Великого 40×30 см | Патріотичний магніт на авто | Емблема 14 бригади",
+    "description": "Магніт 14 ОМБр ім. князя Романа Великого 40×30 см | Патріотичний магніт на авто | Емблема 14 бригади",
+    "image": "https://images.prom.ua/6954084733_w500_h500_magnit-14-ombr.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "400.00",
+      "url": "/ua/p2836970037-magnit-ombr-knyazya.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт на авто з логотипом компанії | Рекламні магніти під замовлення",
+    "description": "Магніт на авто з логотипом компанії | Рекламні магніти під замовлення",
+    "image": "https://images.prom.ua/6963133774_w500_h500_magnit-na-avto.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "400.00",
+      "url": "/ua/p2845132705-magnit-avto-logotipom.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітний знак «ЗАБОРОНЕНО ЗБРОЮ» 🚫🔫",
+    "description": "Магнітний знак «ЗАБОРОНЕНО ЗБРОЮ» 🚫🔫",
+    "image": "https://images.prom.ua/6964869484_w500_h500_magnitnij-znak-zaboroneno.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "400.00",
+      "url": "/ua/p2846303429-magnitnyj-znak-zaboronenno.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт для авто мисливської служби | Індивідуальний друк емблем мисливського господарства",
+    "description": "Магніт для авто мисливської служби | Індивідуальний друк емблем мисливського господарства",
+    "image": "https://images.prom.ua/6964943202_w500_h500_magnit-dlya-avto.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "400.00",
+      "url": "/ua/p2846547733-magnit-dlya-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Інформаційний магніт з фото та ПІБ | Для розміщення на авто та металі 40х30см",
+    "description": "Інформаційний магніт з фото та ПІБ | Для розміщення на авто та металі 40х30см",
+    "image": "https://images.prom.ua/6984629684_w500_h500_informatsijnij-magnit-z.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "400.00",
+      "url": "/ua/p2858651154-informatsionnyj-magnit-foto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Авто номер з логотипом, назвою, іменний",
+    "description": "Авто номер з логотипом, назвою, іменний",
+    "image": "https://images.prom.ua/6798246254_w500_h500_avto-nomer-z.jpg",
+    "sku": "пластик",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "450.00",
+      "url": "/ua/p2726219688-avto-nomer-logotipom.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Табличка з логотипом з пластику 60*40см",
+    "description": "Табличка з логотипом з пластику 60*40см",
+    "image": "https://images.prom.ua/6840349114_w500_h500_tablichka-z-logotipom.jpg",
+    "sku": "таб 60*40",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "450.00",
+      "url": "/ua/p2762127866-tablichka-logotipom-plastiku.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітна наліпка Едельвейс — 10 ОГШБр ЗСУ 40х30см",
+    "description": "Магнітна наліпка Едельвейс — 10 ОГШБр ЗСУ 40х30см",
+    "image": "https://images.prom.ua/6890869087_w500_h500_magnitna-nalipka-edelvejs.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "450.00",
+      "url": "/ua/p2796674894-magnitnaya-naklejka-edelvejs.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітна наліпка Поліцейський офіцер громади — Чорнобаївська ТГ 40х30см",
+    "description": "Магнітна наліпка Поліцейський офіцер громади — Чорнобаївська ТГ 40х30см",
+    "image": "https://images.prom.ua/6890873240_w500_h500_magnitna-nalipka-politsejskij.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "450.00",
+      "url": "/ua/p2796676380-magnitna-nalipka-politsejskij.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Наклейка магнітна на авто На Щиті 60*30см",
+    "description": "Наклейка магнітна на авто На Щиті 60*30см",
+    "image": "https://images.prom.ua/6794390889_w500_h500_naklejka-magnitna-na.jpg",
+    "sku": "60*30см",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "500.00",
+      "url": "/ua/p2717470472-naklejka-magnitna-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Наклейка магнітна на капот Хартія 50*40см",
+    "description": "Наклейка магнітна на капот Хартія 50*40см",
+    "image": "https://images.prom.ua/6843553277_w500_h500_naklejka-magnitna-na.jpg",
+    "sku": "50*40",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "500.00",
+      "url": "/ua/p2764037953-naklejka-magnitna-kapot.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніти для бізнесу на авто  Рекламні магнітні таблички під замовлення 60×30 см індивідуально",
+    "description": "Магніти для бізнесу на авто  Рекламні магнітні таблички під замовлення 60×30 см індивідуально",
+    "image": "https://images.prom.ua/6954747499_w500_h500_magniti-dlya-biznesu.jpg",
+    "sku": "для бізнесу",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "500.00",
+      "url": "/ua/p2837347028-magnity-dlya-biznesa.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт на авто з рекламою | Магнітна реклама на автомобіль | Під замовлення — Україна",
+    "description": "Магніт на авто з рекламою | Магнітна реклама на автомобіль | Під замовлення — Україна",
+    "image": "https://images.prom.ua/6964912499_w500_h500_magnit-na-avto.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "500.00",
+      "url": "/ua/p2846504042-magnit-avto-reklamoj.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "«Ритуальний Транспорт» — для ритуальних служб | Чорний з золотом",
+    "description": "«Ритуальний Транспорт» — для ритуальних служб | Чорний з золотом",
+    "image": "https://images.prom.ua/6972607068_w500_h500_ritualnij-transport-.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "500.00",
+      "url": "/ua/p2851334362-ritualnyj-transport-dlya.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт на авто «На щиті – Слава Герою!»",
+    "description": "Магніт на авто «На щиті – Слава Герою!»",
+    "image": "https://images.prom.ua/6974914334_w500_h500_magnit-na-avto.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "500.00",
+      "url": "/ua/p2853105615-magnit-avto-schite.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітна наліпка на авто для енергетичних компаній 60×30 см | Службова табличка Черкаси Обленерго / UDG / Енергетики",
+    "description": "Магнітна наліпка на авто для енергетичних компаній 60×30 см | Службова табличка Черкаси Обленерго / UDG / Енергетики",
+    "image": "https://images.prom.ua/6983189622_w500_h500_magnitna-nalipka-na.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "500.00",
+      "url": "/ua/p2857836519-magnitnaya-naklejka-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітна наліпка «2-й механізований батальйон — мінометна батарея» 50х40см  Захисна символіка ЗСУ  Магніт",
+    "description": "Магнітна наліпка «2-й механізований батальйон — мінометна батарея» 50х40см  Захисна символіка ЗСУ  Магніт",
+    "image": "https://images.prom.ua/6890840474_w500_h500_magnitna-nalipka-2-j.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "550.00",
+      "url": "/ua/p2796668202-magnitna-nalipka-mehanizovanij.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітна наліпка «ТРАКИ — СИЛА» 50×40 см Танкістський патріотичний магніт  Символіка ЗСУ",
+    "description": "Магнітна наліпка «ТРАКИ — СИЛА» 50×40 см Танкістський патріотичний магніт  Символіка ЗСУ",
+    "image": "https://images.prom.ua/6954050666_w500_h500_magnitna-nalipka-traki.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "550.00",
+      "url": "/ua/p2836951719-magnitnaya-naklejka-traki.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт МБГ «NOSTRUM CAELUM» 50×50 см | Полювання на шахеди | Магніт ППО на авто",
+    "description": "Магніт МБГ «NOSTRUM CAELUM» 50×50 см | Полювання на шахеди | Магніт ППО на авто",
+    "image": "https://images.prom.ua/6954099113_w500_h500_magnit-mbg-nostrum.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "550.00",
+      "url": "/ua/p2836985679-magnit-mbg-nostrum.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Рекламний магніт для авто — для бізнесу та доставки",
+    "description": "Рекламний магніт для авто — для бізнесу та доставки",
+    "image": "https://images.prom.ua/6959044996_w500_h500_reklamnij-magnit-dlya.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "550.00",
+      "url": "/ua/p2841357306-reklamnyj-magnit-dlya.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт “Тривога • Одеса” | Магнітні наліпки для моніторингових каналів | Реклама Telegram-каналу",
+    "description": "Магніт “Тривога • Одеса” | Магнітні наліпки для моніторингових каналів | Реклама Telegram-каналу",
+    "image": "https://images.prom.ua/6964121222_w500_h500_magnit-trivoga-.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "550.00",
+      "url": "/ua/p2845808098-magnit-trivoga-odessa.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітні наклейки DTEK на авто — брендування транспорту для компаній та бригад",
+    "description": "Магнітні наклейки DTEK на авто — брендування транспорту для компаній та бригад",
+    "image": "https://images.prom.ua/6971732736_w500_h500_magnitni-naklejki-dtek.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "550.00",
+      "url": "/ua/p2851269169-magnitnye-naklejki-dtek.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітний логотип “Нова Пошта” для авто",
+    "description": "Магнітний логотип “Нова Пошта” для авто",
+    "image": "https://images.prom.ua/6974951075_w500_h500_magnitnij-logotip-nova.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "550.00",
+      "url": "/ua/p2853119421-magnitnyj-logotip-novaya.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітна реклама на авто | Виготовлення під ключ | Для бізнесу і послуг | Доставка по Україні",
+    "description": "Магнітна реклама на авто | Виготовлення під ключ | Для бізнесу і послуг | Доставка по Україні",
+    "image": "https://images.prom.ua/6974785195_w500_h500_magnitna-reklama-na.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "600.00",
+      "url": "/ua/p2853064385-magnitnaya-reklama-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітний плакат на авто • Пошук водіїв • Індивідуальний дизайн • Транспортні компанії",
+    "description": "Магнітний плакат на авто • Пошук водіїв • Індивідуальний дизайн • Транспортні компанії",
+    "image": "https://images.prom.ua/6974886132_w500_h500_magnitnij-plakat-na.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "600.00",
+      "url": "/ua/p2853090489-magnitnyj-plakat-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітна наліпка OPFOR | 214 ОШБ | Великий магніт на авто 60×50 см",
+    "description": "Магнітна наліпка OPFOR | 214 ОШБ | Великий магніт на авто 60×50 см",
+    "image": "https://images.prom.ua/6980282229_w500_h500_magnitna-nalipka-opfor.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "650.00",
+      "url": "/ua/p2856011175-magnitnaya-naklejka-opfor.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітна рекламна наліпка Зоомагазин | Магніт на авто та метал | Розмір 90х30 см",
+    "description": "Магнітна рекламна наліпка Зоомагазин | Магніт на авто та метал | Розмір 90х30 см",
+    "image": "https://images.prom.ua/6983225487_w500_h500_magnitna-reklamna-nalipka.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "700.00",
+      "url": "/ua/p2857852404-magnitnaya-reklamnaya-naklejka.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Меморіальна магнітна наліпка «НА ЩИТІ»  Пам’ять про полеглих захисників України",
+    "description": "Меморіальна магнітна наліпка «НА ЩИТІ»  Пам’ять про полеглих захисників України",
+    "image": "https://images.prom.ua/6954070793_w500_h500_memorialna-magnitna-nalipka.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "750.00",
+      "url": "/ua/p2836960977-memorialnaya-magnitnaya-naklejka.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт на авто Тризуб Щит — великий патріотичний магніт 50×40 см для капота та дверей",
+    "description": "Магніт на авто Тризуб Щит — великий патріотичний магніт 50×40 см для капота та дверей",
+    "image": "https://images.prom.ua/6978459258_w500_h500_magnit-na-avto.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "750.00",
+      "url": "/ua/p2854897984-magnit-avto-trezub.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітна табличка на авто з вашим номером телефону — UV друк 70х60см",
+    "description": "Магнітна табличка на авто з вашим номером телефону — UV друк 70х60см",
+    "image": "https://images.prom.ua/6983114532_w500_h500_magnitna-tablichka-na.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "750.00",
+      "url": "/ua/p2857789941-magnitnaya-tablichka-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніт УТМР «Мисливство та риболовля» 70х60 см  Магнітна наліпка на авто",
+    "description": "Магніт УТМР «Мисливство та риболовля» 70х60 см  Магнітна наліпка на авто",
+    "image": "https://images.prom.ua/6959084613_w500_h500_magnit-utmr-mislivstvo.jpg",
+    "sku": "УТМР",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "800.00",
+      "url": "/ua/p2841374533-magnit-utmr-mislivstvo.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магніти для авто “НОВА ПОШТА”",
+    "description": "Магніти для авто “НОВА ПОШТА”",
+    "image": "https://images.prom.ua/6971783155_w500_h500_magniti-dlya-avto.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "900.00",
+      "url": "/ua/p2851294484-magnity-dlya-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Рекламний магніт на авто «Прочистка каналізації» + дизайн під ключ",
+    "description": "Рекламний магніт на авто «Прочистка каналізації» + дизайн під ключ",
+    "image": "https://images.prom.ua/6972622591_w500_h500_reklamnij-magnit-na.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "900.00",
+      "url": "/ua/p2851779635-reklamnyj-magnit-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Комплект магнітів «Я не з ТЦК»  Патріотичний гумор для військових  Магніти на авто",
+    "description": "Комплект магнітів «Я не з ТЦК»  Патріотичний гумор для військових  Магніти на авто",
+    "image": "https://images.prom.ua/6955692096_w500_h500_komplekt-magnitiv-ya.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "1000.00",
+      "url": "/ua/p2838772850-komplekt-magnitov-ttsk.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітний рекламний банер на авто стіни з вашим дизайном",
+    "description": "Магнітний рекламний банер на авто стіни з вашим дизайном",
+    "image": "https://images.prom.ua/6964175201_w500_h500_magnitnij-reklamnij-baner.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "1000.00",
+      "url": "/ua/p2841186767-magnitnij-reklamnij-baner.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітна реклама на авто KUMIKUM",
+    "description": "Магнітна реклама на авто KUMIKUM",
+    "image": "https://images.prom.ua/6958962284_w500_h500_magnitna-reklama-na.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/InStock",
+      "price": "1400.00",
+      "url": "/ua/p2841266346-magnitna-reklama-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Комплект магнітів на авто «НА ЩИТІ» — великий капотний + бокові щитки | 3-в-1 автомобільний",
+    "description": "Комплект магнітів на авто «НА ЩИТІ» — великий капотний + бокові щитки | 3-в-1 автомобільний",
+    "image": "https://images.prom.ua/6978358217_w500_h500_komplekt-magnitiv-na.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/PreOrder",
+      "price": "1600.00",
+      "url": "/ua/p2854804511-komplekt-magnitov-avto.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітний хрест ЗСУ 15×15 см на авто | Білий або Чорний з окантуванням",
+    "description": "Магнітний хрест ЗСУ 15×15 см на авто | Білий або Чорний з окантуванням",
+    "image": "https://images.prom.ua/6979516750_w500_h500_magnitnij-hrest-zsu.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/OutOfStock",
+      "price": "98.00",
+      "url": "/ua/p2855571903-magnitnyj-krest-zsu.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  },
+  {
+    "@context": "http://schema.org",
+    "@type": "Product",
+    "name": "Магнітна наклейка Umbrella Corporation Resident Evil | Логотип біо корпорації на авто, капот, двері",
+    "description": "Магнітна наклейка Umbrella Corporation Resident Evil | Логотип біо корпорації на авто, капот, двері",
+    "image": "https://images.prom.ua/6971786509_w500_h500_magnitna-naklejka-umbrella.jpg",
+    "offers": {
+      "@type": "Offer",
+      "availability": "http://schema.org/OutOfStock",
+      "price": "400.00",
+      "url": "/ua/p2851302310-magnitnaya-naklejka-umbrella.html",
+      "priceCurrency": "UAH",
+      "seller": {
+        "@type": "Organization",
+        "name": "укртаб"
+      }
+    }
+  }
+]
