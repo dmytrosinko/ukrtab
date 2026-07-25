@@ -108,10 +108,7 @@ export function Footer() {
 
       <div className="max-w-7xl mx-auto px-4 pt-8 mt-8 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
         <div>
-          © {new Date().getFullYear()} Укртаб. Всі права захищено. Автономний магазин на Next.js.
-        </div>
-        <div className="flex items-center space-x-2">
-          <span>Створено для швидкого переходу з Prom.ua</span>
+          © {new Date().getFullYear()} Укртаб. Всі права захищено.
         </div>
       </div>
     </footer>

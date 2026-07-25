@@ -58,7 +58,7 @@ export default function ContactsPage() {
           <div className="space-y-4">
             <div className="inline-flex items-center space-x-2 bg-amber-400/20 text-amber-400 text-xs font-bold px-3 py-1 rounded-full">
               <Star className="w-3.5 h-3.5 fill-amber-400" />
-              <span>Понад 553 позитивних відгуків на Prom.ua</span>
+              <span>Понад 553 позитивних відгуків клієнтів</span>
             </div>
             <h3 className="text-2xl font-black">Працюємо швидко та якісно</h3>
             <p className="text-xs text-slate-300 leading-relaxed">
