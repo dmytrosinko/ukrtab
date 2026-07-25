@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import CatalogPage from '../page';
+import { CatalogView } from '@/components/CatalogView';
 
 export default function CategoryPage() {
-  return <CatalogPage />;
+  return <CatalogView />;
 }
