@@ -1,12 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { CatalogView } from '@/components/CatalogView';
 
-export default function CategoryPage({
-  params,
-}: {
-  params?: any;
-}) {
-  return <CatalogView />;
+export default function CategoryPage() {
+  return (
+    <Suspense fallback={<div className="p-12 text-center text-xs text-slate-400">Завантаження каталогу...</div>}>
+      <CatalogView />
+    </Suspense>
+  );
 }
