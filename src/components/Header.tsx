@@ -14,7 +14,8 @@ import {
   X, 
   ShieldCheck,
   Settings,
-  Package
+  Package,
+  Sparkles
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 
@@ -106,11 +107,19 @@ export function Header() {
           </button>
         </form>
 
-        {/* Cart Button */}
+        {/* Cart & Constructor Buttons */}
         <div className="flex items-center space-x-3">
+          <Link
+            href="/constructor"
+            className="hidden sm:flex items-center space-x-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 px-3.5 py-2.5 rounded-xl font-extrabold text-xs shadow-md shadow-amber-500/20 transition transform active:scale-95 shrink-0"
+          >
+            <Sparkles className="w-4 h-4 fill-slate-950" />
+            <span>🎨 Конструктор</span>
+          </Link>
+
           <button
             onClick={() => setIsCartOpen(true)}
-            className="flex items-center space-x-3 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl shadow-md shadow-emerald-600/20 transition transform active:scale-95"
+            className="flex items-center space-x-3 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl shadow-md shadow-emerald-600/20 transition transform active:scale-95 shrink-0"
           >
             <div className="relative">
               <ShoppingCart className="w-5 h-5" />
@@ -159,6 +168,17 @@ export function Header() {
           >
             <Package className="w-4 h-4 text-emerald-600" />
             <span>Каталог товарів</span>
+          </Link>
+          <Link
+            href="/constructor"
+            className={`py-3 border-b-2 transition flex items-center space-x-1 text-amber-700 hover:text-amber-800 ${
+              isLinkActive('/constructor')
+                ? 'border-amber-500 font-black'
+                : 'border-transparent font-bold'
+            }`}
+          >
+            <Sparkles className="w-4 h-4 text-amber-500 fill-amber-500" />
+            <span>Конструктор магнітів</span>
           </Link>
           <Link
             href="/about"
@@ -214,6 +234,9 @@ export function Header() {
           </Link>
           <Link href="/catalog" className="block py-2 text-slate-800 font-medium hover:text-emerald-600">
             Каталог товарів
+          </Link>
+          <Link href="/constructor" className="block py-2 text-amber-700 font-black">
+            🎨 Конструктор магнітів
           </Link>
           <Link href="/about" className="block py-2 text-slate-800 font-medium hover:text-emerald-600">
             Про нас
