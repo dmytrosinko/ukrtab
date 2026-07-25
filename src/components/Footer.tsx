@@ -75,11 +75,6 @@ export function Footer() {
                 Контактні дані
               </Link>
             </li>
-            <li>
-              <Link href="/admin" className="text-emerald-400 hover:text-emerald-300 font-semibold transition">
-                Панель управління (CMS)
-              </Link>
-            </li>
           </ul>
         </div>
 

@@ -13,7 +13,6 @@ import {
   Menu, 
   X, 
   ShieldCheck,
-  Settings,
   Package,
   Sparkles
 } from 'lucide-react';
@@ -62,13 +61,6 @@ export function Header() {
               <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
               <span>553+ позитивних відгуків</span>
             </div>
-            <Link 
-              href="/admin" 
-              className="flex items-center space-x-1 text-emerald-400 hover:text-emerald-300 font-medium bg-emerald-950/60 border border-emerald-800/80 px-2.5 py-0.5 rounded-md transition"
-            >
-              <Settings className="w-3.5 h-3.5" />
-              <span>CMS Адмін</span>
-            </Link>
           </div>
         </div>
       </div>
@@ -246,9 +238,6 @@ export function Header() {
           </Link>
           <Link href="/contacts" className="block py-2 text-slate-800 font-medium hover:text-emerald-600">
             Контакти
-          </Link>
-          <Link href="/admin" className="block py-2 text-emerald-600 font-bold">
-            ⚙️ CMS Панель управління
           </Link>
         </div>
       )}
