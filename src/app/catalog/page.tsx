@@ -1,4 +1,3 @@
-import { Suspense } from 'react';
 import Link from 'next/link';
 import { ProductCard } from '@/components/ProductCard';
 import { Product } from '@/lib/types';
@@ -7,7 +6,7 @@ import { INITIAL_CATEGORIES, INITIAL_PRODUCTS } from '@/lib/store';
 
 export const revalidate = 60;
 
-async function CatalogContent({
+export default async function CatalogPage({
   searchParams,
 }: {
   searchParams?: any;
@@ -131,17 +130,5 @@ async function CatalogContent({
         </main>
       </div>
     </div>
-  );
-}
-
-export default function CatalogPage({
-  searchParams,
-}: {
-  searchParams?: any;
-}) {
-  return (
-    <Suspense fallback={<div className="p-12 text-center text-xs text-slate-400">Завантаження каталогу...</div>}>
-      <CatalogContent searchParams={searchParams} />
-    </Suspense>
   );
 }
