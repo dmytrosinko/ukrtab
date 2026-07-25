@@ -6,6 +6,71 @@ import { Filter, Search } from 'lucide-react';
 
 export const revalidate = 30;
 
+const FALLBACK_CATEGORIES = [
+  { id: 'cat-1', name: 'Магнітні наліпки на авто', slug: 'magnitni-nalipki-na-avto', _count: { products: 2 } },
+  { id: 'cat-2', name: 'Магніти ЗСУ', slug: 'magniti-zsu', _count: { products: 3 } },
+  { id: 'cat-3', name: 'Попереджувальні знаки', slug: 'poperedzhuvalni-znaki', _count: { products: 1 } },
+  { id: 'cat-4', name: 'Таблички адресні', slug: 'tablichki-adresni', _count: { products: 1 } },
+];
+
+const FALLBACK_PRODUCTS: any[] = [
+  {
+    id: 'prod-1',
+    name: 'Магнітна наклейка Морська піхота 25*25см',
+    slug: 'magnitna-naklejka-morska-pihota-25x25',
+    price: 250,
+    oldPrice: 300,
+    sku: 'MP-2525',
+    status: 'В наявності',
+    image: 'https://images.prom.ua/6793582624_w640_h640_magnitna-naklejka-morska.jpg',
+    unit: 'шт.',
+  },
+  {
+    id: 'prod-2',
+    name: 'Наклейка магнітна Каблук 15*15см',
+    slug: 'naklejka-magnitna-kabluk-15x15',
+    price: 150,
+    oldPrice: 180,
+    sku: 'KAB-1515',
+    status: 'В наявності',
+    image: 'https://images.prom.ua/6793705342_w640_h640_naklejka-magnitna-kabluk.jpg',
+    unit: 'шт.',
+  },
+  {
+    id: 'prod-3',
+    name: 'Наклейка ЗСУ квадрат синьо-жовтий 30*30см',
+    slug: 'naklejka-zsu-kvadrat-30x30',
+    price: 125,
+    oldPrice: 150,
+    sku: 'ZSU-3030',
+    status: 'В наявності',
+    image: 'https://images.prom.ua/6794611879_w640_h640_naklejka-zsu-kvadrat.jpg',
+    unit: 'шт.',
+  },
+  {
+    id: 'prod-4',
+    name: 'Попереджувальний знак ⚠️ ОБЕРЕЖНО МІНИ! (30х20см)',
+    slug: 'sign-mines-warning-30x20',
+    price: 120,
+    oldPrice: 140,
+    sku: 'SIGN-MINE',
+    status: 'В наявності',
+    image: 'https://images.prom.ua/6964429952_w297_h200_poperedzhuvalni-znaki-.jpg',
+    unit: 'шт.',
+  },
+  {
+    id: 'prod-5',
+    name: 'Адресна табличка з металопластику "Класична"',
+    slug: 'adresna-tablichka-klassik',
+    price: 450,
+    oldPrice: 520,
+    sku: 'TAB-ADR-01',
+    status: 'В наявності',
+    image: 'https://images.prom.ua/3984689222_w297_h200_tablichki-adresni.jpg',
+    unit: 'шт.',
+  },
+];
+
 export default async function CatalogPage({
   searchParams,
 }: {
@@ -13,31 +78,45 @@ export default async function CatalogPage({
 }) {
   const { category: categorySlug, search } = await searchParams;
 
-  const categories = await prisma.category.findMany({
-    include: { _count: { select: { products: true } } },
-    orderBy: { name: 'asc' },
-  });
+  let categories: any[] = [];
+  let products: any[] = [];
 
-  const where: any = {};
+  try {
+    categories = await prisma.category.findMany({
+      include: { _count: { select: { products: true } } },
+      orderBy: { name: 'asc' },
+    });
 
-  if (categorySlug) {
-    const activeCat = categories.find((c) => c.slug === categorySlug);
-    if (activeCat) where.categoryId = activeCat.id;
+    const where: any = {};
+
+    if (categorySlug) {
+      const activeCat = categories.find((c) => c.slug === categorySlug);
+      if (activeCat) where.categoryId = activeCat.id;
+    }
+
+    if (search) {
+      where.OR = [
+        { name: { contains: search } },
+        { description: { contains: search } },
+        { sku: { contains: search } },
+      ];
+    }
+
+    products = await prisma.product.findMany({
+      where,
+      include: { category: true },
+      orderBy: { createdAt: 'desc' },
+    });
+  } catch (e) {
+    console.error('Prisma query failed on catalog, using fallback data:', e);
+    categories = FALLBACK_CATEGORIES;
+    products = FALLBACK_PRODUCTS;
+    if (search) {
+      products = products.filter((p) =>
+        p.name.toLowerCase().includes(search.toLowerCase())
+      );
+    }
   }
-
-  if (search) {
-    where.OR = [
-      { name: { contains: search } },
-      { description: { contains: search } },
-      { sku: { contains: search } },
-    ];
-  }
-
-  const products = await prisma.product.findMany({
-    where,
-    include: { category: true },
-    orderBy: { createdAt: 'desc' },
-  });
 
   const activeCategoryName = categorySlug
     ? categories.find((c) => c.slug === categorySlug)?.name || 'Каталог'
@@ -86,7 +165,7 @@ export default async function CatalogPage({
                   }`}
                 >
                   <span className="truncate">{cat.name}</span>
-                  <span className="text-[10px] opacity-75 ml-2">({cat._count.products})</span>
+                  <span className="text-[10px] opacity-75 ml-2">({cat._count?.products || 0})</span>
                 </Link>
               ))}
             </div>

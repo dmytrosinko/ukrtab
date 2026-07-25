@@ -5,14 +5,105 @@ import { ProductCard } from '@/components/ProductCard';
 import { ShieldCheck, Truck, Clock, ThumbsUp, ArrowRight, Layers } from 'lucide-react';
 import { Product, Category, Banner } from '@/lib/types';
 
-export const revalidate = 60; // ISR 60s
+export const revalidate = 60;
+
+const FALLBACK_BANNERS = [
+  {
+    id: 'b1',
+    title: 'Виготовлення магнітних наліпок на авто будь-якої складності',
+    image: 'https://images.prom.ua/6956069219_6956069219.jpg',
+    linkUrl: '/catalog',
+    sortOrder: 1,
+    isActive: true,
+  },
+  {
+    id: 'b2',
+    title: 'Патріотична продукція ЗСУ та військова символіка',
+    image: 'https://images.prom.ua/6956070005_6956070005.jpg',
+    linkUrl: '/catalog',
+    sortOrder: 2,
+    isActive: true,
+  },
+];
+
+const FALLBACK_CATEGORIES = [
+  { id: 'c1', name: 'Магнітні наліпки на авто', slug: 'magnitni-nalipki-na-avto', image: 'https://images.prom.ua/4296986097_w297_h200_magnitni-nalipki-na.jpg' },
+  { id: 'c2', name: 'Магніти ЗСУ', slug: 'magniti-zsu', image: 'https://images.prom.ua/6955960434_w297_h200_magniti-zsu.jpg' },
+  { id: 'c3', name: 'Попереджувальні знаки ⚠️ Міни', slug: 'poperedzhuvalni-znaki', image: 'https://images.prom.ua/6964429952_w297_h200_poperedzhuvalni-znaki-.jpg' },
+  { id: 'c4', name: 'Таблички адресні', slug: 'tablichki-adresni', image: 'https://images.prom.ua/3984689222_w297_h200_tablichki-adresni.jpg' },
+];
+
+const FALLBACK_PRODUCTS: any[] = [
+  {
+    id: 'prod-1',
+    name: 'Магнітна наклейка Морська піхота 25*25см',
+    slug: 'magnitna-naklejka-morska-pihota-25x25',
+    price: 250,
+    oldPrice: 300,
+    sku: 'MP-2525',
+    status: 'В наявності',
+    image: 'https://images.prom.ua/6793582624_w640_h640_magnitna-naklejka-morska.jpg',
+    unit: 'шт.',
+  },
+  {
+    id: 'prod-2',
+    name: 'Наклейка магнітна Каблук 15*15см',
+    slug: 'naklejka-magnitna-kabluk-15x15',
+    price: 150,
+    oldPrice: 180,
+    sku: 'KAB-1515',
+    status: 'В наявності',
+    image: 'https://images.prom.ua/6793705342_w640_h640_naklejka-magnitna-kabluk.jpg',
+    unit: 'шт.',
+  },
+  {
+    id: 'prod-3',
+    name: 'Наклейка ЗСУ квадрат синьо-жовтий 30*30см',
+    slug: 'naklejka-zsu-kvadrat-30x30',
+    price: 125,
+    oldPrice: 150,
+    sku: 'ZSU-3030',
+    status: 'В наявності',
+    image: 'https://images.prom.ua/6794611879_w640_h640_naklejka-zsu-kvadrat.jpg',
+    unit: 'шт.',
+  },
+  {
+    id: 'prod-4',
+    name: 'Попереджувальний знак ⚠️ ОБЕРЕЖНО МІНИ! (30х20см)',
+    slug: 'sign-mines-warning-30x20',
+    price: 120,
+    oldPrice: 140,
+    sku: 'SIGN-MINE',
+    status: 'В наявності',
+    image: 'https://images.prom.ua/6964429952_w297_h200_poperedzhuvalni-znaki-.jpg',
+    unit: 'шт.',
+  },
+];
 
 export default async function HomePage() {
-  const [banners, categories, products] = await Promise.all([
-    prisma.banner.findMany({ where: { isActive: true }, orderBy: { sortOrder: 'asc' } }),
-    prisma.category.findMany({ where: { isFeatured: true }, take: 8 }),
-    prisma.product.findMany({ where: { isFeatured: true }, take: 12, include: { category: true } }),
-  ]);
+  let banners: any[] = [];
+  let categories: any[] = [];
+  let products: any[] = [];
+
+  try {
+    const [b, c, p] = await Promise.all([
+      prisma.banner.findMany({ where: { isActive: true }, orderBy: { sortOrder: 'asc' } }),
+      prisma.category.findMany({ where: { isFeatured: true }, take: 8 }),
+      prisma.product.findMany({ where: { isFeatured: true }, take: 12, include: { category: true } }),
+    ]);
+    banners = b;
+    categories = c;
+    products = p;
+  } catch (e) {
+    console.error('Prisma homepage fetch failed, using fallback data:', e);
+    banners = FALLBACK_BANNERS;
+    categories = FALLBACK_CATEGORIES;
+    products = FALLBACK_PRODUCTS;
+  }
+
+  if (!banners || banners.length === 0) banners = FALLBACK_BANNERS;
+  if (!categories || categories.length === 0) categories = FALLBACK_CATEGORIES;
+  if (!products || products.length === 0) products = FALLBACK_PRODUCTS;
 
   return (
     <div className="space-y-12 pb-12">
@@ -85,7 +176,7 @@ export default async function HomePage() {
           {categories.map((cat) => (
             <Link
               key={cat.id}
-              href={`/catalog/${cat.slug}`}
+              href={`/catalog?category=${cat.slug}`}
               className="group bg-white rounded-2xl p-3 border border-slate-100 shadow-sm hover:shadow-lg transition-all text-center space-y-3"
             >
               <div className="aspect-[4/3] rounded-xl overflow-hidden bg-slate-100 relative">
