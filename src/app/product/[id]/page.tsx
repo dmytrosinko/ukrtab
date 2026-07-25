@@ -20,11 +20,11 @@ export default function ProductDetailPage() {
   const [selectedImage, setSelectedImage] = useState<string>('');
 
   useEffect(() => {
-    if (!targetId) return;
+    if (!targetId && !rawId) return;
 
     // 1. Try INITIAL_PRODUCTS match by id or slug
     const initMatch = INITIAL_PRODUCTS.find(
-      (p) => p.id === targetId || p.slug === targetId || encodeURIComponent(p.slug) === rawId
+      (p) => p.id === targetId || p.slug === targetId || p.id === rawId || p.slug === rawId
     );
     if (initMatch) {
       setProduct(initMatch);
@@ -43,8 +43,9 @@ export default function ProductDetailPage() {
               (p: Product) =>
                 p.id === targetId ||
                 p.slug === targetId ||
-                p.name === targetId ||
-                encodeURIComponent(p.slug) === rawId
+                p.id === rawId ||
+                p.slug === rawId ||
+                p.name === targetId
             );
             if (found) {
               setProduct(found);
@@ -58,29 +59,34 @@ export default function ProductDetailPage() {
       }
     }
 
-    // 3. Fallback to API route
-    fetch(`/api/products/${encodeURIComponent(targetId)}`)
+    // 3. Fallback fetch all products API
+    fetch('/api/products')
       .then((r) => r.json())
       .then((data) => {
-        if (data && data.name) {
-          setProduct(data);
-          setSelectedImage(data.image);
-        } else {
-          // If not found, use initial products first item or fallback
-          setProduct(INITIAL_PRODUCTS[0]);
-          setSelectedImage(INITIAL_PRODUCTS[0].image);
+        if (Array.isArray(data)) {
+          const found = data.find(
+            (p: Product) =>
+              p.id === targetId ||
+              p.slug === targetId ||
+              p.id === rawId ||
+              p.slug === rawId
+          );
+          if (found) {
+            setProduct(found);
+            setSelectedImage(found.image);
+          }
         }
       })
-      .catch(() => {
-        setProduct(INITIAL_PRODUCTS[0]);
-        setSelectedImage(INITIAL_PRODUCTS[0].image);
-      });
+      .catch(() => {});
   }, [targetId, rawId]);
 
   if (!product) {
     return (
-      <div className="p-12 text-center text-xs text-slate-400 font-medium">
-        Завантаження картки товару...
+      <div className="p-12 text-center text-xs text-slate-400 font-medium space-y-3">
+        <div>Завантаження картки товару...</div>
+        <Link href="/catalog" className="inline-block text-emerald-600 font-bold hover:underline">
+          ← повернутися до каталогу
+        </Link>
       </div>
     );
   }

@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { INITIAL_PRODUCTS } from '@/lib/store';
 
 // Dynamic in-memory store for newly added products on serverless Vercel
-let MEMORY_PRODUCTS = [...INITIAL_PRODUCTS];
+export let MEMORY_PRODUCTS: any[] = [...INITIAL_PRODUCTS];
 
 export async function GET(request: Request) {
   try {
@@ -41,7 +41,11 @@ export async function GET(request: Request) {
       orderBy: { createdAt: 'desc' },
     });
 
-    return NextResponse.json(products);
+    // Merge in-memory created products with DB products
+    const combined = [...MEMORY_PRODUCTS, ...products];
+    const unique = Array.from(new Map(combined.map((p) => [p.id, p])).values());
+
+    return NextResponse.json(unique);
   } catch (error) {
     console.error('Error fetching products from DB, serving memory store:', error);
     const { searchParams } = new URL(request.url);
@@ -66,6 +70,7 @@ export async function POST(request: Request) {
     }
 
     const {
+      id: customId,
       name,
       slug,
       price,
@@ -91,7 +96,6 @@ export async function POST(request: Request) {
         .replace(/[^a-z0-9а-яіїєґ]+/gi, '-')
         .replace(/^-+|-+$/g, '');
 
-    // Check if categoryId exists in DB to prevent foreign key failure
     let validCategoryId = null;
     if (categoryId && typeof categoryId === 'string' && categoryId.trim().length > 0) {
       try {
@@ -102,7 +106,10 @@ export async function POST(request: Request) {
       }
     }
 
+    const productId = customId || 'p-' + Date.now();
+
     const newProductData = {
+      id: productId,
       name: safeName,
       slug: generatedSlug + '-' + Date.now().toString().slice(-4),
       price: safePrice,
@@ -125,7 +132,6 @@ export async function POST(request: Request) {
     } catch (dbErr) {
       console.warn('Prisma DB write unavailable, returning fallback in-memory product:', dbErr);
       product = {
-        id: 'p-' + Date.now(),
         ...newProductData,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -146,6 +152,7 @@ export async function POST(request: Request) {
       image: 'https://images.prom.ua/4296986097_w297_h200_magnitni-nalipki-na.jpg',
       createdAt: new Date(),
     };
+    MEMORY_PRODUCTS.unshift(fallbackProduct);
     return NextResponse.json(fallbackProduct, { status: 200 });
   }
 }

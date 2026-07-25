@@ -20,7 +20,7 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group">
       {/* Image Container */}
-      <Link href={`/product/${product.slug || product.id}`} className="relative block aspect-square overflow-hidden bg-slate-50">
+      <Link href={`/product/${product.id}`} className="relative block aspect-square overflow-hidden bg-slate-50">
         <img
           src={product.image}
           alt={product.name}
@@ -50,7 +50,7 @@ export function ProductCard({ product }: { product: Product }) {
             </div>
           )}
           <Link
-            href={`/product/${product.slug || product.id}`}
+            href={`/product/${product.id}`}
             className="text-sm font-semibold text-slate-900 group-hover:text-emerald-600 line-clamp-2 transition leading-snug"
           >
             {product.name}

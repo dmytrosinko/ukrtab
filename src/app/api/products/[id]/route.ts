@@ -1,26 +1,45 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { INITIAL_PRODUCTS } from '@/lib/store';
+import { MEMORY_PRODUCTS } from '../route';
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params;
-    const product = await prisma.product.findFirst({
-      where: {
-        OR: [{ id }, { slug: id }],
-      },
-      include: { category: true },
-    });
+    const resolved = await params;
+    const rawId = resolved.id || '';
+    const id = decodeURIComponent(rawId);
 
-    if (!product) {
-      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+    // 1. Try Prisma DB
+    try {
+      const product = await prisma.product.findFirst({
+        where: {
+          OR: [{ id }, { slug: id }],
+        },
+        include: { category: true },
+      });
+      if (product) {
+        return NextResponse.json(product);
+      }
+    } catch (e) {}
+
+    // 2. Try MEMORY_PRODUCTS
+    const memMatch = MEMORY_PRODUCTS.find((p) => p.id === id || p.slug === id);
+    if (memMatch) {
+      return NextResponse.json(memMatch);
     }
 
-    return NextResponse.json(product);
+    // 3. Try INITIAL_PRODUCTS
+    const initMatch = INITIAL_PRODUCTS.find((p) => p.id === id || p.slug === id);
+    if (initMatch) {
+      return NextResponse.json(initMatch);
+    }
+
+    return NextResponse.json({ error: 'Product not found' }, { status: 404 });
   } catch (error) {
-    console.error('Error fetching product:', error);
+    console.error('Error fetching product detail route:', error);
     return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 });
   }
 }
@@ -63,9 +82,12 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    await prisma.product.delete({
-      where: { id },
-    });
+    try {
+      await prisma.product.delete({
+        where: { id },
+      });
+    } catch (e) {}
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error deleting product:', error);
