@@ -3,8 +3,19 @@ import { redirect } from 'next/navigation';
 export default async function CategoryPage({
   params,
 }: {
-  params: Promise<{ category: string }>;
+  params?: Promise<{ category: string }>;
 }) {
-  const { category } = await params;
-  redirect(`/catalog?category=${category}`);
+  let categoryName = '';
+  try {
+    const resolved = params ? await params : { category: '' };
+    categoryName = resolved.category || '';
+  } catch (e) {
+    categoryName = '';
+  }
+
+  if (categoryName) {
+    redirect(`/catalog?category=${encodeURIComponent(categoryName)}`);
+  }
+
+  redirect('/catalog');
 }
