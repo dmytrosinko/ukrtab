@@ -1,17 +1,23 @@
 'use client';
 
-import React, { Suspense } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 import { ProductCard } from '@/components/ProductCard';
 import { Product } from '@/lib/types';
 import { Filter, Search } from 'lucide-react';
 import { INITIAL_CATEGORIES, INITIAL_PRODUCTS } from '@/lib/store';
 
-function CatalogContent() {
-  const searchParams = useSearchParams();
-  const categorySlug = searchParams.get('category') || undefined;
-  const search = searchParams.get('search') || undefined;
+export function CatalogView() {
+  const [categorySlug, setCategorySlug] = useState<string | null>(null);
+  const [search, setSearch] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      setCategorySlug(params.get('category'));
+      setSearch(params.get('search'));
+    }
+  }, []);
 
   let categories = INITIAL_CATEGORIES.map((c) => ({ ...c, _count: { products: 2 } }));
   let products = INITIAL_PRODUCTS;
@@ -114,13 +120,5 @@ function CatalogContent() {
         </main>
       </div>
     </div>
-  );
-}
-
-export function CatalogView() {
-  return (
-    <Suspense fallback={<div className="p-12 text-center text-xs text-slate-400">Завантаження каталогу...</div>}>
-      <CatalogContent />
-    </Suspense>
   );
 }
