@@ -1,0 +1,91 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String   @unique
+  price       Float
+  oldPrice    Float?
+  sku         String?
+  status      String   @default("В наявності") // "В наявності", "Під замовлення", "Немає в наявності"
+  categoryId  String?
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  description String?
+  image       String
+  images      String   @default("[]")
+  unit        String   @default("шт.")
+  features    String   @default("[]")
+  isFeatured  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  orderItems  OrderItem[]
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  name        String
+  slug        String    @unique
+  image       String?
+  description String?
+  isFeatured  Boolean   @default(true)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+}
+
+model Order {
+  id             String      @id @default(uuid())
+  orderNumber    Int         @default(1001)
+  customerName   String
+  customerPhone  String
+  customerEmail  String?
+  city           String?
+  deliveryMethod String      @default("Нова Пошта")
+  warehouseInfo  String?
+  paymentMethod  String      @default("При отриманні")
+  notes          String?
+  status         String      @default("Нове")
+  total          Float
+  items          OrderItem[]
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model OrderItem {
+  id          String   @id @default(uuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String?
+  product     Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productName String
+  price       Float
+  quantity    Int
+}
+
+model Banner {
+  id        String   @id @default(uuid())
+  title     String?
+  image     String
+  linkUrl   String?
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model SiteSettings {
+  id           String   @id @default("default")
+  companyName  String   @default("Укртаб")
+  phone1       String   @default("+380 (66) 441-80-50")
+  phone2       String   @default("+380 (68) 367-70-15")
+  email        String   @default("feoktistova.dnepr@gmail.com")
+  address      String   @default("м. Дніпро, вул. Миру 2т")
+  reviewsCount Int      @default(553)
+  workHours    String   @default("Пн-Нд: 10:00 - 21:00")
+  updatedAt    DateTime @updatedAt
+}
