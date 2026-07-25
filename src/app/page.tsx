@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import { BannerSlider } from '@/components/BannerSlider';
 import { ProductCard } from '@/components/ProductCard';
-import { ShieldCheck, Truck, Clock, ThumbsUp, ArrowRight, Layers } from 'lucide-react';
-import { Product, Category, Banner } from '@/lib/types';
+import { ShieldCheck, Truck, Clock, ThumbsUp, ArrowRight } from 'lucide-react';
+import { Product, Banner } from '@/lib/types';
 
 export const revalidate = 60;
 
@@ -23,13 +23,6 @@ const FALLBACK_BANNERS = [
     sortOrder: 2,
     isActive: true,
   },
-];
-
-const FALLBACK_CATEGORIES = [
-  { id: 'c1', name: 'Магнітні наліпки на авто', slug: 'magnitni-nalipki-na-avto', image: 'https://images.prom.ua/4296986097_w297_h200_magnitni-nalipki-na.jpg' },
-  { id: 'c2', name: 'Магніти ЗСУ', slug: 'magniti-zsu', image: 'https://images.prom.ua/6955960434_w297_h200_magniti-zsu.jpg' },
-  { id: 'c3', name: 'Попереджувальні знаки ⚠️ Міни', slug: 'poperedzhuvalni-znaki', image: 'https://images.prom.ua/6964429952_w297_h200_poperedzhuvalni-znaki-.jpg' },
-  { id: 'c4', name: 'Таблички адресні', slug: 'tablichki-adresni', image: 'https://images.prom.ua/3984689222_w297_h200_tablichki-adresni.jpg' },
 ];
 
 const FALLBACK_PRODUCTS: any[] = [
@@ -81,19 +74,16 @@ const FALLBACK_PRODUCTS: any[] = [
 
 export default async function HomePage() {
   let banners: any[] = FALLBACK_BANNERS;
-  let categories: any[] = FALLBACK_CATEGORIES;
   let products: any[] = FALLBACK_PRODUCTS;
 
   if (!process.env.VERCEL) {
     try {
       const { prisma } = await import('@/lib/prisma');
-      const [b, c, p] = await Promise.all([
+      const [b, p] = await Promise.all([
         prisma.banner.findMany({ where: { isActive: true }, orderBy: { sortOrder: 'asc' } }),
-        prisma.category.findMany({ where: { isFeatured: true }, take: 8 }),
-        prisma.product.findMany({ where: { isFeatured: true }, take: 12, include: { category: true } }),
+        prisma.product.findMany({ where: { isFeatured: true }, take: 12 }),
       ]);
       if (b && b.length > 0) banners = b;
-      if (c && c.length > 0) categories = c;
       if (p && p.length > 0) products = p;
     } catch (e) {
       console.error('Prisma homepage fetch failed, using fallback data:', e);
@@ -101,7 +91,6 @@ export default async function HomePage() {
   }
 
   const safeBanners: Banner[] = JSON.parse(JSON.stringify(banners));
-  const safeCategories: Category[] = JSON.parse(JSON.stringify(categories));
   const safeProducts: Product[] = JSON.parse(JSON.stringify(products));
 
   return (
@@ -152,47 +141,6 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* Featured Categories */}
-      <section className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <h2 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-              <Layers className="w-6 h-6 text-emerald-600" />
-              <span>Групи товарів та послуг</span>
-            </h2>
-            <p className="text-xs text-slate-500">Оберіть потрібну категорію для швидкого пошуку</p>
-          </div>
-          <Link
-            href="/catalog"
-            className="text-xs font-bold text-emerald-600 hover:text-emerald-700 flex items-center space-x-1"
-          >
-            <span>Всі категорії</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-          {safeCategories.map((cat) => (
-            <Link
-              key={cat.id}
-              href={`/catalog?category=${cat.slug}`}
-              className="group bg-white rounded-2xl p-3 border border-slate-100 shadow-sm hover:shadow-lg transition-all text-center space-y-3"
-            >
-              <div className="aspect-[4/3] rounded-xl overflow-hidden bg-slate-100 relative">
-                <img
-                  src={cat.image || 'https://images.prom.ua/4296986097_w297_h200_magnitni-nalipki-na.jpg'}
-                  alt={cat.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                />
-              </div>
-              <h3 className="text-xs font-bold text-slate-800 group-hover:text-emerald-600 line-clamp-2 transition">
-                {cat.name}
-              </h3>
-            </Link>
-          ))}
-        </div>
-      </section>
-
       {/* Top Products Gallery */}
       <section className="space-y-6">
         <div className="flex items-center justify-between">
@@ -206,7 +154,7 @@ export default async function HomePage() {
             href="/catalog"
             className="text-xs font-bold text-emerald-600 hover:text-emerald-700 flex items-center space-x-1"
           >
-            <span>Дивитися всі</span>
+            <span>Дивитися всі товари</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>

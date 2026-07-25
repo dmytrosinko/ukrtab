@@ -4,30 +4,35 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ProductCard } from '@/components/ProductCard';
 import { Product } from '@/lib/types';
-import { Filter, Search } from 'lucide-react';
-import { INITIAL_CATEGORIES, INITIAL_PRODUCTS } from '@/lib/store';
+import { INITIAL_PRODUCTS } from '@/lib/store';
 
 export function CatalogView() {
-  const [categorySlug, setCategorySlug] = useState<string | null>(null);
   const [search, setSearch] = useState<string | null>(null);
+  const [allProducts, setAllProducts] = useState<Product[]>(INITIAL_PRODUCTS);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
-      setCategorySlug(params.get('category'));
       setSearch(params.get('search'));
+
+      // Merge custom created products from localStorage
+      try {
+        const saved = localStorage.getItem('ukrtab_custom_products');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const combined = [...parsed, ...INITIAL_PRODUCTS];
+            const unique = Array.from(new Map(combined.map((p) => [p.id, p])).values());
+            setAllProducts(unique);
+          }
+        }
+      } catch (e) {
+        console.error('Error loading custom products:', e);
+      }
     }
   }, []);
 
-  let categories = INITIAL_CATEGORIES.map((c) => ({ ...c, _count: { products: 2 } }));
-  let products = INITIAL_PRODUCTS;
-
-  if (categorySlug) {
-    const activeCat = categories.find((c) => c.slug === categorySlug);
-    if (activeCat) {
-      products = products.filter((p) => p.categoryId === activeCat.id);
-    }
-  }
+  let products = allProducts;
 
   if (search) {
     const query = search.toLowerCase();
@@ -38,87 +43,38 @@ export function CatalogView() {
     );
   }
 
-  const activeCategoryName = categorySlug
-    ? categories.find((c) => c.slug === categorySlug)?.name || 'Каталог'
-    : 'Всі товари';
-
   return (
     <div className="space-y-8 pb-12">
       {/* Header */}
       <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-2">
         <h1 className="text-3xl font-black text-slate-900 tracking-tight">
-          {search ? `Пошук за запитом: "${search}"` : activeCategoryName}
+          {search ? `Пошук за запитом: "${search}"` : 'Каталог усіх товарів'}
         </h1>
         <p className="text-xs text-slate-500">
-          Знайдено товарів: <span className="font-bold text-emerald-600">{products.length}</span>
+          Знайдено позицій у каталозі: <span className="font-bold text-emerald-600">{products.length}</span>
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-        {/* Sidebar Filters */}
-        <aside className="space-y-6">
-          <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
-            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center space-x-2 border-b border-slate-100 pb-3">
-              <Filter className="w-4 h-4 text-emerald-600" />
-              <span>Категорії</span>
-            </h3>
-
-            <div className="space-y-1 text-xs">
-              <Link
-                href="/catalog"
-                className={`block px-3 py-2 rounded-xl transition ${
-                  !categorySlug
-                    ? 'bg-emerald-600 text-white font-bold'
-                    : 'text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                Всі категорії
-              </Link>
-              {categories.map((cat) => (
-                <Link
-                  key={cat.id || cat.slug}
-                  href={`/catalog?category=${cat.slug}`}
-                  className={`flex justify-between items-center px-3 py-2 rounded-xl transition ${
-                    categorySlug === cat.slug
-                      ? 'bg-emerald-600 text-white font-bold'
-                      : 'text-slate-700 hover:bg-slate-50'
-                  }`}
-                >
-                  <span className="truncate">{cat.name}</span>
-                  <span className="text-[10px] opacity-75 ml-2">({cat._count?.products ?? 0})</span>
-                </Link>
-              ))}
-            </div>
+      {/* Full-width Product Grid */}
+      <main>
+        {products.length === 0 ? (
+          <div className="bg-white p-12 rounded-3xl border border-slate-100 text-center space-y-3">
+            <p className="text-slate-400 font-medium text-sm">На жаль, товарів не знайдено</p>
+            <Link
+              href="/catalog"
+              className="inline-block bg-slate-900 text-white font-bold px-4 py-2 rounded-xl text-xs"
+            >
+              Скинути пошук
+            </Link>
           </div>
-        </aside>
-
-        {/* Product Grid */}
-        <main className="md:col-span-3">
-          {products.length === 0 ? (
-            <div className="bg-white rounded-3xl p-12 text-center border border-slate-100 space-y-4">
-              <div className="w-16 h-16 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center mx-auto">
-                <Search className="w-8 h-8" />
-              </div>
-              <h3 className="text-lg font-bold text-slate-800">Товарів не знайдено</h3>
-              <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                Спробуйте змінити фільтри або пошуковий запит
-              </p>
-              <Link
-                href="/catalog"
-                className="inline-block bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition"
-              >
-                Скинути фільтри
-              </Link>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-              {products.map((product) => (
-                <ProductCard key={product.id || product.slug} product={product} />
-              ))}
-            </div>
-          )}
-        </main>
-      </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+            {products.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        )}
+      </main>
     </div>
   );
 }

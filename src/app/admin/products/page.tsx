@@ -2,11 +2,10 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Plus, Trash2, Edit3, Image as ImageIcon, Search, Check, RefreshCw, Upload, Sparkles } from 'lucide-react';
-import { Product, Category } from '@/lib/types';
+import { Product } from '@/lib/types';
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,7 +17,6 @@ export default function AdminProductsPage() {
     oldPrice: '',
     sku: '',
     status: 'В наявності',
-    categoryId: '',
     image: '',
     description: '',
     unit: 'шт.',
@@ -27,14 +25,23 @@ export default function AdminProductsPage() {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const [resProd, resCat] = await Promise.all([
-        fetch('/api/products'),
-        fetch('/api/categories'),
-      ]);
+      let localCustom: Product[] = [];
+      if (typeof window !== 'undefined') {
+        const saved = localStorage.getItem('ukrtab_custom_products');
+        if (saved) {
+          try {
+            localCustom = JSON.parse(saved);
+          } catch (e) {}
+        }
+      }
+
+      const resProd = await fetch('/api/products');
       const dataProd = await resProd.json();
-      const dataCat = await resCat.json();
-      if (Array.isArray(dataProd)) setProducts(dataProd);
-      if (Array.isArray(dataCat)) setCategories(dataCat);
+      if (Array.isArray(dataProd)) {
+        const combined = [...localCustom, ...dataProd];
+        const unique = Array.from(new Map(combined.map((p) => [p.id, p])).values());
+        setProducts(unique);
+      }
     } catch (e) {
       console.error('Failed to fetch admin products:', e);
     } finally {
@@ -112,7 +119,14 @@ export default function AdminProductsPage() {
       isFeatured: false,
     };
 
-    // Optimistically add to UI list state immediately
+    try {
+      if (typeof window !== 'undefined') {
+        const existing = localStorage.getItem('ukrtab_custom_products');
+        const customArr = existing ? JSON.parse(existing) : [];
+        localStorage.setItem('ukrtab_custom_products', JSON.stringify([newProdObj, ...customArr]));
+      }
+    } catch (e) {}
+
     setProducts((prev) => [newProdObj, ...prev]);
     setIsModalOpen(false);
 
@@ -122,7 +136,6 @@ export default function AdminProductsPage() {
       oldPrice: '',
       sku: '',
       status: 'В наявності',
-      categoryId: '',
       image: '',
       description: '',
       unit: 'шт.',
@@ -146,10 +159,18 @@ export default function AdminProductsPage() {
     if (!confirm('Ви дійсно бажаєте видалити цей товар?')) return;
     setProducts((prev) => prev.filter((p) => p.id !== id));
     try {
+      if (typeof window !== 'undefined') {
+        const existing = localStorage.getItem('ukrtab_custom_products');
+        if (existing) {
+          const customArr = JSON.parse(existing).filter((p: any) => p.id !== id);
+          localStorage.setItem('ukrtab_custom_products', JSON.stringify(customArr));
+        }
+      }
+    } catch (e) {}
+
+    try {
       await fetch(`/api/products/${id}`, { method: 'DELETE' });
-    } catch (e) {
-      console.warn('Delete handled safely:', e);
-    }
+    } catch (e) {}
   };
 
   const filteredProducts = products.filter(
@@ -226,7 +247,6 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="p-4">
                       <div className="font-bold text-slate-900 line-clamp-1">{p.name}</div>
-                      <div className="text-[10px] text-slate-400">{p.category?.name || 'Без категорії'}</div>
                     </td>
                     <td className="p-4 font-mono text-slate-500">{p.sku || '-'}</td>
                     <td className="p-4 font-black text-slate-900">{p.price} ₴</td>
@@ -306,23 +326,6 @@ export default function AdminProductsPage() {
                     className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900"
                   />
                 </div>
-              </div>
-
-              {/* Category Selection */}
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">Категорія каталогу</label>
-                <select
-                  value={formData.categoryId}
-                  onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-800"
-                >
-                  <option value="">Оберіть категорію...</option>
-                  {categories.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
               </div>
 
               {/* Photo Upload Area */}
