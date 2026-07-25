@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { ProductCard } from '@/components/ProductCard';
@@ -5,9 +6,9 @@ import { Product } from '@/lib/types';
 import { Filter, Search } from 'lucide-react';
 import { INITIAL_CATEGORIES, INITIAL_PRODUCTS } from '@/lib/store';
 
-export const revalidate = 30;
+export const dynamic = 'force-dynamic';
 
-export default async function CatalogPage({
+async function CatalogContent({
   searchParams,
 }: {
   searchParams?: Promise<{ category?: string; search?: string }>;
@@ -36,7 +37,7 @@ export default async function CatalogPage({
     const where: any = {};
 
     if (categorySlug) {
-      const activeCat = categories.find((c) => c.slug === categorySlug);
+      const activeCat = categories.find((c) => c && c.slug === categorySlug);
       if (activeCat) where.categoryId = activeCat.id;
     }
 
@@ -54,17 +55,24 @@ export default async function CatalogPage({
       orderBy: { createdAt: 'desc' },
     });
   } catch (e) {
-    console.error('Prisma query failed on catalog, using fallback store:', e);
+    console.error('Prisma query failed on catalog, serving fallback store:', e);
     categories = INITIAL_CATEGORIES.map((c) => ({ ...c, _count: { products: 2 } }));
     products = INITIAL_PRODUCTS;
     if (search) {
       const query = search.toLowerCase();
-      products = products.filter((p) => p.name.toLowerCase().includes(query));
+      products = products.filter((p) => p && p.name && p.name.toLowerCase().includes(query));
     }
   }
 
+  if (!Array.isArray(categories) || categories.length === 0) {
+    categories = INITIAL_CATEGORIES.map((c) => ({ ...c, _count: { products: 2 } }));
+  }
+  if (!Array.isArray(products) || products.length === 0) {
+    products = INITIAL_PRODUCTS;
+  }
+
   const activeCategoryName = categorySlug
-    ? categories.find((c) => c.slug === categorySlug)?.name || 'Каталог'
+    ? categories.find((c) => c && c.slug === categorySlug)?.name || 'Каталог'
     : 'Всі товари';
 
   return (
@@ -101,7 +109,7 @@ export default async function CatalogPage({
               </Link>
               {categories.map((cat) => (
                 <Link
-                  key={cat.id}
+                  key={cat.id || cat.slug}
                   href={`/catalog?category=${cat.slug}`}
                   className={`flex justify-between items-center px-3 py-2 rounded-xl transition ${
                     categorySlug === cat.slug
@@ -110,7 +118,7 @@ export default async function CatalogPage({
                   }`}
                 >
                   <span className="truncate">{cat.name}</span>
-                  <span className="text-[10px] opacity-75 ml-2">({cat._count?.products || 0})</span>
+                  <span className="text-[10px] opacity-75 ml-2">({cat._count?.products ?? 0})</span>
                 </Link>
               ))}
             </div>
@@ -138,12 +146,24 @@ export default async function CatalogPage({
           ) : (
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {products.map((product) => (
-                <ProductCard key={product.id} product={product as unknown as Product} />
+                <ProductCard key={product.id || product.slug} product={product as unknown as Product} />
               ))}
             </div>
           )}
         </main>
       </div>
     </div>
+  );
+}
+
+export default function CatalogPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ category?: string; search?: string }>;
+}) {
+  return (
+    <Suspense fallback={<div className="p-12 text-center text-xs text-slate-400">Завантаження каталогу...</div>}>
+      <CatalogContent searchParams={searchParams} />
+    </Suspense>
   );
 }
