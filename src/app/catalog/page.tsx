@@ -1,12 +1,11 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
-import { prisma } from '@/lib/prisma';
 import { ProductCard } from '@/components/ProductCard';
 import { Product } from '@/lib/types';
 import { Filter, Search } from 'lucide-react';
 import { INITIAL_CATEGORIES, INITIAL_PRODUCTS } from '@/lib/store';
 
-export const revalidate = 30;
+export const revalidate = 60;
 
 async function CatalogContent({
   searchParams,
@@ -25,50 +24,58 @@ async function CatalogContent({
     search = undefined;
   }
 
-  let categories: any[] = [];
-  let products: any[] = [];
+  let categories = INITIAL_CATEGORIES.map((c) => ({ ...c, _count: { products: 2 } }));
+  let products = INITIAL_PRODUCTS;
 
-  try {
-    categories = await prisma.category.findMany({
-      include: { _count: { select: { products: true } } },
-      orderBy: { name: 'asc' },
-    });
+  // Try DB if available
+  if (!process.env.VERCEL) {
+    try {
+      const { prisma } = await import('@/lib/prisma');
+      const dbCats = await prisma.category.findMany({
+        include: { _count: { select: { products: true } } },
+        orderBy: { name: 'asc' },
+      });
+      if (dbCats && dbCats.length > 0) categories = dbCats;
 
-    const where: any = {};
-
-    if (categorySlug) {
-      const activeCat = categories.find((c) => c && c.slug === categorySlug);
-      if (activeCat) where.categoryId = activeCat.id;
-    }
-
-    if (search) {
-      where.OR = [
-        { name: { contains: search } },
-        { description: { contains: search } },
-        { sku: { contains: search } },
-      ];
-    }
-
-    products = await prisma.product.findMany({
-      where,
-      include: { category: true },
-      orderBy: { createdAt: 'desc' },
-    });
-  } catch (e) {
-    console.error('Prisma query failed on catalog, serving fallback store:', e);
-    categories = INITIAL_CATEGORIES.map((c) => ({ ...c, _count: { products: 2 } }));
-    products = INITIAL_PRODUCTS;
-    if (search) {
-      const query = search.toLowerCase();
-      products = products.filter((p) => p && p.name && p.name.toLowerCase().includes(query));
+      const where: any = {};
+      if (categorySlug) {
+        const activeCat = categories.find((c) => c && c.slug === categorySlug);
+        if (activeCat) where.categoryId = activeCat.id;
+      }
+      if (search) {
+        where.OR = [
+          { name: { contains: search } },
+          { description: { contains: search } },
+          { sku: { contains: search } },
+        ];
+      }
+      const dbProds = await prisma.product.findMany({
+        where,
+        include: { category: true },
+        orderBy: { createdAt: 'desc' },
+      });
+      if (dbProds && dbProds.length > 0) products = dbProds as any;
+    } catch (e) {
+      console.error('Using store fallback for catalog:', e);
     }
   }
 
-  if (!Array.isArray(categories) || categories.length === 0) {
-    categories = INITIAL_CATEGORIES.map((c) => ({ ...c, _count: { products: 2 } }));
+  // Filter in-memory if using fallback or Vercel
+  if (categorySlug) {
+    const activeCat = categories.find((c) => c && c.slug === categorySlug);
+    if (activeCat) {
+      products = products.filter((p) => p && p.categoryId === activeCat.id);
+    }
   }
-  if (!Array.isArray(products) || products.length === 0) {
-    products = INITIAL_PRODUCTS;
+
+  if (search) {
+    const query = search.toLowerCase();
+    products = products.filter(
+      (p) =>
+        p &&
+        ((p.name && p.name.toLowerCase().includes(query)) ||
+          (p.sku && p.sku.toLowerCase().includes(query)))
+    );
   }
 
   const activeCategoryName = categorySlug
