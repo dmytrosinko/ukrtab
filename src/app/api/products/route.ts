@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { INITIAL_PRODUCTS } from '@/lib/store';
 
 export async function GET(request: Request) {
   try {
@@ -39,8 +40,16 @@ export async function GET(request: Request) {
 
     return NextResponse.json(products);
   } catch (error) {
-    console.error('Error fetching products:', error);
-    return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
+    console.error('Error fetching products from DB, serving fallback store:', error);
+    const { searchParams } = new URL(request.url);
+    const search = searchParams.get('search');
+    let filtered = INITIAL_PRODUCTS;
+    if (search) {
+      filtered = filtered.filter((p) =>
+        p.name.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+    return NextResponse.json(filtered);
   }
 }
 
