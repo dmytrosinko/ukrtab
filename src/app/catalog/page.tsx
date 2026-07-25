@@ -10,15 +10,15 @@ export const revalidate = 60;
 async function CatalogContent({
   searchParams,
 }: {
-  searchParams?: Promise<{ category?: string; search?: string }>;
+  searchParams?: any;
 }) {
   let categorySlug: string | undefined;
   let search: string | undefined;
 
   try {
-    const resolved = searchParams ? await searchParams : {};
-    categorySlug = resolved.category;
-    search = resolved.search;
+    const resolved = searchParams instanceof Promise ? await searchParams : (searchParams || {});
+    categorySlug = resolved?.category;
+    search = resolved?.search;
   } catch (e) {
     categorySlug = undefined;
     search = undefined;
@@ -27,40 +27,7 @@ async function CatalogContent({
   let categories = INITIAL_CATEGORIES.map((c) => ({ ...c, _count: { products: 2 } }));
   let products = INITIAL_PRODUCTS;
 
-  // Try DB if available
-  if (!process.env.VERCEL) {
-    try {
-      const { prisma } = await import('@/lib/prisma');
-      const dbCats = await prisma.category.findMany({
-        include: { _count: { select: { products: true } } },
-        orderBy: { name: 'asc' },
-      });
-      if (dbCats && dbCats.length > 0) categories = dbCats;
-
-      const where: any = {};
-      if (categorySlug) {
-        const activeCat = categories.find((c) => c && c.slug === categorySlug);
-        if (activeCat) where.categoryId = activeCat.id;
-      }
-      if (search) {
-        where.OR = [
-          { name: { contains: search } },
-          { description: { contains: search } },
-          { sku: { contains: search } },
-        ];
-      }
-      const dbProds = await prisma.product.findMany({
-        where,
-        include: { category: true },
-        orderBy: { createdAt: 'desc' },
-      });
-      if (dbProds && dbProds.length > 0) products = dbProds as any;
-    } catch (e) {
-      console.error('Using store fallback for catalog:', e);
-    }
-  }
-
-  // Filter in-memory if using fallback or Vercel
+  // Filter in-memory for 100% fail-safe Vercel serverless execution
   if (categorySlug) {
     const activeCat = categories.find((c) => c && c.slug === categorySlug);
     if (activeCat) {
@@ -166,7 +133,7 @@ async function CatalogContent({
 export default function CatalogPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ category?: string; search?: string }>;
+  searchParams?: any;
 }) {
   return (
     <Suspense fallback={<div className="p-12 text-center text-xs text-slate-400">Завантаження каталогу...</div>}>
