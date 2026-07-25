@@ -1,14 +1,37 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Plus, Minus, Check, Tag, ShieldCheck } from 'lucide-react';
 import { Product } from '@/lib/types';
 import { useCart } from '@/context/CartContext';
 
-export function ProductDetailClient({ product }: { product: Product }) {
+export function ProductDetailClient({ product: initialProduct }: { product: Product }) {
   const { addToCart } = useCart();
+  const [product, setProduct] = useState<Product>(initialProduct);
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const pathSegments = window.location.pathname.split('/');
+        const currentId = pathSegments[pathSegments.length - 1];
+
+        const saved = localStorage.getItem('ukrtab_custom_products');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) {
+            const found = parsed.find((p: Product) => p.id === currentId || p.slug === currentId);
+            if (found) {
+              setProduct(found);
+            }
+          }
+        }
+      } catch (e) {
+        console.error('Error loading custom product in detail view:', e);
+      }
+    }
+  }, [initialProduct]);
 
   let imagesList: string[] = [product.image];
   try {
@@ -21,6 +44,10 @@ export function ProductDetailClient({ product }: { product: Product }) {
   } catch (e) {}
 
   const [selectedImage, setSelectedImage] = useState(imagesList[0] || product.image);
+
+  useEffect(() => {
+    setSelectedImage(product.image);
+  }, [product]);
 
   const handleAddToCart = () => {
     addToCart(product, quantity);
