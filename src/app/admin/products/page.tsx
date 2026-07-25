@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, Edit3, Image as ImageIcon, Search, Check, RefreshCw } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Plus, Trash2, Edit3, Image as ImageIcon, Search, Check, RefreshCw, Upload, Sparkles } from 'lucide-react';
 import { Product, Category } from '@/lib/types';
 
 export default function AdminProductsPage() {
@@ -10,6 +10,7 @@ export default function AdminProductsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -45,10 +46,24 @@ export default function AdminProductsPage() {
     fetchData();
   }, []);
 
+  // Handle Photo File Upload
+  const handleImageFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        if (ev.target?.result) {
+          setFormData((prev) => ({ ...prev, image: ev.target?.result as string }));
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleCreateProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.price || !formData.image) {
-      alert('Будь ласка, вкажіть назву, ціну та URL картинки');
+      alert('Будь ласка, вкажіть назву товару, ціну та додайте фото або URL');
       return;
     }
 
@@ -99,23 +114,25 @@ export default function AdminProductsPage() {
 
   return (
     <div className="space-y-6">
+      {/* Page Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
         <div>
-          <h2 className="text-2xl font-black text-slate-900">Управління товарами</h2>
-          <p className="text-xs text-slate-500">Всього товарів у системі: {products.length}</p>
+          <h2 className="text-2xl font-black text-slate-900">Управління товарами (CMS)</h2>
+          <p className="text-xs text-slate-500">Всього товарів у каталозі: {products.length}</p>
         </div>
 
         <div className="flex space-x-3 w-full sm:w-auto">
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl text-xs flex items-center justify-center space-x-2 transition shadow-md shadow-emerald-600/20"
+            className="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-3 rounded-2xl text-xs flex items-center justify-center space-x-2 transition shadow-lg shadow-emerald-600/20 active:scale-95"
           >
             <Plus className="w-4 h-4" />
-            <span>Додати товар</span>
+            <span>+ Додати новий товар</span>
           </button>
           <button
             onClick={fetchData}
-            className="p-2.5 bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-xl transition"
+            className="p-3 bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-2xl transition"
+            title="Оновити список"
           >
             <RefreshCw className="w-4 h-4" />
           </button>
@@ -126,7 +143,7 @@ export default function AdminProductsPage() {
       <div className="relative">
         <input
           type="text"
-          placeholder="Пошук за назвою або артикулом SKU..."
+          placeholder="Пошук товару за назвою або артикулом SKU..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-xs font-medium focus:outline-none focus:border-emerald-500 shadow-sm"
@@ -176,6 +193,7 @@ export default function AdminProductsPage() {
                       <button
                         onClick={() => handleDeleteProduct(p.id)}
                         className="p-2 text-slate-400 hover:text-red-600 transition"
+                        title="Видалити"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -192,53 +210,65 @@ export default function AdminProductsPage() {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <h3 className="text-lg font-black text-slate-900 border-b border-slate-100 pb-3">
-              Додати новий товар в CMS
-            </h3>
+            <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+              <h3 className="text-lg font-black text-slate-900 flex items-center space-x-2">
+                <Plus className="w-5 h-5 text-emerald-600" />
+                <span>Додати новий товар в магазин</span>
+              </h3>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 font-bold"
+              >
+                ✕
+              </button>
+            </div>
 
             <form onSubmit={handleCreateProduct} className="space-y-4 text-xs">
+              {/* Product Title */}
               <div>
                 <label className="block font-bold text-slate-700 mb-1">Назва товару *</label>
                 <input
                   type="text"
                   required
-                  placeholder="Магнітна наклейка..."
+                  placeholder="наприклад: Магнітна наклейка ЗСУ 30х30 см"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
+              {/* Price & SKU */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Ціна (₴) *</label>
+                  <label className="block font-bold text-slate-700 mb-1">Ціна в грн (₴) *</label>
                   <input
                     type="number"
                     required
                     placeholder="250"
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:border-emerald-500"
                   />
                 </div>
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Артикул SKU</label>
+                  <label className="block font-bold text-slate-700 mb-1">Артикул (SKU)</label>
                   <input
                     type="text"
-                    placeholder="TAB-01"
+                    placeholder="ZSU-3030"
                     value={formData.sku}
                     onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900"
                   />
                 </div>
               </div>
 
+              {/* Category Selection */}
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Категорія</label>
+                <label className="block font-bold text-slate-700 mb-1">Категорія каталогу</label>
                 <select
                   value={formData.categoryId}
                   onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-800"
                 >
                   <option value="">Оберіть категорію...</option>
                   {categories.map((c) => (
@@ -249,40 +279,71 @@ export default function AdminProductsPage() {
                 </select>
               </div>
 
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">URL зображення *</label>
+              {/* Photo Upload Area */}
+              <div className="space-y-2">
+                <label className="block font-bold text-slate-700">Фото товару *</label>
+                
                 <input
-                  type="url"
-                  required
-                  placeholder="https://images.prom.ua/..."
-                  value={formData.image}
-                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl"
+                  type="file"
+                  ref={fileInputRef}
+                  accept="image/*"
+                  onChange={handleImageFileUpload}
+                  className="hidden"
                 />
+
+                <div className="flex items-center space-x-3">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-4 py-2.5 rounded-xl text-xs flex items-center space-x-2 border transition shrink-0"
+                  >
+                    <Upload className="w-4 h-4 text-emerald-600" />
+                    <span>Завантажити фото з компа</span>
+                  </button>
+
+                  <span className="text-slate-400 font-bold">або</span>
+
+                  <input
+                    type="url"
+                    placeholder="Вставити посилання на фото (URL)"
+                    value={formData.image}
+                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                    className="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium"
+                  />
+                </div>
+
+                {/* Photo Preview Box */}
+                {formData.image && (
+                  <div className="mt-2 relative w-24 h-24 rounded-2xl border border-slate-200 overflow-hidden bg-slate-100">
+                    <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+                  </div>
+                )}
               </div>
 
+              {/* Product Description */}
               <div>
                 <label className="block font-bold text-slate-700 mb-1">Опис товару</label>
                 <textarea
                   rows={3}
-                  placeholder="Характеристики, матеріали, розміри..."
+                  placeholder="Детальний опис товару, характеристики, товщина магнітного вінілу, розміри..."
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs"
                 />
               </div>
 
-              <div className="flex space-x-3 pt-2">
+              {/* Submit / Cancel buttons */}
+              <div className="flex space-x-3 pt-3 border-t border-slate-100">
                 <button
                   type="submit"
-                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl transition"
+                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3 rounded-2xl text-xs shadow-lg shadow-emerald-600/20 transition active:scale-95"
                 >
-                  Зберегти товар
+                  Опублікувати товар на сайті
                 </button>
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition"
+                  className="px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl text-xs transition"
                 >
                   Скасувати
                 </button>
