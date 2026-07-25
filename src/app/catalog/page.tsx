@@ -6,7 +6,7 @@ import { Product } from '@/lib/types';
 import { Filter, Search } from 'lucide-react';
 import { INITIAL_CATEGORIES, INITIAL_PRODUCTS } from '@/lib/store';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 30;
 
 async function CatalogContent({
   searchParams,
