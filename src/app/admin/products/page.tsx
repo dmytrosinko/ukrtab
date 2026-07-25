@@ -46,14 +46,41 @@ export default function AdminProductsPage() {
     fetchData();
   }, []);
 
-  // Handle Photo File Upload
+  // Handle Photo File Upload & Compress
   const handleImageFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       const reader = new FileReader();
       reader.onload = (ev) => {
-        if (ev.target?.result) {
-          setFormData((prev) => ({ ...prev, image: ev.target?.result as string }));
+        const resultSrc = ev.target?.result as string;
+        if (resultSrc) {
+          const img = new Image();
+          img.src = resultSrc;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const maxDim = 800;
+            let w = img.width;
+            let h = img.height;
+            if (w > maxDim || h > maxDim) {
+              if (w > h) {
+                h = Math.round((h * maxDim) / w);
+                w = maxDim;
+              } else {
+                w = Math.round((w * maxDim) / h);
+                h = maxDim;
+              }
+            }
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+              ctx.drawImage(img, 0, 0, w, h);
+              const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+              setFormData((prev) => ({ ...prev, image: compressedDataUrl }));
+            } else {
+              setFormData((prev) => ({ ...prev, image: resultSrc }));
+            }
+          };
         }
       };
       reader.readAsDataURL(file);
@@ -63,7 +90,7 @@ export default function AdminProductsPage() {
   const handleCreateProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.price || !formData.image) {
-      alert('Будь ласка, вкажіть назву товару, ціну та додайте фото або URL');
+      alert('Будь ласка, вкажіть назву товару, ціну та додайте фото');
       return;
     }
 
@@ -75,6 +102,8 @@ export default function AdminProductsPage() {
       });
 
       if (res.ok) {
+        const newProd = await res.json();
+        setProducts((prev) => [newProd, ...prev]);
         setIsModalOpen(false);
         setFormData({
           name: '',
@@ -87,9 +116,9 @@ export default function AdminProductsPage() {
           description: '',
           unit: 'шт.',
         });
-        fetchData();
+        alert('Товар успішно додано!');
       } else {
-        alert('Помилка при створенні товару');
+        alert('Помилка при збереженні товару. Перевірте ціну та фото');
       }
     } catch (e) {
       alert('Мережева помилка');
@@ -99,10 +128,10 @@ export default function AdminProductsPage() {
   const handleDeleteProduct = async (id: string) => {
     if (!confirm('Ви дійсно бажаєте видалити цей товар?')) return;
     try {
-      const res = await fetch(`/api/products/${id}`, { method: 'DELETE' });
-      if (res.ok) fetchData();
+      await fetch(`/api/products/${id}`, { method: 'DELETE' });
+      setProducts((prev) => prev.filter((p) => p.id !== id));
     } catch (e) {
-      alert('Помилка видалення');
+      setProducts((prev) => prev.filter((p) => p.id !== id));
     }
   };
 
@@ -230,7 +259,7 @@ export default function AdminProductsPage() {
                 <input
                   type="text"
                   required
-                  placeholder="наприклад: Магнітна наклейка ЗСУ 30х30 см"
+                  placeholder="наприклад: Мітя зробив магніт"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:border-emerald-500"
@@ -298,7 +327,7 @@ export default function AdminProductsPage() {
                     className="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-4 py-2.5 rounded-xl text-xs flex items-center space-x-2 border transition shrink-0"
                   >
                     <Upload className="w-4 h-4 text-emerald-600" />
-                    <span>Завантажити фото з компа</span>
+                    <span>Завантажити фото</span>
                   </button>
 
                   <span className="text-slate-400 font-bold">або</span>

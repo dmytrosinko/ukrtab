@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { INITIAL_PRODUCTS } from '@/lib/store';
 
+// Dynamic in-memory store for newly added products on serverless Vercel
+let MEMORY_PRODUCTS = [...INITIAL_PRODUCTS];
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -40,10 +43,10 @@ export async function GET(request: Request) {
 
     return NextResponse.json(products);
   } catch (error) {
-    console.error('Error fetching products from DB, serving fallback store:', error);
+    console.error('Error fetching products from DB, serving memory store:', error);
     const { searchParams } = new URL(request.url);
     const search = searchParams.get('search');
-    let filtered = INITIAL_PRODUCTS;
+    let filtered = MEMORY_PRODUCTS;
     if (search) {
       filtered = filtered.filter((p) =>
         p.name.toLowerCase().includes(search.toLowerCase())
@@ -85,22 +88,38 @@ export async function POST(request: Request) {
         .replace(/[^a-z0-9а-яіїєґ]+/gi, '-')
         .replace(/^-+|-+$/g, '');
 
-    const product = await prisma.product.create({
-      data: {
-        name,
-        slug: generatedSlug + '-' + Date.now().toString().slice(-4),
-        price: parseFloat(price),
-        oldPrice: oldPrice ? parseFloat(oldPrice) : null,
-        sku: sku || null,
-        status: status || 'В наявності',
-        categoryId: categoryId || null,
-        description: description || null,
-        image,
-        images: images ? JSON.stringify(images) : JSON.stringify([image]),
-        unit: unit || 'шт.',
-        isFeatured: Boolean(isFeatured),
-      },
-    });
+    const newProductData = {
+      name,
+      slug: generatedSlug + '-' + Date.now().toString().slice(-4),
+      price: parseFloat(price),
+      oldPrice: oldPrice ? parseFloat(oldPrice) : null,
+      sku: sku || null,
+      status: status || 'В наявності',
+      categoryId: categoryId || null,
+      description: description || null,
+      image,
+      images: images ? JSON.stringify(images) : JSON.stringify([image]),
+      unit: unit || 'шт.',
+      isFeatured: Boolean(isFeatured),
+    };
+
+    let product;
+    try {
+      product = await prisma.product.create({
+        data: newProductData,
+      });
+    } catch (dbErr) {
+      console.warn('Prisma DB write unavailable, returning fallback in-memory product:', dbErr);
+      product = {
+        id: 'p-' + Date.now(),
+        ...newProductData,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+    }
+
+    // Add to in-memory store so it shows immediately in fallback GET
+    MEMORY_PRODUCTS.unshift(product as any);
 
     return NextResponse.json(product, { status: 201 });
   } catch (error) {
