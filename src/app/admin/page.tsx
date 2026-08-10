@@ -1,11 +1,12 @@
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { Package, ShoppingCart, Upload, ArrowRight, TrendingUp, Plus } from 'lucide-react';
+import { INITIAL_PRODUCTS } from '@/lib/store';
 
 export const revalidate = 0;
 
 export default async function AdminDashboardPage() {
-  let productsCount = 64;
+  let productsCount = INITIAL_PRODUCTS.length;
   let ordersCount = 0;
   let recentOrders: any[] = [];
 
@@ -15,7 +16,7 @@ export default async function AdminDashboardPage() {
       prisma.order.count(),
       prisma.order.findMany({ take: 5, orderBy: { createdAt: 'desc' }, include: { items: true } }),
     ]);
-    if (pCount) productsCount = pCount;
+    if (pCount) productsCount = Math.max(INITIAL_PRODUCTS.length, pCount);
     if (oCount) ordersCount = oCount;
     if (rOrders) recentOrders = rOrders;
   } catch (e) {

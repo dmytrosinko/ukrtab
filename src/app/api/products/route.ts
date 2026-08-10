@@ -41,8 +41,8 @@ export async function GET(request: Request) {
       orderBy: { createdAt: 'desc' },
     });
 
-    // Merge in-memory created products with DB products
-    const combined = [...MEMORY_PRODUCTS, ...products];
+    // Merge DB products, in-memory custom products, and full INITIAL_PRODUCTS catalog
+    const combined = [...products, ...MEMORY_PRODUCTS, ...INITIAL_PRODUCTS];
     const unique = Array.from(new Map(combined.map((p) => [p.id, p])).values());
 
     return NextResponse.json(unique);
