@@ -37,7 +37,15 @@ export default function AdminProductsPage() {
       const dataProd = await resProd.json();
       const serverItems = Array.isArray(dataProd) ? dataProd : [];
       const combined = [...localCustom, ...serverItems];
-      const unique = Array.from(new Map(combined.map((p) => [p.id, p])).values());
+      const map = new Map<string, Product>();
+      combined.forEach((p: Product) => {
+        if (!p || !p.name) return;
+        const key = p.name.trim().toLowerCase();
+        if (!map.has(key) && !map.has(p.id)) {
+          map.set(key, p);
+        }
+      });
+      const unique = Array.from(map.values());
       const clean = unique.filter(
         (p: Product) =>
           p.name !== 'top of the top' &&

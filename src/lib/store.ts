@@ -125,22 +125,6 @@ export const INITIAL_PRODUCTS: Product[] = [
     "isFeatured": true
   },
   {
-    "id": "p2735822254",
-    "name": "Наклейка магнітна на авто Колона 15*15см",
-    "slug": "наклейка-магнітна-на-авто-колона-15-15см-2254",
-    "price": 130,
-    "oldPrice": 153,
-    "sku": "колона",
-    "status": "В наявності",
-    "categoryId": "cat-1",
-    "description": "Наклейка магнітна на авто Колона 15*15см",
-    "image": "https://images.prom.ua/6809609685_w500_h500_naklejka-magnitna-na.jpg",
-    "images": "[\"https://images.prom.ua/6809609685_w500_h500_naklejka-magnitna-na.jpg\"]",
-    "unit": "шт.",
-    "features": "[]",
-    "isFeatured": false
-  },
-  {
     "id": "p2716395430",
     "name": "Наклейка магнітна Каблук 15*15см",
     "slug": "наклейка-магнітна-каблук-15-15см-5430",
@@ -317,22 +301,6 @@ export const INITIAL_PRODUCTS: Product[] = [
     "isFeatured": true
   },
   {
-    "id": "p2764392673",
-    "name": "Волонтер магнітна наліпка на авто",
-    "slug": "волонтер-магнітна-наліпка-на-авто-2673",
-    "price": 200,
-    "oldPrice": 236,
-    "sku": "волонтер",
-    "status": "В наявності",
-    "categoryId": "cat-1",
-    "description": "Волонтер магнітна наліпка на авто",
-    "image": "https://images.prom.ua/6844236685_w500_h500_volonter-magnitna-nalipka.jpg",
-    "images": "[\"https://images.prom.ua/6844236685_w500_h500_volonter-magnitna-nalipka.jpg\"]",
-    "unit": "шт.",
-    "features": "[]",
-    "isFeatured": false
-  },
-  {
     "id": "p2784266269",
     "name": "Сувенірний номер EUROCAR  CARZONE — 519×112 мм  УФ-друк | Пластик Алюмінієвий композит",
     "slug": "сувенірний-номер-eurocar-carzone-519-112-мм-уф-дру-6269",
@@ -477,22 +445,6 @@ export const INITIAL_PRODUCTS: Product[] = [
     "isFeatured": false
   },
   {
-    "id": "p2716279485",
-    "name": "Магнітна наклейка Морська піхота 25*25см",
-    "slug": "магнітна-наклейка-морська-піхота-25-25см-9485",
-    "price": 250,
-    "oldPrice": 295,
-    "sku": "морська піхота",
-    "status": "В наявності",
-    "categoryId": "cat-1",
-    "description": "Магнітна наклейка Морська піхота 25*25см",
-    "image": "https://images.prom.ua/6793582624_w500_h500_magnitna-naklejka-morska.jpg",
-    "images": "[\"https://images.prom.ua/6793582624_w500_h500_magnitna-naklejka-morska.jpg\"]",
-    "unit": "шт.",
-    "features": "[]",
-    "isFeatured": false
-  },
-  {
     "id": "p2718235525",
     "name": "Наклейка магнітна на авто не тцк",
     "slug": "наклейка-магнітна-на-авто-не-тцк-5525",
@@ -525,22 +477,6 @@ export const INITIAL_PRODUCTS: Product[] = [
     "isFeatured": false
   },
   {
-    "id": "p2718330311",
-    "name": "Наклейка магнітна на авто Чеченський Батальйон імені Шейха Мансури",
-    "slug": "наклейка-магнітна-на-авто-чеченський-батальйон-іме-0311",
-    "price": 250,
-    "oldPrice": 295,
-    "sku": "чеченський батальйон",
-    "status": "В наявності",
-    "categoryId": "cat-1",
-    "description": "Наклейка магнітна на авто Чеченський Батальйон імені Шейха Мансури",
-    "image": "https://images.prom.ua/6794832854_w500_h500_naklejka-magnitna-na.jpg",
-    "images": "[\"https://images.prom.ua/6794832854_w500_h500_naklejka-magnitna-na.jpg\"]",
-    "unit": "шт.",
-    "features": "[]",
-    "isFeatured": false
-  },
-  {
     "id": "p2735605646",
     "name": "Наклейка магнітна на авто Герб",
     "slug": "наклейка-магнітна-на-авто-герб-5646",
@@ -555,22 +491,6 @@ export const INITIAL_PRODUCTS: Product[] = [
     "unit": "шт.",
     "features": "[]",
     "isFeatured": true
-  },
-  {
-    "id": "p2735605662",
-    "name": "Наклейка магнітна на авто Герб",
-    "slug": "наклейка-магнітна-на-авто-герб-5662",
-    "price": 250,
-    "oldPrice": 295,
-    "sku": "Герб 30*25см",
-    "status": "В наявності",
-    "categoryId": "cat-1",
-    "description": "Наклейка магнітна на авто Герб",
-    "image": "https://images.prom.ua/6809275833_w500_h500_naklejka-magnitna-na.jpg",
-    "images": "[\"https://images.prom.ua/6809275833_w500_h500_naklejka-magnitna-na.jpg\"]",
-    "unit": "шт.",
-    "features": "[]",
-    "isFeatured": false
   },
   {
     "id": "p2736888342",
@@ -608,22 +528,6 @@ export const INITIAL_PRODUCTS: Product[] = [
     "id": "p2767863447",
     "name": "Магнітна наклейка на авто Волонтер 20*50см",
     "slug": "магнітна-наклейка-на-авто-волонтер-20-50см-3447",
-    "price": 250,
-    "oldPrice": 295,
-    "sku": "20*50",
-    "status": "В наявності",
-    "categoryId": "cat-1",
-    "description": "Магнітна наклейка на авто Волонтер 20*50см",
-    "image": "https://images.prom.ua/6850199197_w500_h500_magnitna-naklejka-na.jpg",
-    "images": "[\"https://images.prom.ua/6850199197_w500_h500_magnitna-naklejka-na.jpg\"]",
-    "unit": "шт.",
-    "features": "[]",
-    "isFeatured": false
-  },
-  {
-    "id": "p2767863448",
-    "name": "Магнітна наклейка на авто Волонтер 20*50см",
-    "slug": "магнітна-наклейка-на-авто-волонтер-20-50см-3448",
     "price": 250,
     "oldPrice": 295,
     "sku": "20*50",

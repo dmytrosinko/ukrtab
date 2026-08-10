@@ -78,7 +78,15 @@ export async function GET(request: Request) {
 
     // Merge DB products, in-memory custom products, and full INITIAL_PRODUCTS catalog
     const combined = [...products, ...MEMORY_PRODUCTS, ...INITIAL_PRODUCTS];
-    const unique = Array.from(new Map(combined.map((p) => [p.id, p])).values());
+    const map = new Map<string, any>();
+    combined.forEach((p) => {
+      if (!p || !p.name) return;
+      const key = String(p.name).trim().toLowerCase();
+      if (!map.has(key) && !map.has(p.id)) {
+        map.set(key, p);
+      }
+    });
+    const unique = Array.from(map.values());
 
     return NextResponse.json(unique);
   } catch (error) {

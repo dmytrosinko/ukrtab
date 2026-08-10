@@ -34,7 +34,15 @@ export function CatalogView() {
       .then((data) => {
         const serverItems = Array.isArray(data) ? data : [];
         const combined = [...localCustom, ...serverItems, ...INITIAL_PRODUCTS];
-        const unique = Array.from(new Map(combined.map((p) => [p.id, p])).values());
+        const map = new Map<string, Product>();
+        combined.forEach((p) => {
+          if (!p || !p.name) return;
+          const key = p.name.trim().toLowerCase();
+          if (!map.has(key) && !map.has(p.id)) {
+            map.set(key, p);
+          }
+        });
+        const unique = Array.from(map.values());
         const clean = unique.filter(
           (p) =>
             p.name !== 'top of the top' &&
@@ -46,7 +54,15 @@ export function CatalogView() {
       .catch((e) => {
         console.error('Error fetching catalog products:', e);
         const combined = [...localCustom, ...INITIAL_PRODUCTS];
-        const unique = Array.from(new Map(combined.map((p) => [p.id, p])).values());
+        const map = new Map<string, Product>();
+        combined.forEach((p) => {
+          if (!p || !p.name) return;
+          const key = p.name.trim().toLowerCase();
+          if (!map.has(key) && !map.has(p.id)) {
+            map.set(key, p);
+          }
+        });
+        const unique = Array.from(map.values());
         setAllProducts(unique);
       });
   }, []);
