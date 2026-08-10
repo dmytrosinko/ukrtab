@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
@@ -25,9 +25,14 @@ export function Header() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
+      setIsMobileMenuOpen(false);
       router.push(`/catalog?search=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
@@ -221,22 +226,22 @@ export function Header() {
             </button>
           </form>
 
-          <Link href="/" className="block py-2 text-slate-800 font-medium hover:text-emerald-600">
+          <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-slate-800 font-medium hover:text-emerald-600">
             Головна
           </Link>
-          <Link href="/catalog" className="block py-2 text-slate-800 font-medium hover:text-emerald-600">
+          <Link href="/catalog" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-slate-800 font-medium hover:text-emerald-600">
             Каталог товарів
           </Link>
-          <Link href="/constructor" className="block py-2 text-amber-700 font-black">
+          <Link href="/constructor" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-amber-700 font-black">
             🎨 Конструктор магнітів
           </Link>
-          <Link href="/about" className="block py-2 text-slate-800 font-medium hover:text-emerald-600">
+          <Link href="/about" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-slate-800 font-medium hover:text-emerald-600">
             Про нас
           </Link>
-          <Link href="/delivery" className="block py-2 text-slate-800 font-medium hover:text-emerald-600">
+          <Link href="/delivery" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-slate-800 font-medium hover:text-emerald-600">
             Доставка та оплата
           </Link>
-          <Link href="/contacts" className="block py-2 text-slate-800 font-medium hover:text-emerald-600">
+          <Link href="/contacts" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-slate-800 font-medium hover:text-emerald-600">
             Контакти
           </Link>
         </div>
