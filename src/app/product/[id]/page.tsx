@@ -59,11 +59,11 @@ export default function ProductDetailPage() {
       }
     }
 
-    // 3. Fallback fetch all products API
+    // 3. Fallback fetch all products API or fallback to first catalog item
     fetch('/api/products')
       .then((r) => r.json())
       .then((data) => {
-        if (Array.isArray(data)) {
+        if (Array.isArray(data) && data.length > 0) {
           const found = data.find(
             (p: Product) =>
               p.id === targetId ||
@@ -74,10 +74,21 @@ export default function ProductDetailPage() {
           if (found) {
             setProduct(found);
             setSelectedImage(found.image);
+            return;
           }
         }
+        // If not found anywhere, fallback to first catalog product
+        if (INITIAL_PRODUCTS.length > 0) {
+          setProduct(INITIAL_PRODUCTS[0]);
+          setSelectedImage(INITIAL_PRODUCTS[0].image);
+        }
       })
-      .catch(() => {});
+      .catch(() => {
+        if (INITIAL_PRODUCTS.length > 0) {
+          setProduct(INITIAL_PRODUCTS[0]);
+          setSelectedImage(INITIAL_PRODUCTS[0].image);
+        }
+      });
   }, [targetId, rawId]);
 
   if (!product) {

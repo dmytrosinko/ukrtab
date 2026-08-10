@@ -29,27 +29,27 @@ export function Footer() {
           <h4 className="text-white font-bold text-sm mb-4 uppercase tracking-wider">Каталог товарів</h4>
           <ul className="space-y-2 text-xs">
             <li>
-              <Link href="/catalog/magnitni-nalipki-na-avto" className="hover:text-emerald-400 transition">
+              <Link href="/catalog?search=наліп" className="hover:text-emerald-400 transition">
                 Магнітні наліпки на авто
               </Link>
             </li>
             <li>
-              <Link href="/catalog/magniti-zsu" className="hover:text-emerald-400 transition">
+              <Link href="/catalog?search=зсу" className="hover:text-emerald-400 transition">
                 Магніти та знаки ЗСУ
               </Link>
             </li>
             <li>
-              <Link href="/catalog/poperedzhuvalni-znaki" className="hover:text-emerald-400 transition">
+              <Link href="/catalog?search=знак" className="hover:text-emerald-400 transition">
                 Попереджувальні знаки ⚠️ Міни / Охорона
               </Link>
             </li>
             <li>
-              <Link href="/catalog/tablichki-adresni" className="hover:text-emerald-400 transition">
+              <Link href="/catalog?search=табличк" className="hover:text-emerald-400 transition">
                 Таблички адресні на будинок
               </Link>
             </li>
             <li>
-              <Link href="/catalog/avtonomer-pid-zakaz" className="hover:text-emerald-400 transition">
+              <Link href="/catalog?search=автономер" className="hover:text-emerald-400 transition">
                 Автономери під замовлення
               </Link>
             </li>

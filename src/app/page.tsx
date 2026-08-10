@@ -4,6 +4,8 @@ import { ProductCard } from '@/components/ProductCard';
 import { ShieldCheck, Truck, Clock, ThumbsUp, ArrowRight } from 'lucide-react';
 import { Product, Banner } from '@/lib/types';
 
+import { INITIAL_PRODUCTS } from '@/lib/store';
+
 export const revalidate = 60;
 
 const FALLBACK_BANNERS = [
@@ -25,52 +27,7 @@ const FALLBACK_BANNERS = [
   },
 ];
 
-const FALLBACK_PRODUCTS: any[] = [
-  {
-    id: 'prod-1',
-    name: 'Магнітна наклейка Морська піхота 25*25см',
-    slug: 'magnitna-naklejka-morska-pihota-25x25',
-    price: 250,
-    oldPrice: 300,
-    sku: 'MP-2525',
-    status: 'В наявності',
-    image: 'https://images.prom.ua/6793582624_w640_h640_magnitna-naklejka-morska.jpg',
-    unit: 'шт.',
-  },
-  {
-    id: 'prod-2',
-    name: 'Наклейка магнітна Каблук 15*15см',
-    slug: 'naklejka-magnitna-kabluk-15x15',
-    price: 150,
-    oldPrice: 180,
-    sku: 'KAB-1515',
-    status: 'В наявності',
-    image: 'https://images.prom.ua/6793705342_w640_h640_naklejka-magnitna-kabluk.jpg',
-    unit: 'шт.',
-  },
-  {
-    id: 'prod-3',
-    name: 'Наклейка ЗСУ квадрат синьо-жовтий 30*30см',
-    slug: 'naklejka-zsu-kvadrat-30x30',
-    price: 125,
-    oldPrice: 150,
-    sku: 'ZSU-3030',
-    status: 'В наявності',
-    image: 'https://images.prom.ua/6794611879_w640_h640_naklejka-zsu-kvadrat.jpg',
-    unit: 'шт.',
-  },
-  {
-    id: 'prod-4',
-    name: 'Попереджувальний знак ⚠️ ОБЕРЕЖНО МІНИ! (30х20см)',
-    slug: 'sign-mines-warning-30x20',
-    price: 120,
-    oldPrice: 140,
-    sku: 'SIGN-MINE',
-    status: 'В наявності',
-    image: 'https://images.prom.ua/6964429952_w297_h200_poperedzhuvalni-znaki-.jpg',
-    unit: 'шт.',
-  },
-];
+const FALLBACK_PRODUCTS: any[] = INITIAL_PRODUCTS.slice(0, 8);
 
 export default async function HomePage() {
   let banners: any[] = FALLBACK_BANNERS;
