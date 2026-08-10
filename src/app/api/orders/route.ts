@@ -17,7 +17,14 @@ export async function GET() {
 async function sendTelegramNotification(order: any) {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
-  if (!token || !chatId) return;
+
+  if (!token || !chatId) {
+    console.warn('Telegram notification skipped: missing env vars', {
+      hasToken: !!token,
+      hasChatId: !!chatId,
+    });
+    return { success: false, reason: 'missing_env_vars', hasToken: !!token, hasChatId: !!chatId };
+  }
 
   try {
     const itemsList = (order.items || [])
@@ -36,7 +43,7 @@ async function sendTelegramNotification(order: any) {
       `📦 *Товари:*\n${itemsList}\n\n` +
       `💰 *Разом:* ${order.total} ₴`;
 
-    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -45,8 +52,13 @@ async function sendTelegramNotification(order: any) {
         parse_mode: 'Markdown',
       }),
     });
-  } catch (err) {
+
+    const resData = await res.json();
+    console.log('Telegram API response:', resData);
+    return { success: resData.ok, data: resData };
+  } catch (err: any) {
     console.error('Failed to send Telegram notification:', err);
+    return { success: false, error: err?.message || err };
   }
 }
 
@@ -147,9 +159,9 @@ export async function POST(request: Request) {
     });
 
     // Notify Telegram if token/chatId are configured
-    await sendTelegramNotification(order);
+    const telegramResult = await sendTelegramNotification(order);
 
-    return NextResponse.json(order, { status: 201 });
+    return NextResponse.json({ ...order, telegramResult }, { status: 201 });
   } catch (error: any) {
     console.error('Error creating order:', error);
     return NextResponse.json(
