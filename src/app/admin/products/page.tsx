@@ -89,6 +89,42 @@ export default function AdminProductsPage() {
     }
   };
 
+  const generateAutoSku = (name?: string) => {
+    const num = Math.floor(1000 + Math.random() * 9000);
+    if (name && name.trim().length > 0) {
+      const clean = name.trim().toUpperCase().replace(/[^A-ZА-ЯІЇЄҐ0-9]/g, '');
+      const prefix = clean.length >= 2 ? clean.slice(0, 3) : 'UKR';
+      return `${prefix}-${num}`;
+    }
+    return `UKR-${num}`;
+  };
+
+  const handleOpenModal = () => {
+    const autoSku = generateAutoSku();
+    setFormData({
+      name: '',
+      price: '',
+      oldPrice: '',
+      sku: autoSku,
+      status: 'В наявності',
+      image: '',
+      description: '',
+      unit: 'шт.',
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleNameChange = (nameVal: string) => {
+    setFormData((prev) => {
+      const autoSku = generateAutoSku(nameVal);
+      return {
+        ...prev,
+        name: nameVal,
+        sku: autoSku,
+      };
+    });
+  };
+
   const handleCreateProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.price) {
@@ -104,7 +140,7 @@ export default function AdminProductsPage() {
       slug: formData.name.toLowerCase().replace(/[^a-z0-9а-яіїєґ]+/gi, '-') + '-' + Date.now().toString().slice(-4),
       price: parseFloat(formData.price) || 250,
       oldPrice: formData.oldPrice ? parseFloat(formData.oldPrice) : undefined,
-      sku: formData.sku || 'SKU-' + Date.now().toString().slice(-4),
+      sku: formData.sku || generateAutoSku(formData.name),
       status: formData.status || 'В наявності',
       description: formData.description || '',
       image: defaultImage,
@@ -185,7 +221,7 @@ export default function AdminProductsPage() {
 
         <div className="flex space-x-3 w-full sm:w-auto">
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={handleOpenModal}
             className="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-3 rounded-2xl text-xs flex items-center justify-center space-x-2 transition shadow-lg shadow-emerald-600/20 active:scale-95"
           >
             <Plus className="w-4 h-4" />
@@ -293,7 +329,7 @@ export default function AdminProductsPage() {
                   required
                   placeholder="наприклад: Мітя зробив магніт"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) => handleNameChange(e.target.value)}
                   className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:border-emerald-500"
                 />
               </div>
@@ -312,13 +348,22 @@ export default function AdminProductsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Артикул (SKU)</label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="font-bold text-slate-700">Артикул (SKU)</label>
+                    <button
+                      type="button"
+                      onClick={() => setFormData((prev) => ({ ...prev, sku: generateAutoSku(prev.name) }))}
+                      className="text-[10px] text-emerald-600 font-bold hover:underline"
+                    >
+                      ⚡ Згенерувати
+                    </button>
+                  </div>
                   <input
                     type="text"
                     placeholder="ZSU-3030"
                     value={formData.sku}
                     onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono font-bold text-emerald-700 focus:outline-none focus:border-emerald-500"
                   />
                 </div>
               </div>
