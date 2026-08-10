@@ -172,7 +172,7 @@ export default function ConstructorPage() {
     if (objects.length === 0) {
       const defaultText: GraphicObject = {
         id: 'obj-text-1',
-        name: 'Текст ЗСУ',
+        name: 'Текст',
         type: 'text',
         x: 300,
         y: 120,
