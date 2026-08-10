@@ -18,22 +18,29 @@ export function CatalogView() {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       setSearch(params.get('search'));
-
-      // Merge custom created products from localStorage
-      try {
-        const saved = localStorage.getItem('ukrtab_custom_products');
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            const combined = [...parsed, ...INITIAL_PRODUCTS];
-            const unique = Array.from(new Map(combined.map((p) => [p.id, p])).values());
-            setAllProducts(unique);
-          }
-        }
-      } catch (e) {
-        console.error('Error loading custom products:', e);
-      }
     }
+
+    // Fetch server products API so all devices (mobile & desktop) see identical products
+    fetch('/api/products')
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          // Merge API data with INITIAL_PRODUCTS
+          const combined = [...data, ...INITIAL_PRODUCTS];
+          const unique = Array.from(new Map(combined.map((p) => [p.id, p])).values());
+          // Filter out dummy/test entries if any
+          const clean = unique.filter(
+            (p) =>
+              p.name !== 'top of the top' &&
+              p.name !== 'еталон краси' &&
+              p.name !== 'Mavvir'
+          );
+          setAllProducts(clean);
+        }
+      })
+      .catch((e) => {
+        console.error('Error fetching catalog products:', e);
+      });
   }, []);
 
   // Filter products by search query if present

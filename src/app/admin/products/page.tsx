@@ -25,22 +25,17 @@ export default function AdminProductsPage() {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      let localCustom: Product[] = [];
-      if (typeof window !== 'undefined') {
-        const saved = localStorage.getItem('ukrtab_custom_products');
-        if (saved) {
-          try {
-            localCustom = JSON.parse(saved);
-          } catch (e) {}
-        }
-      }
-
       const resProd = await fetch('/api/products');
       const dataProd = await resProd.json();
       if (Array.isArray(dataProd)) {
-        const combined = [...localCustom, ...dataProd];
-        const unique = Array.from(new Map(combined.map((p) => [p.id, p])).values());
-        setProducts(unique);
+        // Filter out old local test entries if present
+        const clean = dataProd.filter(
+          (p: Product) =>
+            p.name !== 'top of the top' &&
+            p.name !== 'еталон краси' &&
+            p.name !== 'Mavvir'
+        );
+        setProducts(clean);
       }
     } catch (e) {
       console.error('Failed to fetch admin products:', e);
