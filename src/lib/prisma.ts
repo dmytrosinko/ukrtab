@@ -8,22 +8,16 @@ function createPrismaClient(): PrismaClient | null {
   if (globalForPrisma.prismaInstance) return globalForPrisma.prismaInstance;
 
   try {
-    if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
-      const dbPath = path.join(process.cwd(), 'prisma', 'dev.db');
-      const tmpDir = process.platform === 'win32' ? path.join(process.cwd(), 'prisma') : '/tmp';
-      const tmpPath = path.join(tmpDir, 'dev.db');
+    const dbUrl =
+      process.env.DATABASE_URL ||
+      process.env.POSTGRES_PRISMA_URL ||
+      process.env.POSTGRES_URL;
 
-      if (fs.existsSync(dbPath) && fs.existsSync(tmpDir) && dbPath !== tmpPath) {
-        try {
-          if (!fs.existsSync(tmpPath) || fs.statSync(tmpPath).size === 0) {
-            fs.copyFileSync(dbPath, tmpPath);
-          }
-        } catch (e) {}
-      }
-      process.env.DATABASE_URL = `file:${tmpPath}`;
-    }
+    const client = new PrismaClient({
+      datasources: dbUrl ? { db: { url: dbUrl } } : undefined,
+      log: ['error', 'warn'],
+    });
 
-    const client = new PrismaClient({ log: ['error', 'warn'] });
     if (process.env.NODE_ENV !== 'production') globalForPrisma.prismaInstance = client;
     return client;
   } catch (e) {
