@@ -63,7 +63,6 @@ export async function GET(request: Request) {
 
         await prisma.product.createMany({
           data: seedData,
-          skipDuplicates: true,
         });
 
         products = await prisma.product.findMany({

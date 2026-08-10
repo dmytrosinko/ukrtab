@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { ShoppingBag, CheckCircle, Truck, CreditCard, User, Phone, MapPin, ArrowLeft } from 'lucide-react';
+import NovaPoshtaSelector from '@/components/NovaPoshtaSelector';
 
 export default function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
@@ -19,6 +20,7 @@ export default function CheckoutPage() {
     notes: '',
   });
 
+  const [cityRef, setCityRef] = useState('db5c8892-41cd-11e4-ab6d-005056801329'); // Дніпро
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [createdOrder, setCreatedOrder] = useState<any>(null);
   const [errorMessage, setErrorMessage] = useState('');
@@ -31,6 +33,11 @@ export default function CheckoutPage() {
     e.preventDefault();
     if (!formData.customerName || !formData.customerPhone) {
       setErrorMessage('Будь ласка, вкажіть ваше ім’я та номер телефону');
+      return;
+    }
+
+    if (formData.deliveryMethod === 'Нова Пошта' && (!formData.city || !formData.warehouseInfo)) {
+      setErrorMessage('Будь ласка, оберіть населений пункт та відділення або поштомат Нової Пошти');
       return;
     }
 
@@ -182,44 +189,72 @@ export default function CheckoutPage() {
               <span>Доставка</span>
             </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Місто *</label>
-                <input
-                  type="text"
-                  name="city"
-                  placeholder="м. Київ / Дніпро"
-                  value={formData.city}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-emerald-500 focus:bg-white"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Служба доставки</label>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Спосіб доставки *</label>
                 <select
                   name="deliveryMethod"
                   value={formData.deliveryMethod}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    handleChange(e);
+                    if (e.target.value !== 'Нова Пошта') {
+                      setFormData((prev) => ({ ...prev, warehouseInfo: '' }));
+                    }
+                  }}
                   className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
                 >
-                  <option value="Нова Пошта">Нова Пошта</option>
+                  <option value="Нова Пошта">Нова Пошта (Відділення / Поштомат)</option>
                   <option value="Укрпошта">Укрпошта</option>
                   <option value="Самовивіз Дніпро">Самовивіз (м. Дніпро, вул. Миру 2т)</option>
                 </select>
               </div>
 
-              <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-slate-700 mb-1">Номер відділення або адреса</label>
-                <input
-                  type="text"
-                  name="warehouseInfo"
-                  placeholder="Відділення №1 (вул. Перемоги 10)"
-                  value={formData.warehouseInfo}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-emerald-500 focus:bg-white"
+              {formData.deliveryMethod === 'Нова Пошта' ? (
+                <NovaPoshtaSelector
+                  selectedCity={formData.city}
+                  selectedCityRef={cityRef}
+                  selectedWarehouse={formData.warehouseInfo}
+                  onSelectCity={(cName, cRef) => {
+                    setFormData((prev) => ({ ...prev, city: cName }));
+                    setCityRef(cRef);
+                  }}
+                  onSelectWarehouse={(whInfo) => {
+                    setFormData((prev) => ({ ...prev, warehouseInfo: whInfo }));
+                  }}
                 />
-              </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Місто / Населений пункт *</label>
+                    <input
+                      type="text"
+                      name="city"
+                      placeholder="м. Київ / Дніпро"
+                      value={formData.city}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-emerald-500 focus:bg-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                      {formData.deliveryMethod === 'Самовивіз Дніпро' ? 'Примітка до самовивозу' : 'Адреса / Индекс / Відділення'}
+                    </label>
+                    <input
+                      type="text"
+                      name="warehouseInfo"
+                      placeholder={
+                        formData.deliveryMethod === 'Самовивіз Дніпро'
+                          ? 'Бажаний час або дата видачі'
+                          : 'Вул. Шевченка 10, кв. 5 / Індекс'
+                      }
+                      value={formData.warehouseInfo}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-emerald-500 focus:bg-white"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

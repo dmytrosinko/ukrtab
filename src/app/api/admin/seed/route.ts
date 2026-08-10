@@ -40,7 +40,6 @@ export async function GET() {
 
     await prisma.product.createMany({
       data: seedData,
-      skipDuplicates: true,
     });
 
     const count = await prisma.product.count();
