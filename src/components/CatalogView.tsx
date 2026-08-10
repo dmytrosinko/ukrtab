@@ -15,22 +15,17 @@ export function CatalogView() {
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   useEffect(() => {
-    let localCustom: Product[] = [];
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       setSearch(params.get('search'));
-      try {
-        const saved = localStorage.getItem('ukrtab_custom_products');
-        if (saved) localCustom = JSON.parse(saved);
-      } catch (e) {}
     }
 
-    // Fetch server products API and merge with persistent local custom items
+    // Fetch products exclusively from server API
     fetch('/api/products')
       .then((r) => r.json())
       .then((data) => {
         const serverItems = Array.isArray(data) ? data : [];
-        const combined = [...localCustom, ...serverItems, ...INITIAL_PRODUCTS];
+        const combined = [...serverItems, ...INITIAL_PRODUCTS];
         const unique = Array.from(new Map(combined.map((p) => [p.id, p])).values());
         const clean = unique.filter(
           (p) =>
@@ -42,9 +37,7 @@ export function CatalogView() {
       })
       .catch((e) => {
         console.error('Error fetching catalog products:', e);
-        const combined = [...localCustom, ...INITIAL_PRODUCTS];
-        const unique = Array.from(new Map(combined.map((p) => [p.id, p])).values());
-        setAllProducts(unique);
+        setAllProducts(INITIAL_PRODUCTS);
       });
   }, []);
 
