@@ -24,21 +24,12 @@ export default function AdminProductsPage() {
 
   const fetchData = async () => {
     setIsLoading(true);
-    let localCustom: Product[] = [];
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('ukrtab_custom_products');
-        if (saved) localCustom = JSON.parse(saved);
-      } catch (e) {}
-    }
-
     try {
       const resProd = await fetch('/api/products');
       const dataProd = await resProd.json();
       const serverItems = Array.isArray(dataProd) ? dataProd : [];
-      const combined = [...localCustom, ...serverItems];
       const map = new Map<string, Product>();
-      combined.forEach((p: Product) => {
+      serverItems.forEach((p: Product) => {
         if (!p || !p.name) return;
         const key = p.name.trim().toLowerCase();
         if (!map.has(key) && !map.has(p.id)) {
@@ -55,7 +46,7 @@ export default function AdminProductsPage() {
       setProducts(clean);
     } catch (e) {
       console.error('Failed to fetch admin products:', e);
-      setProducts(localCustom);
+      setProducts([]);
     } finally {
       setIsLoading(false);
     }
@@ -233,27 +224,6 @@ export default function AdminProductsPage() {
       (p.sku && p.sku.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
-  const [isSeeding, setIsSeeding] = useState(false);
-
-  const handleSeedDatabase = async () => {
-    if (!confirm('Бажаєте синхронізувати та перенести усі 117 товарів у базу даних Supabase?')) return;
-    setIsSeeding(true);
-    try {
-      const res = await fetch('/api/admin/seed');
-      const data = await res.json();
-      if (data.success) {
-        alert(`✅ ${data.message}`);
-        fetchData();
-      } else {
-        alert(`⚠️ ${data.error || 'Помилка міграції'}`);
-      }
-    } catch (e) {
-      alert('Помилка виконання підключення до бази даних Supabase');
-    } finally {
-      setIsSeeding(false);
-    }
-  };
-
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -264,16 +234,6 @@ export default function AdminProductsPage() {
         </div>
 
         <div className="flex flex-wrap space-x-3 w-full sm:w-auto">
-          <button
-            onClick={handleSeedDatabase}
-            disabled={isSeeding}
-            className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-black px-4 py-3 rounded-2xl text-xs flex items-center justify-center space-x-2 transition shadow-md disabled:opacity-50"
-            title="Завантажити всі товари у Supabase"
-          >
-            <Sparkles className="w-4 h-4 text-slate-950 fill-slate-950" />
-            <span>{isSeeding ? 'Синхронізація...' : '⚡ Синхронізувати з Supabase'}</span>
-          </button>
-
           <button
             onClick={handleOpenModal}
             className="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-3 rounded-2xl text-xs flex items-center justify-center space-x-2 transition shadow-lg shadow-emerald-600/20 active:scale-95"

@@ -20,22 +20,13 @@ export function CatalogView() {
       setSearch(params.get('search'));
     }
 
-    let localCustom: Product[] = [];
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('ukrtab_custom_products');
-        if (saved) localCustom = JSON.parse(saved);
-      } catch (e) {}
-    }
-
-    // Fetch products exclusively from server API
+    // Fetch products directly from database API
     fetch('/api/products')
       .then((r) => r.json())
       .then((data) => {
         const serverItems = Array.isArray(data) ? data : [];
-        const combined = [...localCustom, ...serverItems, ...INITIAL_PRODUCTS];
         const map = new Map<string, Product>();
-        combined.forEach((p) => {
+        serverItems.forEach((p) => {
           if (!p || !p.name) return;
           const key = p.name.trim().toLowerCase();
           if (!map.has(key) && !map.has(p.id)) {
@@ -53,9 +44,8 @@ export function CatalogView() {
       })
       .catch((e) => {
         console.error('Error fetching catalog products:', e);
-        const combined = [...localCustom, ...INITIAL_PRODUCTS];
         const map = new Map<string, Product>();
-        combined.forEach((p) => {
+        INITIAL_PRODUCTS.forEach((p) => {
           if (!p || !p.name) return;
           const key = p.name.trim().toLowerCase();
           if (!map.has(key) && !map.has(p.id)) {
