@@ -20,12 +20,20 @@ export function CatalogView() {
       setSearch(params.get('search'));
     }
 
+    let localCustom: Product[] = [];
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('ukrtab_custom_products');
+        if (saved) localCustom = JSON.parse(saved);
+      } catch (e) {}
+    }
+
     // Fetch products exclusively from server API
     fetch('/api/products')
       .then((r) => r.json())
       .then((data) => {
         const serverItems = Array.isArray(data) ? data : [];
-        const combined = [...serverItems, ...INITIAL_PRODUCTS];
+        const combined = [...localCustom, ...serverItems, ...INITIAL_PRODUCTS];
         const unique = Array.from(new Map(combined.map((p) => [p.id, p])).values());
         const clean = unique.filter(
           (p) =>
@@ -37,7 +45,9 @@ export function CatalogView() {
       })
       .catch((e) => {
         console.error('Error fetching catalog products:', e);
-        setAllProducts(INITIAL_PRODUCTS);
+        const combined = [...localCustom, ...INITIAL_PRODUCTS];
+        const unique = Array.from(new Map(combined.map((p) => [p.id, p])).values());
+        setAllProducts(unique);
       });
   }, []);
 
