@@ -147,7 +147,7 @@ export async function POST(request: Request) {
     });
 
     // Notify Telegram if token/chatId are configured
-    sendTelegramNotification(order);
+    await sendTelegramNotification(order);
 
     return NextResponse.json(order, { status: 201 });
   } catch (error: any) {
