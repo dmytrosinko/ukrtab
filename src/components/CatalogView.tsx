@@ -15,31 +15,36 @@ export function CatalogView() {
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   useEffect(() => {
+    let localCustom: Product[] = [];
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       setSearch(params.get('search'));
+      try {
+        const saved = localStorage.getItem('ukrtab_custom_products');
+        if (saved) localCustom = JSON.parse(saved);
+      } catch (e) {}
     }
 
-    // Fetch server products API so all devices (mobile & desktop) see identical products
+    // Fetch server products API and merge with persistent local custom items
     fetch('/api/products')
       .then((r) => r.json())
       .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          // Merge API data with INITIAL_PRODUCTS
-          const combined = [...data, ...INITIAL_PRODUCTS];
-          const unique = Array.from(new Map(combined.map((p) => [p.id, p])).values());
-          // Filter out dummy/test entries if any
-          const clean = unique.filter(
-            (p) =>
-              p.name !== 'top of the top' &&
-              p.name !== 'еталон краси' &&
-              p.name !== 'Mavvir'
-          );
-          setAllProducts(clean);
-        }
+        const serverItems = Array.isArray(data) ? data : [];
+        const combined = [...localCustom, ...serverItems, ...INITIAL_PRODUCTS];
+        const unique = Array.from(new Map(combined.map((p) => [p.id, p])).values());
+        const clean = unique.filter(
+          (p) =>
+            p.name !== 'top of the top' &&
+            p.name !== 'еталон краси' &&
+            p.name !== 'Mavvir'
+        );
+        setAllProducts(clean);
       })
       .catch((e) => {
         console.error('Error fetching catalog products:', e);
+        const combined = [...localCustom, ...INITIAL_PRODUCTS];
+        const unique = Array.from(new Map(combined.map((p) => [p.id, p])).values());
+        setAllProducts(unique);
       });
   }, []);
 
