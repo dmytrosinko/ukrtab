@@ -32,7 +32,7 @@ export default async function AdminDashboardPage() {
           <p className="text-xs text-emerald-100 mt-1">Додавайте нові товари, редагуйте ціни та переглядайте замовлення</p>
         </div>
         <Link
-          href="/admin/products"
+          href="/admin/products?add=true"
           className="bg-white text-emerald-950 hover:bg-emerald-50 font-black px-6 py-3 rounded-2xl text-xs flex items-center space-x-2 shrink-0 transition shadow-md active:scale-95"
         >
           <Plus className="w-5 h-5 text-emerald-600" />

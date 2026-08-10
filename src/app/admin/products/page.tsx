@@ -46,6 +46,12 @@ export default function AdminProductsPage() {
 
   useEffect(() => {
     fetchData();
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('add') === 'true') {
+        handleOpenModal();
+      }
+    }
   }, []);
 
   // Handle Photo File Upload & Compress to max 500px JPEG (~20KB)
