@@ -64,11 +64,6 @@ export function PartnersSection() {
             Компанії, підрозділи та організації, які регулярно замовляють наші вінілові магніти, автономери та таблички.
           </p>
         </div>
-
-        <div className="flex items-center space-x-2 bg-emerald-50 px-4 py-2 rounded-2xl border border-emerald-100 text-xs font-bold text-emerald-800 self-start md:self-auto">
-          <Handshake className="w-4 h-4 text-emerald-600" />
-          <span>Понад {activePartners.length * 20}+ виконаних замовлень</span>
-        </div>
       </div>
 
       {/* Partners Grid */}

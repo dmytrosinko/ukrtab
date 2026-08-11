@@ -57,7 +57,7 @@ export default async function HomePage() {
       <BannerSlider banners={safeBanners} />
 
       {/* Trust Badges */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center space-x-3">
           <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
             <Truck className="w-5 h-5" />
@@ -75,16 +75,6 @@ export default async function HomePage() {
           <div>
             <h4 className="text-xs font-bold text-slate-900">Виготовлення 1-2 дні</h4>
             <p className="text-[11px] text-slate-500">Власне виробництво</p>
-          </div>
-        </div>
-
-        <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-            <ThumbsUp className="w-5 h-5" />
-          </div>
-          <div>
-            <h4 className="text-xs font-bold text-slate-900">Задоволені клієнти</h4>
-            <p className="text-[11px] text-slate-500">Тисячі замовлень</p>
           </div>
         </div>
 
