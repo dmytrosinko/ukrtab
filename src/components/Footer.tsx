@@ -19,9 +19,6 @@ export function Footer() {
           <p className="text-xs text-slate-400 leading-relaxed">
             Виробництво вінілових та магнітних наліпок на авто, попереджувальних знаків ЗСУ/Охорона та адресних табличок з доставкою по всій Україні.
           </p>
-          <div className="text-xs text-amber-400 bg-amber-950/40 border border-amber-800/40 p-2.5 rounded-lg">
-            ⭐ Понад 553 позитивних відгуків клієнтів!
-          </div>
         </div>
 
         {/* Catalog Links */}

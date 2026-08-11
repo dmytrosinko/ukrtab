@@ -83,8 +83,8 @@ export default async function HomePage() {
             <ThumbsUp className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-xs font-bold text-slate-900">553+ відгуків</h4>
-            <p className="text-[11px] text-slate-500">99% позитивних оцінок</p>
+            <h4 className="text-xs font-bold text-slate-900">Задоволені клієнти</h4>
+            <p className="text-[11px] text-slate-500">Тисячі замовлень</p>
           </div>
         </div>
 

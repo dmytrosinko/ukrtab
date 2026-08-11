@@ -42,7 +42,7 @@ export default function AboutPage() {
           <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
             <ThumbsUp className="w-6 h-6" />
           </div>
-          <h3 className="text-base font-bold text-slate-900">553+ Вдячних клієнтів</h3>
+          <h3 className="text-base font-bold text-slate-900">Надійний партнер</h3>
           <p className="text-xs text-slate-500 leading-relaxed">
             Працюємо з підрозділами ЗСУ, службами безпеки, інкасацією, комерційними підприємствами та приватними клієнтами.
           </p>
