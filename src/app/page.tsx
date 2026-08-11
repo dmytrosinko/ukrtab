@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { BannerSlider } from '@/components/BannerSlider';
 import { ProductCard } from '@/components/ProductCard';
+import { PartnersSection } from '@/components/PartnersSection';
 import { ShieldCheck, Truck, Clock, ThumbsUp, ArrowRight } from 'lucide-react';
 import { Product, Banner } from '@/lib/types';
 
@@ -122,6 +123,9 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* Partners Section "Нам довіряють" */}
+      <PartnersSection />
 
       {/* Custom Order Callout */}
       <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 rounded-3xl p-8 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">

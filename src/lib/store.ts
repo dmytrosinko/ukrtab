@@ -1,4 +1,4 @@
-import { Product, Category } from './types';
+import { Product, Category, PartnerLogo } from './types';
 
 export const INITIAL_CATEGORIES: Category[] = [
   {
@@ -8,6 +8,33 @@ export const INITIAL_CATEGORIES: Category[] = [
     image: 'https://images.prom.ua/4296986097_w297_h200_magnitni-nalipki-na.jpg',
     description: 'Міцні вінілові магніти на авто із захисною ламінацією від непогоди та УФ.',
     isFeatured: true,
+  },
+];
+
+export const INITIAL_PARTNERS: PartnerLogo[] = [
+  {
+    id: 'partner-1',
+    name: 'Збройні Сили України',
+    image: 'https://images.prom.ua/6964688153_w500_h500_magniti-dlya-sluzhb.jpg',
+    linkUrl: '',
+    sortOrder: 1,
+    isActive: true,
+  },
+  {
+    id: 'partner-2',
+    name: 'Служби Охорони України',
+    image: 'https://images.prom.ua/6964688153_w500_h500_magniti-dlya-sluzhb.jpg',
+    linkUrl: '',
+    sortOrder: 2,
+    isActive: true,
+  },
+  {
+    id: 'partner-3',
+    name: 'Нова Пошта',
+    image: 'https://images.prom.ua/4296986097_w297_h200_magnitni-nalipki-na.jpg',
+    linkUrl: 'https://novaposhta.ua',
+    sortOrder: 3,
+    isActive: true,
   },
 ];
 

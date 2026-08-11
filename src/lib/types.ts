@@ -77,3 +77,13 @@ export interface SiteSettings {
   reviewsCount: number;
   workHours: string;
 }
+
+export interface PartnerLogo {
+  id: string;
+  name?: string | null;
+  image: string;
+  linkUrl?: string | null;
+  sortOrder: number;
+  isActive: boolean;
+  createdAt?: Date | string;
+}

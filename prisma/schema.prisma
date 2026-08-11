@@ -91,3 +91,13 @@ model SiteSettings {
   workHours    String   @default("Пн-Нд: 10:00 - 21:00")
   updatedAt    DateTime @updatedAt
 }
+
+model PartnerLogo {
+  id        String   @id @default(uuid())
+  name      String?
+  image     String
+  linkUrl   String?
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}

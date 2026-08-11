@@ -8,6 +8,7 @@ import {
   Package, 
   ShoppingCart, 
   Upload, 
+  Handshake,
   ArrowLeft,
   ShieldCheck,
   LogOut
@@ -45,6 +46,12 @@ export default function AdminHeader() {
       href: '/admin/orders',
       icon: ShoppingCart,
       isActive: pathname ? pathname.startsWith('/admin/orders') : false,
+    },
+    {
+      label: 'Партнери',
+      href: '/admin/partners',
+      icon: Handshake,
+      isActive: pathname ? pathname.startsWith('/admin/partners') : false,
     },
     {
       label: 'Імпорт з Prom.ua',
