@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Plus, Trash2, Edit3, Image as ImageIcon, Search, Check, RefreshCw, Upload, Sparkles } from 'lucide-react';
+import { Plus, Trash2, Edit3, Image as ImageIcon, Search, Check, RefreshCw, Upload, Tag } from 'lucide-react';
 import { Product } from '@/lib/types';
 
 export default function AdminProductsPage() {
@@ -9,6 +9,7 @@ export default function AdminProductsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({
@@ -114,6 +115,7 @@ export default function AdminProductsPage() {
   };
 
   const handleOpenModal = () => {
+    setEditingProduct(null);
     const autoSku = generateAutoSku();
     setFormData({
       name: '',
@@ -128,9 +130,24 @@ export default function AdminProductsPage() {
     setIsModalOpen(true);
   };
 
+  const handleEditProduct = (prod: Product) => {
+    setEditingProduct(prod);
+    setFormData({
+      name: prod.name || '',
+      price: prod.price !== undefined && prod.price !== null ? String(prod.price) : '',
+      oldPrice: prod.oldPrice !== undefined && prod.oldPrice !== null ? String(prod.oldPrice) : '',
+      sku: prod.sku || '',
+      status: prod.status || 'В наявності',
+      image: prod.image || '',
+      description: prod.description || '',
+      unit: prod.unit || 'шт.',
+    });
+    setIsModalOpen(true);
+  };
+
   const handleNameChange = (nameVal: string) => {
     setFormData((prev) => {
-      const autoSku = generateAutoSku(nameVal);
+      const autoSku = editingProduct ? prev.sku : generateAutoSku(nameVal);
       return {
         ...prev,
         name: nameVal,
@@ -139,7 +156,7 @@ export default function AdminProductsPage() {
     });
   };
 
-  const handleCreateProduct = async (e: React.FormEvent) => {
+  const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.price) {
       alert('Будь ласка, вкажіть назву товару та ціну');
@@ -148,32 +165,92 @@ export default function AdminProductsPage() {
 
     const defaultImage = formData.image || 'https://images.prom.ua/4296986097_w297_h200_magnitni-nalipki-na.jpg';
 
-    const newProdObj: Product = {
-      id: 'prod-' + Date.now(),
-      name: formData.name,
-      slug: formData.name.toLowerCase().replace(/[^a-z0-9а-яіїєґ]+/gi, '-') + '-' + Date.now().toString().slice(-4),
-      price: parseFloat(formData.price) || 250,
-      oldPrice: formData.oldPrice ? parseFloat(formData.oldPrice) : undefined,
-      sku: formData.sku || generateAutoSku(formData.name),
-      status: formData.status || 'В наявності',
-      description: formData.description || '',
-      image: defaultImage,
-      images: JSON.stringify([defaultImage]),
-      unit: formData.unit || 'шт.',
-      features: '[]',
-      isFeatured: false,
-    };
+    if (editingProduct) {
+      // Editing existing product
+      const updatedProdObj: Product = {
+        ...editingProduct,
+        name: formData.name,
+        price: parseFloat(formData.price) || 0,
+        oldPrice: formData.oldPrice ? parseFloat(formData.oldPrice) : null,
+        sku: formData.sku || editingProduct.sku || generateAutoSku(formData.name),
+        status: formData.status || 'В наявності',
+        description: formData.description || '',
+        image: defaultImage,
+        images: JSON.stringify([defaultImage]),
+        unit: formData.unit || 'шт.',
+      };
 
-    try {
-      if (typeof window !== 'undefined') {
-        const existing = localStorage.getItem('ukrtab_custom_products');
-        const customArr = existing ? JSON.parse(existing) : [];
-        localStorage.setItem('ukrtab_custom_products', JSON.stringify([newProdObj, ...customArr]));
+      setProducts((prev) => prev.map((p) => (p.id === editingProduct.id ? updatedProdObj : p)));
+      setIsModalOpen(false);
+      setEditingProduct(null);
+
+      // Sync to localStorage
+      try {
+        if (typeof window !== 'undefined') {
+          const existing = localStorage.getItem('ukrtab_custom_products');
+          const customArr: Product[] = existing ? JSON.parse(existing) : [];
+          const idx = customArr.findIndex((p) => p.id === editingProduct.id);
+          if (idx !== -1) {
+            customArr[idx] = updatedProdObj;
+          } else {
+            customArr.unshift(updatedProdObj);
+          }
+          localStorage.setItem('ukrtab_custom_products', JSON.stringify(customArr));
+        }
+      } catch (err) {}
+
+      // PUT to API
+      try {
+        await fetch(`/api/products/${editingProduct.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updatedProdObj),
+        });
+      } catch (err) {
+        console.warn('Network send handled safely:', err);
       }
-    } catch (e) {}
+    } else {
+      // Creating new product
+      const newProdObj: Product = {
+        id: 'prod-' + Date.now(),
+        name: formData.name,
+        slug: formData.name.toLowerCase().replace(/[^a-z0-9а-яіїєґ]+/gi, '-') + '-' + Date.now().toString().slice(-4),
+        price: parseFloat(formData.price) || 250,
+        oldPrice: formData.oldPrice ? parseFloat(formData.oldPrice) : null,
+        sku: formData.sku || generateAutoSku(formData.name),
+        status: formData.status || 'В наявності',
+        description: formData.description || '',
+        image: defaultImage,
+        images: JSON.stringify([defaultImage]),
+        unit: formData.unit || 'шт.',
+        features: '[]',
+        isFeatured: false,
+      };
 
-    setProducts((prev) => [newProdObj, ...prev]);
-    setIsModalOpen(false);
+      try {
+        if (typeof window !== 'undefined') {
+          const existing = localStorage.getItem('ukrtab_custom_products');
+          const customArr = existing ? JSON.parse(existing) : [];
+          localStorage.setItem('ukrtab_custom_products', JSON.stringify([newProdObj, ...customArr]));
+        }
+      } catch (e) {}
+
+      setProducts((prev) => [newProdObj, ...prev]);
+      setIsModalOpen(false);
+
+      try {
+        await fetch('/api/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...newProdObj,
+            image: defaultImage,
+          }),
+        });
+      } catch (err) {
+        console.warn('Network send handled safely:', err);
+      }
+    }
 
     setFormData({
       name: '',
@@ -185,19 +262,6 @@ export default function AdminProductsPage() {
       description: '',
       unit: 'шт.',
     });
-
-    try {
-      await fetch('/api/products', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...newProdObj,
-          image: defaultImage,
-        }),
-      });
-    } catch (err) {
-      console.warn('Network send handled safely:', err);
-    }
   };
 
   const handleDeleteProduct = async (id: string) => {
@@ -277,14 +341,14 @@ export default function AdminProductsPage() {
                   <th className="p-4">Фото</th>
                   <th className="p-4">Назва товару</th>
                   <th className="p-4">Артикул</th>
-                  <th className="p-4">Ціна</th>
+                  <th className="p-4">Ціна / Знижка</th>
                   <th className="p-4">Статус</th>
                   <th className="p-4 text-right">Дії</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-medium">
                 {filteredProducts.map((p) => (
-                  <tr key={p.id} className="hover:bg-slate-50">
+                  <tr key={p.id} className="hover:bg-slate-50 transition">
                     <td className="p-4">
                       <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
                         <img src={p.image} alt="" className="w-full h-full object-cover" />
@@ -292,18 +356,45 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="p-4">
                       <div className="font-bold text-slate-900 line-clamp-1">{p.name}</div>
+                      {p.description && (
+                        <div className="text-[11px] text-slate-400 line-clamp-1 font-normal mt-0.5">
+                          {p.description}
+                        </div>
+                      )}
                     </td>
                     <td className="p-4 font-mono text-slate-500">{p.sku || '-'}</td>
-                    <td className="p-4 font-black text-slate-900">{p.price} ₴</td>
                     <td className="p-4">
-                      <span className="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full text-[10px]">
-                        {p.status}
+                      <div className="font-black text-slate-900">{p.price} ₴ <span className="text-[10px] font-normal text-slate-400">/{p.unit || 'шт.'}</span></div>
+                      {p.oldPrice && (
+                        <div className="text-[10px] text-amber-600 font-bold line-through">
+                          {p.oldPrice} ₴
+                        </div>
+                      )}
+                    </td>
+                    <td className="p-4">
+                      <span
+                        className={`font-bold px-2 py-0.5 rounded-full text-[10px] ${
+                          p.status === 'Під замовлення'
+                            ? 'bg-amber-100 text-amber-800'
+                            : p.status === 'Немає в наявності'
+                            ? 'bg-rose-100 text-rose-800'
+                            : 'bg-emerald-100 text-emerald-800'
+                        }`}
+                      >
+                        {p.status || 'В наявності'}
                       </span>
                     </td>
-                    <td className="p-4 text-right">
+                    <td className="p-4 text-right space-x-1">
+                      <button
+                        onClick={() => handleEditProduct(p)}
+                        className="p-2 text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition"
+                        title="Редагувати товар"
+                      >
+                        <Edit3 className="w-4 h-4" />
+                      </button>
                       <button
                         onClick={() => handleDeleteProduct(p.id)}
-                        className="p-2 text-slate-400 hover:text-red-600 transition"
+                        className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition"
                         title="Видалити"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -317,41 +408,53 @@ export default function AdminProductsPage() {
         )}
       </div>
 
-      {/* Modal Add Product */}
+      {/* Modal Add / Edit Product */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center border-b border-slate-100 pb-3">
               <h3 className="text-lg font-black text-slate-900 flex items-center space-x-2">
-                <Plus className="w-5 h-5 text-emerald-600" />
-                <span>Додати новий товар в магазин</span>
+                {editingProduct ? (
+                  <>
+                    <Edit3 className="w-5 h-5 text-emerald-600" />
+                    <span>Редагувати товар</span>
+                  </>
+                ) : (
+                  <>
+                    <Plus className="w-5 h-5 text-emerald-600" />
+                    <span>Додати новий товар в магазин</span>
+                  </>
+                )}
               </h3>
               <button
-                onClick={() => setIsModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 font-bold"
+                onClick={() => {
+                  setIsModalOpen(false);
+                  setEditingProduct(null);
+                }}
+                className="text-slate-400 hover:text-slate-600 font-bold text-lg"
               >
                 ✕
               </button>
             </div>
 
-            <form onSubmit={handleCreateProduct} className="space-y-4 text-xs">
+            <form onSubmit={handleSaveProduct} className="space-y-4 text-xs">
               {/* Product Title */}
               <div>
                 <label className="block font-bold text-slate-700 mb-1">Назва товару *</label>
                 <input
                   type="text"
                   required
-                  placeholder="наприклад: Мітя зробив магніт"
+                  placeholder="наприклад: Магніт Табличка"
                   value={formData.name}
                   onChange={(e) => handleNameChange(e.target.value)}
                   className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
-              {/* Price & SKU */}
+              {/* Price & Old Price */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Ціна в грн (₴) *</label>
+                  <label className="block font-bold text-slate-700 mb-1">Ціна (₴) *</label>
                   <input
                     type="number"
                     required
@@ -361,6 +464,20 @@ export default function AdminProductsPage() {
                     className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:border-emerald-500"
                   />
                 </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Стара ціна / Знижка (₴)</label>
+                  <input
+                    type="number"
+                    placeholder="300 (залиште порожнім якщо немає)"
+                    value={formData.oldPrice}
+                    onChange={(e) => setFormData({ ...formData, oldPrice: e.target.value })}
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+              </div>
+
+              {/* SKU & Status */}
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <label className="font-bold text-slate-700">Артикул (SKU)</label>
@@ -374,12 +491,41 @@ export default function AdminProductsPage() {
                   </div>
                   <input
                     type="text"
-                    placeholder="ZSU-3030"
+                    placeholder="UKR-1234"
                     value={formData.sku}
                     onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
                     className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono font-bold text-emerald-700 focus:outline-none focus:border-emerald-500"
                   />
                 </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Статус наявності</label>
+                  <select
+                    value={formData.status}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:border-emerald-500"
+                  >
+                    <option value="В наявності">В наявності</option>
+                    <option value="Під замовлення">Під замовлення</option>
+                    <option value="Немає в наявності">Немає в наявності</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Unit selector */}
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Одиниця виміру</label>
+                <select
+                  value={formData.unit}
+                  onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:border-emerald-500"
+                >
+                  <option value="шт.">шт. (штука)</option>
+                  <option value="компл.">компл. (комплект)</option>
+                  <option value="пачка">пачка</option>
+                  <option value="м²">м² (квадратний метр)</option>
+                  <option value="уп.">уп. (упаковка)</option>
+                </select>
               </div>
 
               {/* Photo Upload Area */}
@@ -427,11 +573,11 @@ export default function AdminProductsPage() {
               <div>
                 <label className="block font-bold text-slate-700 mb-1">Опис товару</label>
                 <textarea
-                  rows={3}
+                  rows={4}
                   placeholder="Детальний опис товару, характеристики, товщина магнітного вінілу, розміри..."
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs leading-relaxed"
                 />
               </div>
 
@@ -439,13 +585,17 @@ export default function AdminProductsPage() {
               <div className="flex space-x-3 pt-3 border-t border-slate-100">
                 <button
                   type="submit"
-                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3 rounded-2xl text-xs shadow-lg shadow-emerald-600/20 transition active:scale-95"
+                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3 rounded-2xl text-xs shadow-lg shadow-emerald-600/20 transition active:scale-95 flex items-center justify-center space-x-2"
                 >
-                  Опублікувати товар на сайті
+                  <Check className="w-4 h-4" />
+                  <span>{editingProduct ? 'Зберегти зміни' : 'Опублікувати товар на сайті'}</span>
                 </button>
                 <button
                   type="button"
-                  onClick={() => setIsModalOpen(false)}
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    setEditingProduct(null);
+                  }}
                   className="px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl text-xs transition"
                 >
                   Скасувати

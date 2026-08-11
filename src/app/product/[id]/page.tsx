@@ -22,17 +22,7 @@ export default function ProductDetailPage() {
   useEffect(() => {
     if (!targetId && !rawId) return;
 
-    // 1. Try INITIAL_PRODUCTS match by id or slug
-    const initMatch = INITIAL_PRODUCTS.find(
-      (p) => p.id === targetId || p.slug === targetId || p.id === rawId || p.slug === rawId
-    );
-    if (initMatch) {
-      setProduct(initMatch);
-      setSelectedImage(initMatch.image);
-      return;
-    }
-
-    // 2. Try localStorage custom products
+    // 1. Try localStorage custom/edited products first
     if (typeof window !== 'undefined') {
       try {
         const saved = localStorage.getItem('ukrtab_custom_products');
@@ -59,6 +49,11 @@ export default function ProductDetailPage() {
       }
     }
 
+    // 2. Try INITIAL_PRODUCTS match as local static check
+    const initMatch = INITIAL_PRODUCTS.find(
+      (p) => p.id === targetId || p.slug === targetId || p.id === rawId || p.slug === rawId
+    );
+
     // 3. Fallback fetch all products API or fallback to first catalog item
     fetch('/api/products')
       .then((r) => r.json())
@@ -77,14 +72,20 @@ export default function ProductDetailPage() {
             return;
           }
         }
-        // If not found anywhere, fallback to first catalog product
-        if (INITIAL_PRODUCTS.length > 0) {
+        // If not found in API list, use initMatch if found
+        if (initMatch) {
+          setProduct(initMatch);
+          setSelectedImage(initMatch.image);
+        } else if (INITIAL_PRODUCTS.length > 0) {
           setProduct(INITIAL_PRODUCTS[0]);
           setSelectedImage(INITIAL_PRODUCTS[0].image);
         }
       })
       .catch(() => {
-        if (INITIAL_PRODUCTS.length > 0) {
+        if (initMatch) {
+          setProduct(initMatch);
+          setSelectedImage(initMatch.image);
+        } else if (INITIAL_PRODUCTS.length > 0) {
           setProduct(INITIAL_PRODUCTS[0]);
           setSelectedImage(INITIAL_PRODUCTS[0].image);
         }

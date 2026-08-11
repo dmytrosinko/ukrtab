@@ -49,27 +49,58 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params;
+    const resolved = await params;
+    const rawId = resolved.id || '';
+    const id = decodeURIComponent(rawId);
     const body = await request.json();
 
-    const product = await prisma.product.update({
-      where: { id },
-      data: {
-        name: body.name,
-        price: parseFloat(body.price),
-        oldPrice: body.oldPrice ? parseFloat(body.oldPrice) : null,
-        sku: body.sku,
-        status: body.status,
-        categoryId: body.categoryId || null,
-        description: body.description,
-        image: body.image,
-        images: body.images ? JSON.stringify(body.images) : undefined,
-        unit: body.unit,
-        isFeatured: body.isFeatured,
-      },
-    });
+    const updateData: any = {
+      name: body.name,
+      price: body.price !== undefined ? parseFloat(body.price) : undefined,
+      oldPrice: body.oldPrice !== undefined && body.oldPrice !== null && body.oldPrice !== '' ? parseFloat(body.oldPrice) : null,
+      sku: body.sku || null,
+      status: body.status || 'В наявності',
+      categoryId: body.categoryId || null,
+      description: body.description || null,
+      image: body.image,
+      images: body.images ? (typeof body.images === 'string' ? body.images : JSON.stringify(body.images)) : (body.image ? JSON.stringify([body.image]) : undefined),
+      unit: body.unit || 'шт.',
+      isFeatured: Boolean(body.isFeatured),
+    };
 
-    return NextResponse.json(product);
+    let product = null;
+
+    // 1. Try Prisma DB update
+    try {
+      product = await prisma.product.update({
+        where: { id },
+        data: updateData,
+      });
+    } catch (dbErr) {
+      console.warn('Prisma DB update skipped or failed:', dbErr);
+    }
+
+    // 2. Sync / update in MEMORY_PRODUCTS
+    const memIdx = MEMORY_PRODUCTS.findIndex((p) => p.id === id || p.slug === id);
+    const updatedMemObj = {
+      id: body.id || id,
+      slug: body.slug || id,
+      ...updateData,
+      updatedAt: new Date(),
+    };
+
+    if (memIdx !== -1) {
+      MEMORY_PRODUCTS[memIdx] = {
+        ...MEMORY_PRODUCTS[memIdx],
+        ...updatedMemObj,
+      };
+      if (!product) product = MEMORY_PRODUCTS[memIdx];
+    } else {
+      MEMORY_PRODUCTS.unshift(updatedMemObj);
+      if (!product) product = updatedMemObj;
+    }
+
+    return NextResponse.json(product || updatedMemObj);
   } catch (error) {
     console.error('Error updating product:', error);
     return NextResponse.json({ error: 'Failed to update product' }, { status: 500 });

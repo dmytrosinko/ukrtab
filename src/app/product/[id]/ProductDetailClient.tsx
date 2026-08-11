@@ -25,14 +25,7 @@ export function ProductDetailClient({
         const pathSegments = window.location.pathname.split('/');
         const targetId = pathSegments[pathSegments.length - 1] || productId;
 
-        // 1. Check INITIAL_PRODUCTS first
-        const initMatch = INITIAL_PRODUCTS.find((p) => p.id === targetId || p.slug === targetId);
-        if (initMatch) {
-          setProduct(initMatch);
-          return;
-        }
-
-        // 2. Check localStorage custom products
+        // 1. Check localStorage custom/edited products first
         const saved = localStorage.getItem('ukrtab_custom_products');
         if (saved) {
           const parsed = JSON.parse(saved);
@@ -45,15 +38,27 @@ export function ProductDetailClient({
           }
         }
 
-        // 3. Fallback fetch from API route
+        // 2. Fetch from API route (DB or memory store)
         fetch(`/api/products/${targetId}`)
           .then((r) => r.json())
           .then((data) => {
             if (data && data.name) {
               setProduct(data);
+            } else {
+              // 3. Fallback to INITIAL_PRODUCTS
+              const initMatch = INITIAL_PRODUCTS.find((p) => p.id === targetId || p.slug === targetId);
+              if (initMatch) {
+                setProduct(initMatch);
+              }
             }
           })
-          .catch(() => {});
+          .catch(() => {
+            // 3. Fallback to INITIAL_PRODUCTS
+            const initMatch = INITIAL_PRODUCTS.find((p) => p.id === targetId || p.slug === targetId);
+            if (initMatch) {
+              setProduct(initMatch);
+            }
+          });
       } catch (e) {
         console.error('Error matching product in detail client view:', e);
       }
