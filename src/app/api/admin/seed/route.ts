@@ -38,9 +38,15 @@ export async function GET() {
       isFeatured: Boolean(p.isFeatured),
     }));
 
-    await prisma.product.createMany({
-      data: seedData,
-    });
+    for (const p of seedData) {
+      try {
+        await prisma.product.upsert({
+          where: { id: p.id },
+          update: {},
+          create: p,
+        });
+      } catch (itemErr) {}
+    }
 
     const count = await prisma.product.count();
 
