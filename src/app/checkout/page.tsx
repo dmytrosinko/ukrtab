@@ -16,11 +16,11 @@ export default function CheckoutPage() {
     city: 'м. Дніпро',
     deliveryMethod: 'Нова Пошта',
     warehouseInfo: '',
-    paymentMethod: 'При отриманні',
+    paymentMethod: 'Оплата за реквізитами IBAN / на картку',
     notes: '',
   });
 
-  const [cityRef, setCityRef] = useState('db5c8892-41cd-11e4-ab6d-005056801329'); // Дніпро
+  const [cityRef, setCityRef] = useState('db5c88f0-391c-11dd-90d9-001a92567626'); // Дніпро
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [createdOrder, setCreatedOrder] = useState<any>(null);
   const [errorMessage, setErrorMessage] = useState('');
@@ -265,29 +265,24 @@ export default function CheckoutPage() {
               <span>Оплата</span>
             </h3>
 
-            <div className="space-y-2">
-              <label className="flex items-center space-x-3 p-3 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:border-emerald-500 transition">
+            <div>
+              <label className="flex items-center space-x-3 p-4 bg-emerald-50/60 border-2 border-emerald-500 rounded-2xl cursor-default transition">
                 <input
                   type="radio"
                   name="paymentMethod"
-                  value="При отриманні"
-                  checked={formData.paymentMethod === 'При отриманні'}
-                  onChange={handleChange}
-                  className="text-emerald-600 focus:ring-emerald-500"
+                  value="Оплата за реквізитами IBAN / на картку"
+                  checked={true}
+                  readOnly
+                  className="w-4 h-4 text-emerald-600 focus:ring-emerald-500"
                 />
-                <span className="text-xs font-bold text-slate-800">Оплата при отриманні (Післяплата)</span>
-              </label>
-
-              <label className="flex items-center space-x-3 p-3 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:border-emerald-500 transition">
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="Оплата на картку"
-                  checked={formData.paymentMethod === 'Оплата на картку'}
-                  onChange={handleChange}
-                  className="text-emerald-600 focus:ring-emerald-500"
-                />
-                <span className="text-xs font-bold text-slate-800">Оплата за реквізитами IBAN / на картку</span>
+                <div className="flex-1">
+                  <span className="text-xs font-bold text-slate-900 block">
+                    Оплата за реквізитами IBAN / на картку
+                  </span>
+                  <span className="text-[11px] text-slate-500 font-medium block mt-0.5">
+                    Реквізити для оплати будуть надіслані менеджером у SMS / Viber після підтвердження замовлення.
+                  </span>
+                </div>
               </label>
             </div>
           </div>
