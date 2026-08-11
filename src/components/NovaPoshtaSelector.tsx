@@ -31,11 +31,11 @@ interface NovaPoshtaSelectorProps {
 
 const POPULAR_CITIES = [
   { name: 'Київ', ref: '8d5a980d-391c-11dd-90d9-001a92567626' },
-  { name: 'Дніпро', ref: 'db5c8892-41cd-11e4-ab6d-005056801329' },
-  { name: 'Львів', ref: 'db5c88f5-41cd-11e4-ab6d-005056801329' },
-  { name: 'Харків', ref: 'db5c88e0-41cd-11e4-ab6d-005056801329' },
-  { name: 'Одеса', ref: 'db5c88d0-41cd-11e4-ab6d-005056801329' },
-  { name: 'Запоріжжя', ref: 'db5c88c6-41cd-11e4-ab6d-005056801329' },
+  { name: 'Дніпро', ref: 'db5c88f0-391c-11dd-90d9-001a92567626' },
+  { name: 'Львів', ref: 'db5c88f5-391c-11dd-90d9-001a92567626' },
+  { name: 'Харків', ref: 'db5c88e0-391c-11dd-90d9-001a92567626' },
+  { name: 'Одеса', ref: 'db5c88d0-391c-11dd-90d9-001a92567626' },
+  { name: 'Запоріжжя', ref: 'db5c88c6-391c-11dd-90d9-001a92567626' },
 ];
 
 export default function NovaPoshtaSelector({
@@ -113,7 +113,8 @@ export default function NovaPoshtaSelector({
 
   // Fetch warehouses when cityRef or cityInput changes
   useEffect(() => {
-    if (!cityRef && !selectedCity) {
+    const currentName = selectedCity || cityInput;
+    if (!cityRef && !currentName) {
       setWarehouses([]);
       return;
     }
@@ -122,11 +123,15 @@ export default function NovaPoshtaSelector({
       setIsLoadingWarehouses(true);
       try {
         let url = '/api/novaposhta/warehouses?';
+        const params: string[] = [];
         if (cityRef) {
-          url += `cityRef=${encodeURIComponent(cityRef)}`;
-        } else {
-          url += `cityName=${encodeURIComponent(selectedCity || cityInput)}`;
+          params.push(`cityRef=${encodeURIComponent(cityRef)}`);
         }
+        if (currentName) {
+          params.push(`cityName=${encodeURIComponent(currentName)}`);
+        }
+
+        url += params.join('&');
 
         const res = await fetch(url);
         const data = await res.json();
@@ -139,7 +144,7 @@ export default function NovaPoshtaSelector({
     };
 
     fetchWarehouses();
-  }, [cityRef, selectedCity]);
+  }, [cityRef, selectedCity, cityInput]);
 
   // Handle selecting a city
   const handleSelectCityItem = (city: City) => {

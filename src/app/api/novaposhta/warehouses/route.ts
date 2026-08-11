@@ -44,12 +44,41 @@ export async function GET(request: Request) {
     });
 
     const data = await res.json();
+    let rawWarehouses = data.data;
 
-    if (!data.success || !Array.isArray(data.data)) {
+    // Fallback: If cityRef query returned 0 warehouses or failed, try by CityName
+    if ((!data.success || !Array.isArray(rawWarehouses) || rawWarehouses.length === 0) && cityName) {
+      const cleanCityName = cityName.replace(/^(м|смт|с|село|місто)\.?\s*/i, '').split(',')[0].trim();
+      const fallbackProps: any = {
+        Limit: '500',
+        FindByString: q.trim(),
+        CityName: cleanCityName,
+      };
+      if (category === 'Postomat') {
+        fallbackProps.TypeOfWarehouseRef = 'f5e9ea12-b2f3-11e3-8267-005056804677';
+      }
+      const fallbackRes = await fetch('https://api.novaposhta.ua/v2.0/json/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          apiKey,
+          modelName: 'Address',
+          calledMethod: 'getWarehouses',
+          methodProperties: fallbackProps,
+        }),
+        next: { revalidate: 3600 },
+      });
+      const fallbackData = await fallbackRes.json();
+      if (fallbackData.success && Array.isArray(fallbackData.data)) {
+        rawWarehouses = fallbackData.data;
+      }
+    }
+
+    if (!Array.isArray(rawWarehouses)) {
       return NextResponse.json({ warehouses: [], rawError: data.errors });
     }
 
-    let warehouses = data.data.map((item: any) => {
+    let warehouses = rawWarehouses.map((item: any) => {
       const isPostomat =
         item.CategoryOfWarehouse === 'Postomat' ||
         item.Description?.toLowerCase().includes('поштомат');
