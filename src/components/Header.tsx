@@ -1,22 +1,25 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
+  Search, 
+  ShoppingCart, 
+  Menu, 
+  X, 
   Phone, 
   MapPin, 
   Clock, 
-  Star, 
-  ShoppingCart, 
-  Search, 
-  Menu, 
-  X, 
   ShieldCheck,
   Package,
-  Sparkles
+  Sparkles,
+  ArrowRight
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import { INITIAL_PRODUCTS } from '@/lib/store';
+import { Product } from '@/lib/types';
+import { searchProducts } from '@/lib/search';
 
 export function Header() {
   const pathname = usePathname();
@@ -24,18 +27,49 @@ export function Header() {
   const { totalItems, totalPrice, setIsCartOpen } = useCart();
   const [searchQuery, setSearchQuery] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [allProducts, setAllProducts] = useState<Product[]>(INITIAL_PRODUCTS);
+  const searchContainerRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
+    setIsSearchFocused(false);
   }, [pathname]);
+
+  // Fetch products for live search dropdown
+  useEffect(() => {
+    fetch('/api/products')
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setAllProducts(data);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Close search dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        setIsSearchFocused(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       setIsMobileMenuOpen(false);
+      setIsSearchFocused(false);
       router.push(`/catalog?search=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
+
+  const matchedProducts = searchQuery.trim() ? searchProducts(allProducts, searchQuery).slice(0, 5) : [];
+  const totalMatchCount = searchQuery.trim() ? searchProducts(allProducts, searchQuery).length : 0;
 
   const isLinkActive = (path: string) => pathname === path;
 
@@ -81,12 +115,20 @@ export function Header() {
         </Link>
 
         {/* Search Bar */}
-        <form onSubmit={handleSearch} className="hidden sm:flex flex-1 max-w-lg relative">
+        <form
+          ref={searchContainerRef}
+          onSubmit={handleSearch}
+          className="hidden sm:flex flex-1 max-w-lg relative"
+        >
           <input
             type="text"
             placeholder="Шукати магнітні наліпки, знаки ЗСУ, адресні таблички..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onFocus={() => setIsSearchFocused(true)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setIsSearchFocused(true);
+            }}
             className="w-full pl-4 pr-11 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-emerald-500 focus:bg-white transition"
           />
           <button
@@ -95,6 +137,60 @@ export function Header() {
           >
             <Search className="w-5 h-5" />
           </button>
+
+          {/* Instant Search Dropdown */}
+          {isSearchFocused && searchQuery.trim().length > 0 && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl border border-slate-200 shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+              {matchedProducts.length > 0 ? (
+                <div>
+                  <div className="p-3 bg-slate-50 border-b border-slate-100 text-[11px] font-bold text-slate-500 uppercase tracking-wider flex justify-between items-center">
+                    <span>Знайдені товари ({totalMatchCount})</span>
+                    <span>Клацніть для переходу</span>
+                  </div>
+                  <div className="divide-y divide-slate-100 max-h-80 overflow-y-auto">
+                    {matchedProducts.map((prod) => (
+                      <Link
+                        key={prod.id}
+                        href={`/product/${prod.slug}`}
+                        onClick={() => setIsSearchFocused(false)}
+                        className="flex items-center space-x-3 p-3 hover:bg-slate-50 transition group"
+                      >
+                        <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 shrink-0 overflow-hidden p-1 flex items-center justify-center">
+                          <img
+                            src={prod.image}
+                            alt={prod.name}
+                            className="max-w-full max-h-full object-contain group-hover:scale-110 transition duration-200"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-xs font-bold text-slate-900 truncate group-hover:text-emerald-600 transition">
+                            {prod.name}
+                          </div>
+                          <div className="text-[11px] text-slate-500 font-medium">
+                            {prod.sku ? `Арт: ${prod.sku} • ` : ''}
+                            <span className="text-emerald-600 font-bold">{prod.price} ₴</span>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full p-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs flex items-center justify-center space-x-2 border-t border-emerald-100 transition"
+                  >
+                    <span>Переглянути всі {totalMatchCount} товарів</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <div className="p-6 text-center text-xs text-slate-500 font-medium space-y-1">
+                  <div>Нічого не знайдено за запитом "<span className="font-bold text-slate-800">{searchQuery}</span>"</div>
+                  <div className="text-[11px] text-slate-400">Спробуйте змінити слово або використати коротшу фразу</div>
+                </div>
+              )}
+            </div>
+          )}
         </form>
 
         {/* Cart & Constructor Buttons */}
@@ -140,9 +236,9 @@ export function Header() {
         <div className="max-w-7xl mx-auto px-4 flex items-center space-x-8 text-sm font-semibold">
           <Link
             href="/"
-            className={`py-3 border-b-2 transition ${
+            className={`py-3 transition border-b-2 ${
               isLinkActive('/')
-                ? 'border-emerald-600 text-emerald-700 font-bold'
+                ? 'border-emerald-600 text-emerald-600 font-bold'
                 : 'border-transparent text-slate-700 hover:text-emerald-600'
             }`}
           >
@@ -150,51 +246,50 @@ export function Header() {
           </Link>
           <Link
             href="/catalog"
-            className={`py-3 border-b-2 transition flex items-center space-x-1 ${
-              pathname.startsWith('/catalog')
-                ? 'border-emerald-600 text-emerald-700 font-bold'
+            className={`py-3 transition border-b-2 ${
+              isLinkActive('/catalog')
+                ? 'border-emerald-600 text-emerald-600 font-bold'
                 : 'border-transparent text-slate-700 hover:text-emerald-600'
             }`}
           >
-            <Package className="w-4 h-4 text-emerald-600" />
-            <span>Каталог товарів</span>
+            Каталог товарів
           </Link>
           <Link
             href="/constructor"
-            className={`py-3 border-b-2 transition flex items-center space-x-1 text-amber-700 hover:text-amber-800 ${
+            className={`py-3 transition border-b-2 flex items-center space-x-1 ${
               isLinkActive('/constructor')
-                ? 'border-amber-500 font-black'
-                : 'border-transparent font-bold'
+                ? 'border-amber-500 text-amber-600 font-bold'
+                : 'border-transparent text-amber-600 hover:text-amber-700'
             }`}
           >
             <Sparkles className="w-4 h-4 text-amber-500 fill-amber-500" />
-            <span>Конструктор магнітів</span>
-          </Link>
-          <Link
-            href="/about"
-            className={`py-3 border-b-2 transition ${
-              isLinkActive('/about')
-                ? 'border-emerald-600 text-emerald-700 font-bold'
-                : 'border-transparent text-slate-700 hover:text-emerald-600'
-            }`}
-          >
-            Про нас
+            <span>Конструктор товарів</span>
           </Link>
           <Link
             href="/delivery"
-            className={`py-3 border-b-2 transition ${
+            className={`py-3 transition border-b-2 ${
               isLinkActive('/delivery')
-                ? 'border-emerald-600 text-emerald-700 font-bold'
+                ? 'border-emerald-600 text-emerald-600 font-bold'
                 : 'border-transparent text-slate-700 hover:text-emerald-600'
             }`}
           >
             Доставка та оплата
           </Link>
           <Link
+            href="/about"
+            className={`py-3 transition border-b-2 ${
+              isLinkActive('/about')
+                ? 'border-emerald-600 text-emerald-600 font-bold'
+                : 'border-transparent text-slate-700 hover:text-emerald-600'
+            }`}
+          >
+            Про нас
+          </Link>
+          <Link
             href="/contacts"
-            className={`py-3 border-b-2 transition ${
+            className={`py-3 transition border-b-2 ${
               isLinkActive('/contacts')
-                ? 'border-emerald-600 text-emerald-700 font-bold'
+                ? 'border-emerald-600 text-emerald-600 font-bold'
                 : 'border-transparent text-slate-700 hover:text-emerald-600'
             }`}
           >
@@ -203,40 +298,75 @@ export function Header() {
         </div>
       </nav>
 
-      {/* Mobile Menu Dropdown */}
+      {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-white border-t border-slate-200 px-4 py-4 space-y-3">
-          <form onSubmit={handleSearch} className="relative mb-4">
+        <div className="md:hidden border-t border-slate-100 bg-white px-4 pt-3 pb-6 space-y-4 shadow-xl">
+          {/* Mobile Search */}
+          <form onSubmit={handleSearch} className="relative">
             <input
               type="text"
-              placeholder="Пошук..."
+              placeholder="Пошук товарів..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-4 pr-10 py-2 bg-slate-100 border border-slate-200 rounded-lg text-sm"
+              className="w-full pl-4 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-emerald-500"
             />
-            <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">
-              <Search className="w-4 h-4" />
+            <button
+              type="submit"
+              className="absolute right-1 top-1/2 -translate-y-1/2 p-2 text-slate-400"
+            >
+              <Search className="w-5 h-5 text-emerald-600" />
             </button>
           </form>
 
-          <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-slate-800 font-medium hover:text-emerald-600">
-            Головна
-          </Link>
-          <Link href="/catalog" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-slate-800 font-medium hover:text-emerald-600">
-            Каталог товарів
-          </Link>
-          <Link href="/constructor" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-amber-700 font-black">
-            🎨 Конструктор магнітів
-          </Link>
-          <Link href="/about" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-slate-800 font-medium hover:text-emerald-600">
-            Про нас
-          </Link>
-          <Link href="/delivery" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-slate-800 font-medium hover:text-emerald-600">
-            Доставка та оплата
-          </Link>
-          <Link href="/contacts" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-slate-800 font-medium hover:text-emerald-600">
-            Контакти
-          </Link>
+          <div className="flex flex-col space-y-3 text-sm font-semibold text-slate-800">
+            <Link
+              href="/"
+              className={`p-2 rounded-xl transition ${
+                isLinkActive('/') ? 'bg-emerald-50 text-emerald-600 font-bold' : 'hover:bg-slate-50'
+              }`}
+            >
+              Головна
+            </Link>
+            <Link
+              href="/catalog"
+              className={`p-2 rounded-xl transition ${
+                isLinkActive('/catalog') ? 'bg-emerald-50 text-emerald-600 font-bold' : 'hover:bg-slate-50'
+              }`}
+            >
+              Каталог товарів
+            </Link>
+            <Link
+              href="/constructor"
+              className="p-2 rounded-xl bg-amber-500/10 text-amber-700 font-extrabold flex items-center space-x-2"
+            >
+              <Sparkles className="w-4 h-4 fill-amber-600 text-amber-600" />
+              <span>🎨 Створити свій дизайн</span>
+            </Link>
+            <Link
+              href="/delivery"
+              className={`p-2 rounded-xl transition ${
+                isLinkActive('/delivery') ? 'bg-emerald-50 text-emerald-600 font-bold' : 'hover:bg-slate-50'
+              }`}
+            >
+              Доставка та оплата
+            </Link>
+            <Link
+              href="/about"
+              className={`p-2 rounded-xl transition ${
+                isLinkActive('/about') ? 'bg-emerald-50 text-emerald-600 font-bold' : 'hover:bg-slate-50'
+              }`}
+            >
+              Про нас
+            </Link>
+            <Link
+              href="/contacts"
+              className={`p-2 rounded-xl transition ${
+                isLinkActive('/contacts') ? 'bg-emerald-50 text-emerald-600 font-bold' : 'hover:bg-slate-50'
+              }`}
+            >
+              Контакти
+            </Link>
+          </div>
         </div>
       )}
     </header>
