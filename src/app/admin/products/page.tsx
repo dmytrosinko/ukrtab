@@ -303,7 +303,7 @@ export default function AdminProductsPage() {
             className="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-3 rounded-2xl text-xs flex items-center justify-center space-x-2 transition shadow-lg shadow-emerald-600/20 active:scale-95"
           >
             <Plus className="w-4 h-4" />
-            <span>+ Додати новий товар</span>
+            <span>Додати новий товар</span>
           </button>
           <button
             onClick={fetchData}

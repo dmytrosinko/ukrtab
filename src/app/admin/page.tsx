@@ -36,7 +36,7 @@ export default async function AdminDashboardPage() {
           className="bg-white text-emerald-950 hover:bg-emerald-50 font-black px-6 py-3 rounded-2xl text-xs flex items-center space-x-2 shrink-0 transition shadow-md active:scale-95"
         >
           <Plus className="w-5 h-5 text-emerald-600" />
-          <span>+ Додати новий товар</span>
+          <span>Додати новий товар</span>
         </Link>
       </div>
 
