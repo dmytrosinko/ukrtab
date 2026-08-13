@@ -6,6 +6,7 @@ import Link from 'next/link';
 
 export default function AdminImportPromPage() {
   const [xmlText, setXmlText] = useState('');
+  const [feedUrl, setFeedUrl] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isImporting, setIsImporting] = useState(false);
   const [importResult, setImportResult] = useState<any>(null);
@@ -19,8 +20,8 @@ export default function AdminImportPromPage() {
 
   const handleImport = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedFile && !xmlText.trim()) {
-      setErrorMessage('Оберіть XML/YML файл Prom.ua або вставте XML текст');
+    if (!selectedFile && !xmlText.trim() && !feedUrl.trim()) {
+      setErrorMessage('Оберіть XML/YML файл, вставте посилання на фід або вставте XML текст');
       return;
     }
 
@@ -32,6 +33,8 @@ export default function AdminImportPromPage() {
       const formData = new FormData();
       if (selectedFile) {
         formData.append('file', selectedFile);
+      } else if (feedUrl.trim()) {
+        formData.append('feedUrl', feedUrl.trim());
       } else {
         formData.append('xmlText', xmlText);
       }
@@ -164,6 +167,30 @@ export default function AdminImportPromPage() {
       )}
 
       <form onSubmit={handleImport} className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* URL Import Box */}
+        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4 lg:col-span-2">
+          <h3 className="text-base font-bold text-slate-900 flex items-center space-x-2 border-b border-slate-100 pb-3">
+            <RefreshCw className="w-5 h-5 text-emerald-600" />
+            <span>Імпорт за посиланням на XML/YML фід (Prom.ua / Google Merchant)</span>
+          </h3>
+
+          <p className="text-xs text-slate-500">
+            Вставте посилання на ваш фід експорту з Prom.ua (автоматично видаляє всі дублікати):
+          </p>
+
+          <input
+            type="url"
+            placeholder="https://ukrtab.prom.ua/google_merchant_center.xml?hash_tag=..."
+            value={feedUrl}
+            onChange={(e) => {
+              setFeedUrl(e.target.value);
+              setSelectedFile(null);
+              setXmlText('');
+            }}
+            className="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-mono focus:outline-none focus:border-emerald-500"
+          />
+        </div>
+
         {/* File Upload Box */}
         <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
           <h3 className="text-base font-bold text-slate-900 flex items-center space-x-2 border-b border-slate-100 pb-3">
