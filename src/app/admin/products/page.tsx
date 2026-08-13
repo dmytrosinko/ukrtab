@@ -61,19 +61,21 @@ export default function AdminProductsPage() {
         }
       });
 
-      // Merge custom products created locally ONLY if they don't already exist on server
+      // Overlay custom/edited products created locally so edited values take priority
       if (Array.isArray(customProducts)) {
         customProducts.forEach((cp: Product) => {
           if (!cp || !cp.name) return;
           const cpKey = cp.name.trim().toLowerCase();
-          let existsOnServer = false;
+          let matchedKey = null;
           for (const [k, p] of Array.from(map.entries())) {
             if (p.id === cp.id || (p.slug && cp.slug && p.slug === cp.slug) || k === cpKey) {
-              existsOnServer = true;
+              matchedKey = k;
               break;
             }
           }
-          if (!existsOnServer) {
+          if (matchedKey) {
+            map.set(matchedKey, { ...map.get(matchedKey), ...cp });
+          } else {
             map.set(cpKey, cp);
           }
         });
