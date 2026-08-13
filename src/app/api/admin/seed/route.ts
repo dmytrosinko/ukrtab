@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { INITIAL_PRODUCTS, INITIAL_CATEGORIES } from '@/lib/store';
+import { INITIAL_CATEGORIES } from '@/lib/store';
+import merchantProducts from '../../../../../scripts/merchant_unique_products.json';
 
 export async function GET() {
   try {
@@ -22,8 +23,8 @@ export async function GET() {
 
     const validCatIds = new Set(INITIAL_CATEGORIES.map((c) => c.id));
 
-    // 2. Prepare and seed products
-    const seedData = INITIAL_PRODUCTS.map((p) => ({
+    // 2. Prepare unique deduplicated products from Prom.ua Google Merchant feed
+    const seedData = (merchantProducts as any[]).map((p) => ({
       id: p.id,
       name: p.name,
       slug: p.slug,
@@ -58,7 +59,7 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      message: `Успішно перенесено ${insertedOrUpdated} товарів у базу даних Supabase PostgreSQL!`,
+      message: `Успішно імпортовано ${insertedOrUpdated} унікальних товарів з Google Merchant у базу даних!`,
       totalInDatabase: count,
     });
   } catch (error: any) {
