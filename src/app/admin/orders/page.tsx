@@ -110,6 +110,51 @@ export default function AdminOrdersPage() {
         </div>
       )}
 
+      {/* Revenue & Order Metrics Summary */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div>
+            <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Загальний дохід</div>
+            <div className="text-2xl font-black text-emerald-600 mt-1">
+              {orders.filter(o => o.status !== 'Скасовано').reduce((sum, o) => sum + (o.total || 0), 0).toLocaleString('uk-UA')} ₴
+            </div>
+          </div>
+          <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center font-bold text-lg">
+            ₴
+          </div>
+        </div>
+
+        <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div>
+            <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Дохід за сьогодні</div>
+            <div className="text-2xl font-black text-slate-900 mt-1">
+              {orders
+                .filter(o => o.status !== 'Скасовано' && new Date(o.createdAt).toDateString() === new Date().toDateString())
+                .reduce((sum, o) => sum + (o.total || 0), 0).toLocaleString('uk-UA')} ₴
+            </div>
+          </div>
+          <div className="w-12 h-12 bg-slate-50 text-slate-700 rounded-2xl flex items-center justify-center font-bold text-lg">
+            📅
+          </div>
+        </div>
+
+        <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div>
+            <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Середній чек</div>
+            <div className="text-2xl font-black text-slate-900 mt-1">
+              {(() => {
+                const active = orders.filter(o => o.status !== 'Скасовано');
+                const totalSum = active.reduce((sum, o) => sum + (o.total || 0), 0);
+                return active.length > 0 ? Math.round(totalSum / active.length).toLocaleString('uk-UA') : 0;
+              })()} ₴
+            </div>
+          </div>
+          <div className="w-12 h-12 bg-slate-50 text-slate-700 rounded-2xl flex items-center justify-center font-bold text-lg">
+            📊
+          </div>
+        </div>
+      </div>
+
       <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-black text-slate-900">Управління замовленнями</h2>
