@@ -17,7 +17,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+  const gaId = process.env.NEXT_PUBLIC_GA_ID || 'G-3JX1H1V7NP';
 
   return (
     <html lang="uk">
@@ -31,7 +31,7 @@ export default function RootLayout({
           <CartDrawer />
         </CartProvider>
 
-        {gaId && <GoogleAnalytics gaId={gaId} />}
+        <GoogleAnalytics gaId={gaId} />
       </body>
     </html>
   );
