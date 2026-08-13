@@ -369,14 +369,4 @@ export function CatalogView() {
       </div>
     </div>
   );
-}Pages}
-            className="p-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
-            title="Наступна сторінка"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-      )}
-    </div>
-  );
 }
