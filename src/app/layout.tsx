@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
-import Script from 'next/script';
 import './globals.css';
 import { CartProvider } from '@/context/CartContext';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { CartDrawer } from '@/components/CartDrawer';
+import { GoogleAnalytics } from '@/components/GoogleAnalytics';
 
 export const metadata: Metadata = {
   title: 'Укртаб — Виробництво магнітів, наліпок на авто та адресних табличок',
@@ -31,24 +31,7 @@ export default function RootLayout({
           <CartDrawer />
         </CartProvider>
 
-        {gaId && (
-          <>
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
-              strategy="afterInteractive"
-            />
-            <Script id="google-analytics" strategy="afterInteractive">
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${gaId}', {
-                  page_path: window.location.pathname,
-                });
-              `}
-            </Script>
-          </>
-        )}
+        {gaId && <GoogleAnalytics gaId={gaId} />}
       </body>
     </html>
   );
