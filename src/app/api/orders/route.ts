@@ -27,21 +27,24 @@ async function sendTelegramNotification(order: any) {
   }
 
   try {
+    const escapeHtml = (str: string) =>
+      str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
     const itemsList = (order.items || [])
-      .map((item: any) => `• ${item.productName} (${item.quantity} x ${item.price} ₴)`)
+      .map((item: any) => `• ${escapeHtml(item.productName)} (${item.quantity} x ${item.price} ₴)`)
       .join('\n');
 
     const message =
-      `🛍 *НОВЕ ЗАМОВЛЕННЯ #${order.orderNumber}*\n\n` +
-      `👤 *Клієнт:* ${order.customerName}\n` +
-      `📞 *Телефон:* ${order.customerPhone}\n` +
-      `${order.customerEmail ? `✉️ *Email:* ${order.customerEmail}\n` : ''}` +
-      `📍 *Місто:* ${order.city || 'Не вказано'}\n` +
-      `🚚 *Доставка:* ${order.deliveryMethod} (${order.warehouseInfo || 'без адреси'})\n` +
-      `💳 *Оплата:* ${order.paymentMethod}\n` +
-      `${order.notes ? `📝 *Примітка:* ${order.notes}\n` : ''}\n` +
-      `📦 *Товари:*\n${itemsList}\n\n` +
-      `💰 *Разом:* ${order.total} ₴`;
+      `🛍 <b>НОВЕ ЗАМОВЛЕННЯ #${order.orderNumber}</b>\n\n` +
+      `👤 <b>Клієнт:</b> ${escapeHtml(order.customerName)}\n` +
+      `📞 <b>Телефон:</b> ${escapeHtml(order.customerPhone)}\n` +
+      `${order.customerEmail ? `✉️ <b>Email:</b> ${escapeHtml(order.customerEmail)}\n` : ''}` +
+      `📍 <b>Місто:</b> ${escapeHtml(order.city || 'Не вказано')}\n` +
+      `🚚 <b>Доставка:</b> ${escapeHtml(order.deliveryMethod)} (${escapeHtml(order.warehouseInfo || 'без адреси')})\n` +
+      `💳 <b>Оплата:</b> ${escapeHtml(order.paymentMethod)}\n` +
+      `${order.notes ? `📝 <b>Примітка (коментар):</b> ${escapeHtml(order.notes)}\n` : ''}\n` +
+      `📦 <b>Товари:</b>\n${itemsList}\n\n` +
+      `💰 <b>Разом:</b> ${order.total} ₴`;
 
     const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: 'POST',
@@ -49,7 +52,7 @@ async function sendTelegramNotification(order: any) {
       body: JSON.stringify({
         chat_id: chatId,
         text: message,
-        parse_mode: 'Markdown',
+        parse_mode: 'HTML',
       }),
     });
 

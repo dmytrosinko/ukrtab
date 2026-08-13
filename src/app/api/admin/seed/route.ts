@@ -47,7 +47,7 @@ export async function GET() {
     for (let i = 0; i < seedData.length; i += BATCH_SIZE) {
       const batch = seedData.slice(i, i + BATCH_SIZE);
       try {
-        const res = await prisma.product.createMany({
+        const res = await (prisma.product.createMany as any)({
           data: batch,
           skipDuplicates: true,
         });

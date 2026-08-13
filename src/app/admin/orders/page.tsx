@@ -185,6 +185,13 @@ export default function AdminOrdersPage() {
                 </div>
               </div>
 
+              {o.notes && (
+                <div className="bg-amber-50/70 border border-amber-200/60 rounded-2xl p-3.5 text-xs text-amber-900 flex items-start space-x-2">
+                  <span className="font-bold text-amber-700 shrink-0">💬 Коментар клієнта:</span>
+                  <span className="font-medium whitespace-pre-wrap">{o.notes}</span>
+                </div>
+              )}
+
               {/* Items List with Photos & Direct Links */}
               <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-3">
                 <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
