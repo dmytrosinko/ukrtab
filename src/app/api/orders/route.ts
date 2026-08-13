@@ -14,7 +14,7 @@ export async function GET() {
   }
 }
 
-async function sendTelegramNotification(order: any) {
+async function sendTelegramNotification(order: any, requestOrigin?: string) {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
 
@@ -34,7 +34,12 @@ async function sendTelegramNotification(order: any) {
       .map((item: any) => `• ${escapeHtml(item.productName)} (${item.quantity} x ${item.price} ₴)`)
       .join('\n');
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ukrtab.com.ua';
+    const rawSiteUrl =
+      requestOrigin ||
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://ukrtab.prom.ua');
+
+    const siteUrl = rawSiteUrl.replace(/\/+$/, '');
     const adminOrderUrl = `${siteUrl}/admin/orders#order-${order.orderNumber}`;
 
     const message =
@@ -166,7 +171,10 @@ export async function POST(request: Request) {
     });
 
     // Notify Telegram if token/chatId are configured
-    const telegramResult = await sendTelegramNotification(order);
+    const hostHeader = request.headers.get('host') || request.headers.get('x-forwarded-host');
+    const protocol = request.headers.get('x-forwarded-proto') || 'https';
+    const originUrl = hostHeader ? `${protocol}://${hostHeader}` : undefined;
+    const telegramResult = await sendTelegramNotification(order, originUrl);
 
     return NextResponse.json({ ...order, telegramResult }, { status: 201 });
   } catch (error: any) {
