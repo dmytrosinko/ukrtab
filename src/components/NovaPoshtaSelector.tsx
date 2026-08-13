@@ -114,12 +114,12 @@ export default function NovaPoshtaSelector({
   // Fetch warehouses when cityRef or cityInput changes
   useEffect(() => {
     const currentName = selectedCity || cityInput;
-    if (!cityRef && !currentName) {
+    if (!cityRef && (!currentName || currentName.trim().length < 2)) {
       setWarehouses([]);
       return;
     }
 
-    const fetchWarehouses = async () => {
+    const timer = setTimeout(async () => {
       setIsLoadingWarehouses(true);
       try {
         let url = '/api/novaposhta/warehouses?';
@@ -141,9 +141,9 @@ export default function NovaPoshtaSelector({
       } finally {
         setIsLoadingWarehouses(false);
       }
-    };
+    }, cityRef ? 0 : 400);
 
-    fetchWarehouses();
+    return () => clearTimeout(timer);
   }, [cityRef, selectedCity, cityInput]);
 
   // Handle selecting a city
@@ -194,8 +194,10 @@ export default function NovaPoshtaSelector({
             placeholder="Введіть назву міста (напр. Київ, Дніпро...)"
             value={cityInput}
             onChange={(e) => {
-              setCityInput(e.target.value);
+              const val = e.target.value;
+              setCityInput(val);
               setCityRef('');
+              onSelectCity(val, '');
             }}
             onFocus={() => {
               if (cityResults.length > 0) setShowCityDropdown(true);
