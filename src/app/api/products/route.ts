@@ -76,7 +76,18 @@ export async function GET(request: Request) {
     }
 
     if (products.length > 0) {
-      return NextResponse.json(products);
+      // Combine DB products with INITIAL_PRODUCTS so full catalog is always present
+      const map = new Map<string, any>();
+      products.forEach((p) => {
+        if (p && p.name) map.set(p.name.trim().toLowerCase(), p);
+      });
+      INITIAL_PRODUCTS.forEach((p) => {
+        if (p && p.name) {
+          const key = p.name.trim().toLowerCase();
+          if (!map.has(key)) map.set(key, p);
+        }
+      });
+      return NextResponse.json(Array.from(map.values()));
     }
 
     return NextResponse.json(INITIAL_PRODUCTS);
