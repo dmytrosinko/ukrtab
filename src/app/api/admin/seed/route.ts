@@ -20,6 +20,8 @@ export async function GET() {
       });
     }
 
+    const validCatIds = new Set(INITIAL_CATEGORIES.map((c) => c.id));
+
     // 2. Prepare and seed products
     const seedData = INITIAL_PRODUCTS.map((p) => ({
       id: p.id,
@@ -29,7 +31,7 @@ export async function GET() {
       oldPrice: p.oldPrice ? parseFloat(String(p.oldPrice)) : null,
       sku: p.sku || null,
       status: p.status || 'В наявності',
-      categoryId: p.categoryId || null,
+      categoryId: p.categoryId && validCatIds.has(p.categoryId) ? p.categoryId : 'cat-other',
       description: p.description || null,
       image: p.image,
       images: typeof p.images === 'string' ? p.images : JSON.stringify(p.images || [p.image]),
@@ -38,21 +40,25 @@ export async function GET() {
       isFeatured: Boolean(p.isFeatured),
     }));
 
+    let insertedOrUpdated = 0;
     for (const p of seedData) {
       try {
         await prisma.product.upsert({
           where: { id: p.id },
-          update: {},
+          update: p,
           create: p,
         });
-      } catch (itemErr) {}
+        insertedOrUpdated++;
+      } catch (itemErr) {
+        console.error('Failed to seed item:', p.id, itemErr);
+      }
     }
 
     const count = await prisma.product.count();
 
     return NextResponse.json({
       success: true,
-      message: `Успішно перенесено ${seedData.length} товарів у базу даних Supabase PostgreSQL!`,
+      message: `Успішно перенесено ${insertedOrUpdated} товарів у базу даних Supabase PostgreSQL!`,
       totalInDatabase: count,
     });
   } catch (error: any) {
