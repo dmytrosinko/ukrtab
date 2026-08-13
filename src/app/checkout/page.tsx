@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { ShoppingBag, CheckCircle, Truck, CreditCard, User, Phone, MapPin, ArrowLeft } from 'lucide-react';
 import NovaPoshtaSelector from '@/components/NovaPoshtaSelector';
+import { trackPurchase } from '@/lib/analytics';
 
 export default function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
@@ -61,6 +62,7 @@ export default function CheckoutPage() {
 
       const data = await res.json();
       if (res.ok) {
+        trackPurchase(data.orderNumber || Date.now(), totalPrice, items);
         setCreatedOrder(data);
         clearCart();
       } else {

@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Product, CartItem } from '@/lib/types';
+import { trackAddToCart } from '@/lib/analytics';
 
 interface CartContextType {
   items: CartItem[];
@@ -43,6 +44,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [items, isInitialized]);
 
   const addToCart = (product: Product, quantity = 1) => {
+    trackAddToCart(product, quantity);
     setItems((prev) => {
       const existingIndex = prev.findIndex((item) => item.product.id === product.id);
       if (existingIndex > -1) {

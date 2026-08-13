@@ -6,6 +6,7 @@ import { ShoppingCart, Plus, Minus, Check, Tag, X, ZoomIn, ChevronLeft, ChevronR
 import { Product } from '@/lib/types';
 import { useCart } from '@/context/CartContext';
 import { INITIAL_PRODUCTS } from '@/lib/store';
+import { trackViewItem } from '@/lib/analytics';
 
 export function ProductDetailClient({
   initialProduct,
@@ -19,6 +20,12 @@ export function ProductDetailClient({
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const [isZoomOpen, setIsZoomOpen] = useState(false);
+
+  useEffect(() => {
+    if (product) {
+      trackViewItem(product);
+    }
+  }, [product]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

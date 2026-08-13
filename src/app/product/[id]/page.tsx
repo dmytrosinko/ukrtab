@@ -7,6 +7,7 @@ import { ShoppingCart, Plus, Minus, Check, Tag, ShieldCheck, Truck, Clock, X, Zo
 import { Product } from '@/lib/types';
 import { useCart } from '@/context/CartContext';
 import { INITIAL_PRODUCTS } from '@/lib/store';
+import { trackViewItem } from '@/lib/analytics';
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -19,6 +20,12 @@ export default function ProductDetailPage() {
   const [added, setAdded] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string>('');
   const [isZoomOpen, setIsZoomOpen] = useState(false);
+
+  useEffect(() => {
+    if (product) {
+      trackViewItem(product);
+    }
+  }, [product]);
 
   useEffect(() => {
     if (!targetId && !rawId) return;
