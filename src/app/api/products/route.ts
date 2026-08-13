@@ -35,47 +35,11 @@ export async function GET(request: Request) {
       where.isFeatured = true;
     }
 
-    let products = await prisma.product.findMany({
+    const products = await prisma.product.findMany({
       where,
       include: { category: true },
       orderBy: { createdAt: 'desc' },
     });
-
-    // Auto-seed Supabase database if DB product count is 0
-    const totalCount = await prisma.product.count();
-    if (totalCount === 0) {
-      try {
-        const seedData = INITIAL_PRODUCTS.map((p) => ({
-          id: p.id,
-          name: p.name,
-          slug: p.slug,
-          price: parseFloat(String(p.price)) || 100,
-          oldPrice: p.oldPrice ? parseFloat(String(p.oldPrice)) : null,
-          sku: p.sku || null,
-          status: p.status || 'В наявності',
-          categoryId: p.categoryId || null,
-          description: p.description || null,
-          image: p.image,
-          images: typeof p.images === 'string' ? p.images : JSON.stringify(p.images || [p.image]),
-          unit: p.unit || 'шт.',
-          features: typeof p.features === 'string' ? p.features : JSON.stringify(p.features || []),
-          isFeatured: Boolean(p.isFeatured),
-        }));
-
-        await prisma.product.createMany({
-          data: seedData,
-          skipDuplicates: true,
-        });
-
-        products = await prisma.product.findMany({
-          where,
-          include: { category: true },
-          orderBy: { createdAt: 'desc' },
-        });
-      } catch (seedErr) {
-        console.error('Auto-seed failed:', seedErr);
-      }
-    }
 
     return NextResponse.json(products);
   } catch (error) {
