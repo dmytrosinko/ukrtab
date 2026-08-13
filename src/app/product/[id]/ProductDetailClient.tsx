@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ShoppingCart, Plus, Minus, Check, Tag } from 'lucide-react';
+import { ShoppingCart, Plus, Minus, Check, Tag, X, ZoomIn, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Product } from '@/lib/types';
 import { useCart } from '@/context/CartContext';
 import { INITIAL_PRODUCTS } from '@/lib/store';
@@ -18,6 +18,7 @@ export function ProductDetailClient({
   const [product, setProduct] = useState<Product>(initialProduct);
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+  const [isZoomOpen, setIsZoomOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -65,6 +66,22 @@ export function ProductDetailClient({
     }
   }, [productId, initialProduct]);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsZoomOpen(false);
+      }
+    };
+    if (isZoomOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isZoomOpen]);
+
   let imagesList: string[] = [product.image];
   try {
     if (product.images) {
@@ -107,20 +124,31 @@ export function ProductDetailClient({
       <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-100 shadow-sm grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Images Section */}
         <div className="space-y-4">
-          <div className="aspect-square rounded-2xl overflow-hidden bg-slate-50 border border-slate-100 relative">
+          <div
+            onClick={() => selectedImage && setIsZoomOpen(true)}
+            className="aspect-square rounded-2xl overflow-hidden bg-slate-50 border border-slate-100 relative group cursor-pointer"
+          >
             {selectedImage ? (
-              <img
-                src={selectedImage}
-                alt={product.name}
-                className="w-full h-full object-cover"
-              />
+              <>
+                <img
+                  src={selectedImage}
+                  alt={product.name}
+                  className="w-full h-full object-contain p-2 transition-transform duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-colors flex items-center justify-center">
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 backdrop-blur-sm text-slate-800 px-4 py-2 rounded-full shadow-lg flex items-center space-x-2 text-xs font-bold">
+                    <ZoomIn className="w-4 h-4 text-emerald-600" />
+                    <span>Натисніть для збільшення</span>
+                  </div>
+                </div>
+              </>
             ) : (
               <div className="w-full h-full flex items-center justify-center text-slate-300 font-bold text-xs">
                 Немає зображення
               </div>
             )}
             {product.oldPrice && (
-              <span className="absolute top-4 left-4 bg-amber-500 text-slate-950 font-black text-xs px-3 py-1 rounded-full shadow-md flex items-center space-x-1">
+              <span className="absolute top-4 left-4 bg-amber-500 text-slate-950 font-black text-xs px-3 py-1 rounded-full shadow-md flex items-center space-x-1 z-10">
                 <Tag className="w-3.5 h-3.5" />
                 <span>АКЦІЯ</span>
               </span>
@@ -134,11 +162,11 @@ export function ProductDetailClient({
                 <button
                   key={idx}
                   onClick={() => setSelectedImage(img)}
-                  className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition ${
-                    selectedImage === img ? 'border-emerald-600 scale-105' : 'border-slate-200 opacity-70'
+                  className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition bg-slate-50 ${
+                    selectedImage === img ? 'border-emerald-600 scale-105' : 'border-slate-200 opacity-70 hover:opacity-100'
                   }`}
                 >
-                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <img src={img} alt="" className="w-full h-full object-contain p-1" />
                 </button>
               ))}
             </div>
@@ -229,6 +257,84 @@ export function ProductDetailClient({
           </div>
         </div>
       </div>
+
+      {/* Fullscreen Popup Modal */}
+      {isZoomOpen && selectedImage && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn"
+          onClick={() => setIsZoomOpen(false)}
+        >
+          {/* Close Button */}
+          <button
+            onClick={() => setIsZoomOpen(false)}
+            className="absolute top-4 right-4 sm:top-6 sm:right-6 text-white bg-slate-800/80 hover:bg-slate-700 p-3 rounded-full transition shadow-xl z-50 border border-white/20 group"
+            aria-label="Закрити"
+            title="Закрити (Esc)"
+          >
+            <X className="w-6 h-6 group-hover:scale-110 transition-transform" />
+          </button>
+
+          {/* Multi-image navigation controls */}
+          {imagesList.length > 1 && (
+            <>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const currentIdx = imagesList.indexOf(selectedImage);
+                  const prevIdx = (currentIdx - 1 + imagesList.length) % imagesList.length;
+                  setSelectedImage(imagesList[prevIdx]);
+                }}
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-white bg-slate-800/80 hover:bg-slate-700 p-3 rounded-full transition z-50 border border-white/20 shadow-xl"
+                title="Попереднє фото"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const currentIdx = imagesList.indexOf(selectedImage);
+                  const nextIdx = (currentIdx + 1) % imagesList.length;
+                  setSelectedImage(imagesList[nextIdx]);
+                }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-white bg-slate-800/80 hover:bg-slate-700 p-3 rounded-full transition z-50 border border-white/20 shadow-xl"
+                title="Наступне фото"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+            </>
+          )}
+
+          {/* Modal content */}
+          <div
+            className="relative max-w-5xl max-h-[90vh] flex flex-col items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={selectedImage}
+              alt={product.name}
+              className="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl bg-white/5 p-2 border border-white/10"
+            />
+
+            {imagesList.length > 1 && (
+              <div className="flex space-x-2 mt-4 overflow-x-auto max-w-full p-2 bg-slate-900/80 backdrop-blur-md rounded-2xl border border-white/10">
+                {imagesList.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setSelectedImage(img)}
+                    className={`w-14 h-14 rounded-xl overflow-hidden border-2 transition bg-white/5 ${
+                      selectedImage === img ? 'border-emerald-500 scale-105' : 'border-transparent opacity-60 hover:opacity-100'
+                    }`}
+                  >
+                    <img src={img} alt="" className="w-full h-full object-contain p-1" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
