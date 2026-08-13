@@ -41,23 +41,29 @@ export async function GET() {
     }));
 
     let insertedOrUpdated = 0;
-    try {
-      const res = await prisma.product.createMany({
-        data: seedData,
-        skipDuplicates: true,
-      });
-      insertedOrUpdated = res.count;
-    } catch (bulkErr) {
-      console.warn('Bulk createMany fallback to sequential upserts:', bulkErr);
-      for (const p of seedData) {
-        try {
-          await prisma.product.upsert({
-            where: { id: p.id },
-            update: p,
-            create: p,
-          });
-          insertedOrUpdated++;
-        } catch (itemErr) {}
+
+    // Process in batches of 50 for database stability
+    const BATCH_SIZE = 50;
+    for (let i = 0; i < seedData.length; i += BATCH_SIZE) {
+      const batch = seedData.slice(i, i + BATCH_SIZE);
+      try {
+        const res = await prisma.product.createMany({
+          data: batch,
+          skipDuplicates: true,
+        });
+        insertedOrUpdated += res.count;
+      } catch (batchErr) {
+        console.warn(`Batch ${i} createMany fallback:`, batchErr);
+        for (const p of batch) {
+          try {
+            await prisma.product.upsert({
+              where: { id: p.id },
+              update: p,
+              create: p,
+            });
+            insertedOrUpdated++;
+          } catch (e) {}
+        }
       }
     }
 
