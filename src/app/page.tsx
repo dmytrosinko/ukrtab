@@ -36,12 +36,13 @@ export default async function HomePage() {
 
   try {
     const { prisma } = await import('@/lib/prisma');
-    const [b, p] = await Promise.all([
-      prisma.banner.findMany({ where: { isActive: true }, orderBy: { sortOrder: 'asc' } }),
-      prisma.product.findMany({ where: { isFeatured: true }, take: 12 }),
-    ]);
+    let featuredProducts = await prisma.product.findMany({ where: { isFeatured: true }, take: 12 });
+    if (!featuredProducts || featuredProducts.length === 0) {
+      featuredProducts = await prisma.product.findMany({ take: 12, orderBy: { createdAt: 'desc' } });
+    }
+    const b = await prisma.banner.findMany({ where: { isActive: true }, orderBy: { sortOrder: 'asc' } });
     if (b && b.length > 0) banners = b;
-    if (p && p.length > 0) products = p;
+    if (featuredProducts && featuredProducts.length > 0) products = featuredProducts;
   } catch (e) {
     console.error('Prisma homepage fetch failed, using fallback data:', e);
   }
