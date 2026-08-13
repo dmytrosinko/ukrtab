@@ -8,12 +8,13 @@ export function proxy(request: NextRequest) {
   const isLoginPage = pathname === '/admin/login';
   const isLoginApi = pathname === '/api/admin/login';
   const isSeedApi = pathname === '/api/admin/seed';
+  const isDedupeApi = pathname === '/api/admin/dedupe';
 
   const token = request.cookies.get(AUTH_COOKIE_NAME)?.value;
   const isAuthenticated = verifyAdminToken(token);
 
-  // Allow login and seed API calls directly
-  if (isLoginApi || isSeedApi) {
+  // Allow login, seed and dedupe API calls directly
+  if (isLoginApi || isSeedApi || isDedupeApi) {
     return NextResponse.next();
   }
 

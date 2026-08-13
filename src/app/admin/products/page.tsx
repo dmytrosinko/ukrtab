@@ -277,7 +277,26 @@ export default function AdminProductsPage() {
           <p className="text-xs text-slate-500">Всього товарів у каталозі: {products.length}</p>
         </div>
 
-        <div className="flex flex-wrap space-x-3 w-full sm:w-auto">
+        <div className="flex flex-wrap items-center space-x-3 w-full sm:w-auto">
+          <button
+            onClick={async () => {
+              if (confirm('Видалити всі однакові дублікати товарів з бази даних?')) {
+                try {
+                  const res = await fetch('/api/admin/dedupe');
+                  const data = await res.json();
+                  alert(data.message || 'Очищення дублікатів завершено');
+                  fetchData();
+                } catch (e) {
+                  alert('Помилка виконання очищення');
+                }
+              }
+            }}
+            className="bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold px-4 py-3 rounded-2xl text-xs flex items-center justify-center space-x-1.5 transition active:scale-95 border border-amber-300"
+            title="Очистити однакові дублікати товарів з однаковою назвою та ціною"
+          >
+            <span>🧹 Очистити дублікати</span>
+          </button>
+
           <button
             onClick={handleOpenModal}
             className="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-3 rounded-2xl text-xs flex items-center justify-center space-x-2 transition shadow-lg shadow-emerald-600/20 active:scale-95"
@@ -285,6 +304,7 @@ export default function AdminProductsPage() {
             <Plus className="w-4 h-4" />
             <span>Додати новий товар</span>
           </button>
+
           <button
             onClick={fetchData}
             className="p-3 bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-2xl transition"
