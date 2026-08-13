@@ -3,7 +3,39 @@ import { prisma } from '@/lib/prisma';
 import { INITIAL_CATEGORIES } from '@/lib/store';
 
 export async function GET() {
-  return NextResponse.json(INITIAL_CATEGORIES);
+  try {
+    let categories = await prisma.category.findMany({
+      orderBy: { name: 'asc' },
+    });
+
+    if (categories.length === 0) {
+      for (const cat of INITIAL_CATEGORIES) {
+        await prisma.category.upsert({
+          where: { id: cat.id },
+          update: {},
+          create: {
+            id: cat.id,
+            name: cat.name,
+            slug: cat.slug,
+            image: cat.image,
+            description: cat.description,
+            isFeatured: cat.isFeatured ?? true,
+          },
+        });
+      }
+      categories = await prisma.category.findMany({
+        orderBy: { name: 'asc' },
+      });
+    }
+
+    return NextResponse.json(categories);
+  } catch (error) {
+    console.error('Error fetching categories from DB:', error);
+    return NextResponse.json(
+      { error: 'Помилка підключення до бази даних.' },
+      { status: 500 }
+    );
+  }
 }
 
 export async function POST(request: Request) {

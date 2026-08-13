@@ -31,39 +31,32 @@ export function CatalogView() {
   }, [rawSearch, selectedCategorySlug]);
 
   useEffect(() => {
-    // Fetch categories
+    // Fetch categories directly from DB API
     fetch('/api/categories')
       .then((r) => r.json())
       .then((data) => {
-        const catList = Array.isArray(data) && data.length > 0 ? data : INITIAL_CATEGORIES;
-        const catMap = new Map<string, Category>();
-        INITIAL_CATEGORIES.forEach((c) => catMap.set(c.id, c));
-        catList.forEach((c) => catMap.set(c.id, c));
-        setCategories(Array.from(catMap.values()));
+        if (Array.isArray(data)) setCategories(data);
       })
-      .catch(() => {
-        setCategories(INITIAL_CATEGORIES);
-      });
+      .catch(() => {});
 
-    // Fetch products directly from Database API
+    // Fetch products directly from DB API
     fetch('/api/products')
       .then((r) => r.json())
       .then((data) => {
-        const serverItems = Array.isArray(data) && data.length > 0 ? data : INITIAL_PRODUCTS;
-        const clean = serverItems.filter(
-          (p: Product) =>
-            p &&
-            p.name &&
-            p.name !== 'top of the top' &&
-            p.name !== 'еталон краси' &&
-            p.name !== 'Mavvir'
-        );
-        if (clean.length > 0) {
+        if (Array.isArray(data)) {
+          const clean = data.filter(
+            (p: Product) =>
+              p &&
+              p.name &&
+              p.name !== 'top of the top' &&
+              p.name !== 'еталон краси' &&
+              p.name !== 'Mavvir'
+          );
           setAllProducts(clean);
         }
       })
       .catch((e) => {
-        console.error('Error fetching catalog products:', e);
+        console.error('Error fetching catalog products from DB:', e);
       });
   }, []);
 

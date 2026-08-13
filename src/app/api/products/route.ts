@@ -41,8 +41,9 @@ export async function GET(request: Request) {
       orderBy: { createdAt: 'desc' },
     });
 
-    // Auto-seed Supabase database if count is 0
-    if (products.length === 0 && !search && !categorySlug) {
+    // Auto-seed Supabase database if DB product count is 0
+    const totalCount = await prisma.product.count();
+    if (totalCount === 0) {
       try {
         const seedData = INITIAL_PRODUCTS.map((p) => ({
           id: p.id,
@@ -63,6 +64,7 @@ export async function GET(request: Request) {
 
         await prisma.product.createMany({
           data: seedData,
+          skipDuplicates: true,
         });
 
         products = await prisma.product.findMany({
@@ -71,29 +73,17 @@ export async function GET(request: Request) {
           orderBy: { createdAt: 'desc' },
         });
       } catch (seedErr) {
-        console.warn('Auto-seed warning:', seedErr);
+        console.error('Auto-seed failed:', seedErr);
       }
     }
 
-    if (products.length > 0) {
-      // Combine DB products with INITIAL_PRODUCTS so full catalog is always present
-      const map = new Map<string, any>();
-      products.forEach((p) => {
-        if (p && p.name) map.set(p.name.trim().toLowerCase(), p);
-      });
-      INITIAL_PRODUCTS.forEach((p) => {
-        if (p && p.name) {
-          const key = p.name.trim().toLowerCase();
-          if (!map.has(key)) map.set(key, p);
-        }
-      });
-      return NextResponse.json(Array.from(map.values()));
-    }
-
-    return NextResponse.json(INITIAL_PRODUCTS);
+    return NextResponse.json(products);
   } catch (error) {
-    console.error('Error fetching products from DB, serving initial store fallback:', error);
-    return NextResponse.json(INITIAL_PRODUCTS);
+    console.error('Error fetching products from DB:', error);
+    return NextResponse.json(
+      { error: 'Помилка підключення до бази даних. Будь ласка, спробуйте пізніше.' },
+      { status: 500 }
+    );
   }
 }
 
