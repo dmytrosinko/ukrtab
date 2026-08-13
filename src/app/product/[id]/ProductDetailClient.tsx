@@ -307,17 +307,17 @@ export function ProductDetailClient({
 
           {/* Modal content */}
           <div
-            className="relative max-w-5xl max-h-[90vh] flex flex-col items-center justify-center"
+            className="relative w-full h-full max-w-[95vw] max-h-[92vh] flex flex-col items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
             <img
               src={selectedImage}
               alt={product.name}
-              className="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl bg-white/5 p-2 border border-white/10"
+              className="w-full h-full max-w-[92vw] max-h-[85vh] object-contain rounded-2xl shadow-2xl bg-white/5 p-2 border border-white/10"
             />
 
             {imagesList.length > 1 && (
-              <div className="flex space-x-2 mt-4 overflow-x-auto max-w-full p-2 bg-slate-900/80 backdrop-blur-md rounded-2xl border border-white/10">
+              <div className="flex space-x-2 mt-4 overflow-x-auto max-w-full p-2 bg-slate-900/80 backdrop-blur-md rounded-2xl border border-white/10 shrink-0">
                 {imagesList.map((img, idx) => (
                   <button
                     key={idx}
