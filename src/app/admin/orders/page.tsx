@@ -9,6 +9,7 @@ export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [productsMap, setProductsMap] = useState<Map<string, Product>>(new Map());
   const [isLoading, setIsLoading] = useState(true);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const fetchOrdersAndProducts = async () => {
     setIsLoading(true);
@@ -87,6 +88,28 @@ export default function AdminOrdersPage() {
 
   return (
     <div className="space-y-6">
+      {/* Lightbox Modal */}
+      {previewImage && (
+        <div
+          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm"
+          onClick={() => setPreviewImage(null)}
+        >
+          <div className="relative max-w-4xl max-h-[90vh] bg-white rounded-3xl overflow-hidden shadow-2xl p-2">
+            <button
+              onClick={() => setPreviewImage(null)}
+              className="absolute top-4 right-4 z-10 bg-black/60 hover:bg-black text-white font-bold w-9 h-9 rounded-full flex items-center justify-center text-sm"
+            >
+              ✕
+            </button>
+            <img
+              src={previewImage}
+              alt="Прев’ю макета"
+              className="w-full h-full object-contain max-h-[85vh] rounded-2xl"
+            />
+          </div>
+        </div>
+      )}
+
       <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-black text-slate-900">Управління замовленнями</h2>
@@ -187,9 +210,11 @@ export default function AdminOrdersPage() {
               </div>
 
               {o.notes && (
-                <div className="bg-amber-50/70 border border-amber-200/60 rounded-2xl p-3.5 text-xs text-amber-900 flex items-start space-x-2">
-                  <span className="font-bold text-amber-700 shrink-0">💬 Коментар клієнта:</span>
-                  <span className="font-medium whitespace-pre-wrap">{o.notes}</span>
+                <div className="bg-amber-50/80 border border-amber-200 rounded-2xl p-4 text-xs text-amber-950 space-y-1">
+                  <div className="font-bold text-amber-800 flex items-center space-x-1.5">
+                    <span>💬 Коментар та специфікація:</span>
+                  </div>
+                  <div className="font-medium whitespace-pre-wrap leading-relaxed">{o.notes}</div>
                 </div>
               )}
 
@@ -200,6 +225,7 @@ export default function AdminOrdersPage() {
                 </div>
                 <div className="space-y-2.5">
                   {o.items?.map((item, idx) => {
+                    const isCustomName = item.productName.toLowerCase().includes('макет') || item.productName.toLowerCase().includes('фотошоп') || item.productName.toLowerCase().includes('конструктор');
                     const matchedProduct =
                       (item as any).product ||
                       (item.productId ? productsMap.get(item.productId) : null) ||
@@ -213,6 +239,8 @@ export default function AdminOrdersPage() {
                     const targetId =
                       matchedProduct?.id || item.productId || matchedProduct?.slug || item.productName;
 
+                    const isCustom = isCustomName || (item.productId && item.productId.startsWith('custom-')) || (matchedProduct?.id && matchedProduct.id.startsWith('custom-'));
+
                     return (
                       <div
                         key={idx}
@@ -220,17 +248,36 @@ export default function AdminOrdersPage() {
                       >
                         {/* Photo & Title */}
                         <div className="flex items-center space-x-3.5 min-w-0">
-                          <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
+                          <div
+                            onClick={() => setPreviewImage(pImage)}
+                            className="w-14 h-14 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0 cursor-pointer group relative"
+                            title="Клікніть для збільшення зображення"
+                          >
                             <img
                               src={pImage}
                               alt={item.productName}
-                              className="w-full h-full object-cover"
+                              className="w-full h-full object-cover group-hover:scale-105 transition"
                             />
+                            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-[10px] font-bold">
+                              🔍
+                            </div>
                           </div>
                           <div className="min-w-0">
-                            <div className="font-bold text-slate-900 text-xs line-clamp-1">
-                              {item.productName}
+                            <div className="flex items-center space-x-2">
+                              <span className="font-bold text-slate-900 text-xs line-clamp-1">
+                                {item.productName}
+                              </span>
+                              {isCustom && (
+                                <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0">
+                                  🎨 Макет з конструктора
+                                </span>
+                              )}
                             </div>
+                            {matchedProduct?.description && isCustom && (
+                              <div className="text-[11px] text-emerald-700 font-semibold mt-0.5 line-clamp-2">
+                                {matchedProduct.description}
+                              </div>
+                            )}
                             <div className="text-[11px] text-slate-500 font-medium mt-0.5">
                               {item.quantity} шт. × {item.price} ₴
                             </div>
@@ -243,15 +290,24 @@ export default function AdminOrdersPage() {
                             {(item.price * item.quantity).toFixed(0)} ₴
                           </span>
 
-                          <Link
-                            href={`/product/${encodeURIComponent(targetId)}`}
-                            target="_blank"
-                            className="bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white font-extrabold px-3 py-1.5 rounded-xl text-xs flex items-center space-x-1.5 transition shadow-xs"
-                            title="Відкрити сторінку товару на сайті"
-                          >
-                            <span>Товар</span>
-                            <ExternalLink className="w-3.5 h-3.5" />
-                          </Link>
+                          {isCustom ? (
+                            <button
+                              onClick={() => setPreviewImage(pImage)}
+                              className="bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white font-extrabold px-3 py-1.5 rounded-xl text-xs flex items-center space-x-1.5 transition shadow-xs"
+                            >
+                              <span>Переглянути макет</span>
+                            </button>
+                          ) : (
+                            <Link
+                              href={`/product/${encodeURIComponent(targetId)}`}
+                              target="_blank"
+                              className="bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white font-extrabold px-3 py-1.5 rounded-xl text-xs flex items-center space-x-1.5 transition shadow-xs"
+                              title="Відкрити сторінку товару на сайті"
+                            >
+                              <span>Товар</span>
+                              <ExternalLink className="w-3.5 h-3.5" />
+                            </Link>
+                          )}
                         </div>
                       </div>
                     );

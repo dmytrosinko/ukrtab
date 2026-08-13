@@ -137,6 +137,24 @@ export async function POST(request: Request) {
       }
     }
 
+    // Extract custom layout mockup specifications to persist in order notes
+    const customSpecsList: string[] = [];
+    items.forEach((item: any) => {
+      const p = item.product || {};
+      const pId = p.id || item.productId || '';
+      const isCustom = typeof pId === 'string' && (pId.startsWith('custom-') || p.sku === 'CUSTOM-GRAPHIC-MAG' || p.sku === 'CUSTOM-MAGNET');
+      if (isCustom && (p.description || p.features)) {
+        customSpecsList.push(`🎨 [Специфікація макета з конструктора: ${p.name || 'Індивідуальний магніт'}]\n${p.description || ''}`);
+      }
+    });
+
+    let mergedNotes = notes || '';
+    if (customSpecsList.length > 0) {
+      mergedNotes = mergedNotes
+        ? `${mergedNotes}\n\n${customSpecsList.join('\n\n')}`
+        : customSpecsList.join('\n\n');
+    }
+
     const order = await prisma.order.create({
       data: {
         orderNumber: nextOrderNumber,
@@ -147,7 +165,7 @@ export async function POST(request: Request) {
         deliveryMethod: deliveryMethod || 'Нова Пошта',
         warehouseInfo: warehouseInfo || null,
         paymentMethod: paymentMethod || 'При отриманні',
-        notes: notes || null,
+        notes: mergedNotes || null,
         total,
         items: {
           create: items.map((item: any) => {

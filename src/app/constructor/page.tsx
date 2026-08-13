@@ -161,11 +161,44 @@ export default function ConstructorPage() {
   const [added, setAdded] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const textInputRef = useRef<HTMLInputElement>(null);
 
   const activeSize = selectedShape.sizes[selectedSizeIndex] || selectedShape.sizes[0];
   const totalPrice = activeSize.price + (isReinforced ? 50 : 0);
 
   const selectedObject = objects.find((o) => o.id === selectedId) || null;
+
+  // Auto-focus text input when a text object is selected
+  useEffect(() => {
+    if (selectedObject && selectedObject.type === 'text') {
+      setTimeout(() => {
+        textInputRef.current?.focus();
+        textInputRef.current?.select();
+      }, 50);
+    }
+  }, [selectedId]);
+
+  // Keyboard Typing Listener for Selected Text Object
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!selectedObject || selectedObject.type !== 'text') return;
+      
+      const activeElement = document.activeElement;
+      const isInput = activeElement instanceof HTMLInputElement || activeElement instanceof HTMLTextAreaElement;
+      if (isInput) return; // If already typing in an input field, let normal behavior handle it
+
+      if (e.key === 'Backspace') {
+        e.preventDefault();
+        updateSelected((o) => ({ ...o, text: (o.text || '').slice(0, -1) }));
+      } else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        e.preventDefault();
+        updateSelected((o) => ({ ...o, text: (o.text || '') + e.key }));
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedObject, selectedId]);
 
   // Initial Starter Objects
   useEffect(() => {
@@ -254,16 +287,16 @@ export default function ConstructorPage() {
   };
 
   // Add Text Object
-  const handleAddText = () => {
+  const handleAddText = (customX?: number, customY?: number) => {
     const newText: GraphicObject = {
       id: 'text-' + Date.now(),
       name: `Текст (${objects.length + 1})`,
       type: 'text',
-      text: 'НОВИЙ ТЕКСТ',
-      x: 300,
-      y: 200,
-      width: 200,
-      height: 40,
+      text: 'ВВЕДІТЬ ТЕКСТ',
+      x: customX ?? 300,
+      y: customY ?? 200,
+      width: 240,
+      height: 45,
       rotation: 0,
       scale: 1,
       fillColor: primaryColor,
@@ -272,7 +305,7 @@ export default function ConstructorPage() {
       opacity: 100,
       visible: true,
       locked: false,
-      fontSize: 28,
+      fontSize: 32,
       fontFamily: 'Montserrat, sans-serif',
     };
     setObjects((prev) => [...prev, newText]);
@@ -353,6 +386,22 @@ export default function ConstructorPage() {
 
     function renderScene() {
       if (!ctx) return;
+
+      // Measure dynamic text widths
+      objects.forEach((obj) => {
+        if (obj.type === 'text' && obj.text) {
+          ctx.save();
+          ctx.font = `bold ${obj.fontSize || 28}px ${obj.fontFamily || 'sans-serif'}`;
+          const metrics = ctx.measureText(obj.text);
+          const measuredW = Math.max(Math.round(metrics.width) + 20, 60);
+          const measuredH = Math.round((obj.fontSize || 28) * 1.2);
+          if (Math.abs(obj.width - measuredW) > 5 || Math.abs(obj.height - measuredH) > 5) {
+            obj.width = measuredW;
+            obj.height = measuredH;
+          }
+          ctx.restore();
+        }
+      });
 
       objects.forEach((obj) => {
         if (!obj.visible) return;
@@ -491,7 +540,7 @@ export default function ConstructorPage() {
     }
   }
 
-  // Mouse Interactivity for Dragging & Drawing
+  // Mouse Interactivity for Dragging, Drawing & Text Creation
   const handleCanvasMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -521,8 +570,25 @@ export default function ConstructorPage() {
       }
     }
 
+    if (activeTool === 'text') {
+      if (clickedId) {
+        setSelectedId(clickedId);
+        setActiveTool('select');
+      } else {
+        handleAddText(mouseX, mouseY);
+      }
+      return;
+    }
+
     setSelectedId(clickedId);
     if (clickedId) setIsDragging(true);
+  };
+
+  const handleCanvasDoubleClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (selectedObject && selectedObject.type === 'text') {
+      textInputRef.current?.focus();
+      textInputRef.current?.select();
+    }
   };
 
   const handleCanvasMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -588,22 +654,43 @@ export default function ConstructorPage() {
 
   const handleAddToCart = () => {
     const canvas = canvasRef.current;
-    const previewUrl = canvas ? canvas.toDataURL('image/png') : 'https://images.prom.ua/4296986097_w297_h200_magnitni-nalipki-na.jpg';
+    const previewUrl = canvas ? canvas.toDataURL('image/jpeg', 0.85) : 'https://images.prom.ua/4296986097_w297_h200_magnitni-nalipki-na.jpg';
+
+    const textElements = objects
+      .filter((o) => o.type === 'text' && typeof o.text === 'string' && o.text.trim().length > 0)
+      .map((o) => `"${(o.text || '').trim()}"`)
+      .join(', ');
+
+    const descriptionSpecs = `Форма: ${selectedShape.name}; Розмір: ${activeSize.label}; Покриття: ${lamination === 'gloss' ? 'Глянцева' : 'Матова'}; Товщина: ${isReinforced ? '1.5 мм (Посилений)' : '0.8 мм'}${textElements ? `; Текст: ${textElements}` : ''}`;
 
     const customProduct: Product = {
       id: 'custom-' + Date.now(),
-      name: `Магніт з фотошоп-графікою "${selectedShape.name}" ${activeSize.label}`,
+      name: `Магніт з макетом "${selectedShape.name}" ${activeSize.label}`,
       slug: 'custom-graphic-magnet-' + Date.now(),
       price: totalPrice,
       sku: 'CUSTOM-GRAPHIC-MAG',
       status: 'Під замовлення',
-      description: `Індивідуальна графічна студія. Форма: ${selectedShape.name}, Розмір: ${activeSize.label}, Товщина: ${isReinforced ? '1.5 мм (Посилений)' : '0.8 мм'}, Покриття: ${lamination === 'gloss' ? 'Глянцева' : 'Матова'}`,
+      description: descriptionSpecs,
       image: previewUrl,
       images: JSON.stringify([previewUrl]),
       unit: 'шт.',
-      features: JSON.stringify({ shape: selectedShape.name, size: activeSize.label, lamination }),
+      features: JSON.stringify({
+        shape: selectedShape.name,
+        size: activeSize.label,
+        lamination: lamination === 'gloss' ? 'Глянцева' : 'Матова',
+        isReinforced,
+        texts: textElements,
+        previewUrl,
+      }),
       isFeatured: false,
     };
+
+    // Save to local storage for persistence across client pages
+    try {
+      const existing = localStorage.getItem('ukrtab_custom_products');
+      const parsed = existing ? JSON.parse(existing) : [];
+      localStorage.setItem('ukrtab_custom_products', JSON.stringify([...parsed, customProduct]));
+    } catch (e) {}
 
     addToCart(customProduct, 1);
     setAdded(true);
@@ -690,7 +777,7 @@ export default function ConstructorPage() {
               </button>
 
               <button
-                onClick={handleAddText}
+                onClick={() => handleAddText()}
                 className="p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 flex items-center space-x-2 transition"
               >
                 <Type className="w-4 h-4 text-emerald-600" />
@@ -817,11 +904,71 @@ export default function ConstructorPage() {
               </span>
             </div>
 
+            {/* Floating Text Quick Editor (shows whenever a text object is selected) */}
+            {selectedObject && selectedObject.type === 'text' && (
+              <div className="bg-emerald-950 text-white p-3.5 rounded-2xl shadow-xl space-y-2 border border-emerald-800 transition-all">
+                <div className="flex items-center justify-between text-xs font-bold text-emerald-400">
+                  <span className="flex items-center gap-1.5">
+                    <Type className="w-4 h-4 text-emerald-400" />
+                    <span>Редактор тексту (двічі клікніть по полотну або друкуйте на клавіатурі)</span>
+                  </span>
+                  <button
+                    onClick={() => updateSelected((o) => ({ ...o, text: '' }))}
+                    className="text-slate-400 hover:text-white text-[11px]"
+                  >
+                    Очистити
+                  </button>
+                </div>
+                
+                <div className="flex flex-col sm:flex-row gap-2 items-center">
+                  <input
+                    ref={textInputRef}
+                    type="text"
+                    value={selectedObject.text || ''}
+                    onChange={(e) => updateSelected((o) => ({ ...o, text: e.target.value }))}
+                    placeholder="Введіть ваш текст..."
+                    className="w-full px-3.5 py-2 bg-slate-900 border border-emerald-700/60 rounded-xl text-sm font-black text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+
+                  <div className="flex items-center space-x-2 shrink-0 w-full sm:w-auto">
+                    <select
+                      value={selectedObject.fontSize || 32}
+                      onChange={(e) => updateSelected((o) => ({ ...o, fontSize: parseInt(e.target.value) }))}
+                      className="px-2.5 py-2 bg-slate-900 border border-emerald-700/60 rounded-xl text-xs font-bold text-white cursor-pointer"
+                    >
+                      <option value={20}>20 px</option>
+                      <option value={24}>24 px</option>
+                      <option value={28}>28 px</option>
+                      <option value={32}>32 px</option>
+                      <option value={36}>36 px</option>
+                      <option value={44}>44 px</option>
+                      <option value={52}>52 px</option>
+                      <option value={64}>64 px</option>
+                      <option value={76}>76 px</option>
+                    </select>
+
+                    <select
+                      value={selectedObject.fontFamily || 'Montserrat, sans-serif'}
+                      onChange={(e) => updateSelected((o) => ({ ...o, fontFamily: e.target.value }))}
+                      className="px-2.5 py-2 bg-slate-900 border border-emerald-700/60 rounded-xl text-xs font-bold text-white cursor-pointer"
+                    >
+                      <option value="Montserrat, sans-serif">Montserrat</option>
+                      <option value="Impact, sans-serif">Impact</option>
+                      <option value="Arial, sans-serif">Arial</option>
+                      <option value="Times New Roman, serif">Times</option>
+                      <option value="Courier New, monospace">Monospace</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* HTML5 Interactive Canvas */}
             <div className="relative w-full aspect-square bg-slate-900 rounded-3xl overflow-hidden flex items-center justify-center p-4 border border-slate-800 shadow-2xl">
               <canvas
                 ref={canvasRef}
                 onMouseDown={handleCanvasMouseDown}
+                onDoubleClick={handleCanvasDoubleClick}
                 onMouseMove={handleCanvasMouseMove}
                 onMouseUp={handleCanvasMouseUp}
                 className={`w-full max-h-full object-contain cursor-crosshair bg-white transition-all ${
@@ -835,21 +982,21 @@ export default function ConstructorPage() {
               <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-3 text-xs">
                 <div className="font-bold text-slate-800 flex justify-between items-center">
                   <span>Редагування шару: {selectedObject.name}</span>
-                  <button onClick={deleteSelected} className="text-red-500 hover:underline">
-                    Видалити
+                  <button onClick={deleteSelected} className="text-red-500 hover:underline font-bold">
+                    Видалити шар
                   </button>
                 </div>
 
                 {selectedObject.type === 'text' && (
                   <div>
-                    <label className="block text-slate-600 font-medium mb-1">Змінити текст</label>
+                    <label className="block text-slate-600 font-medium mb-1">Текст написів</label>
                     <input
                       type="text"
                       value={selectedObject.text || ''}
                       onChange={(e) =>
                         updateSelected((o) => ({ ...o, text: e.target.value }))
                       }
-                      className="w-full px-3 py-1.5 bg-white border rounded-xl font-bold"
+                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl font-black text-sm"
                     />
                   </div>
                 )}
