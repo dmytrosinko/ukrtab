@@ -282,7 +282,7 @@ export default function AdminProductsPage() {
             onClick={async () => {
               if (confirm('Видалити всі однакові дублікати товарів з бази даних?')) {
                 try {
-                  const res = await fetch('/api/dedupe');
+                  const res = await fetch('/api/admin/dedupe');
                   const data = await res.json();
                   alert(data.message || 'Очищення дублікатів завершено');
                   fetchData();
