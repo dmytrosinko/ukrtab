@@ -3,12 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { ChevronLeft, ChevronRight, Search, X, Package, ChevronDown, Filter, LayoutGrid } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Search, X, Package, ChevronDown, Filter } from 'lucide-react';
 import { ProductCard } from '@/components/ProductCard';
 import { Product, Category } from '@/lib/types';
 import { INITIAL_PRODUCTS, INITIAL_CATEGORIES } from '@/lib/store';
 import { searchProducts } from '@/lib/search';
-import { getCategoryTree, CategoryNode } from '@/lib/categories';
+import { getCategoryTree } from '@/lib/categories';
 
 const ITEMS_PER_PAGE = 16;
 
