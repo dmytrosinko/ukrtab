@@ -42,16 +42,23 @@ export async function GET() {
     }));
 
     let insertedOrUpdated = 0;
-    for (const p of seedData) {
-      try {
-        await prisma.product.upsert({
-          where: { id: p.id },
-          update: p,
-          create: p,
-        });
-        insertedOrUpdated++;
-      } catch (itemErr) {
-        console.error('Failed to seed item:', p.id, itemErr);
+    try {
+      const res = await prisma.product.createMany({
+        data: seedData,
+        skipDuplicates: true,
+      });
+      insertedOrUpdated = res.count;
+    } catch (bulkErr) {
+      console.warn('Bulk createMany fallback to sequential upserts:', bulkErr);
+      for (const p of seedData) {
+        try {
+          await prisma.product.upsert({
+            where: { id: p.id },
+            update: p,
+            create: p,
+          });
+          insertedOrUpdated++;
+        } catch (itemErr) {}
       }
     }
 
