@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { INITIAL_CATEGORIES } from '@/lib/store';
-import merchantProducts from '../../../../../scripts/merchant_unique_products.json';
+import { INITIAL_PRODUCTS, INITIAL_CATEGORIES } from '@/lib/store';
 
 export async function GET() {
   try {
@@ -23,8 +22,8 @@ export async function GET() {
 
     const validCatIds = new Set(INITIAL_CATEGORIES.map((c) => c.id));
 
-    // 2. Prepare unique deduplicated products from Prom.ua Google Merchant feed
-    const seedData = (merchantProducts as any[]).map((p) => ({
+    // 2. Prepare deduplicated products
+    const seedData = INITIAL_PRODUCTS.map((p) => ({
       id: p.id,
       name: p.name,
       slug: p.slug,
