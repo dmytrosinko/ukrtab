@@ -157,13 +157,13 @@ export function ProductDetailClient({
 
           {/* Thumbnail selector if multiple images */}
           {imagesList.length > 1 && (
-            <div className="flex space-x-3 overflow-x-auto pb-2">
+            <div className="flex space-x-3 overflow-x-auto p-1.5">
               {imagesList.map((img, idx) => (
                 <button
                   key={idx}
                   onClick={() => setSelectedImage(img)}
-                  className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition bg-slate-50 ${
-                    selectedImage === img ? 'border-emerald-600 scale-105' : 'border-slate-200 opacity-70 hover:opacity-100'
+                  className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition bg-slate-50 shrink-0 ${
+                    selectedImage === img ? 'border-emerald-600 ring-2 ring-emerald-600/30' : 'border-slate-200 opacity-70 hover:opacity-100'
                   }`}
                 >
                   <img src={img} alt="" className="w-full h-full object-contain p-1" />
@@ -322,8 +322,8 @@ export function ProductDetailClient({
                   <button
                     key={idx}
                     onClick={() => setSelectedImage(img)}
-                    className={`w-14 h-14 rounded-xl overflow-hidden border-2 transition bg-white/5 ${
-                      selectedImage === img ? 'border-emerald-500 scale-105' : 'border-transparent opacity-60 hover:opacity-100'
+                    className={`w-14 h-14 rounded-xl overflow-hidden border-2 transition bg-white/5 shrink-0 ${
+                      selectedImage === img ? 'border-emerald-500 ring-2 ring-emerald-500/40' : 'border-transparent opacity-60 hover:opacity-100'
                     }`}
                   >
                     <img src={img} alt="" className="w-full h-full object-contain p-1" />
