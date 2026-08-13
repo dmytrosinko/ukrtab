@@ -104,30 +104,6 @@ export default function AdminImportPromPage() {
         </div>
 
         <div className="flex items-center space-x-3">
-          <button
-            type="button"
-            onClick={async () => {
-              if (confirm('Імпортувати весь базовий каталог (340+ товарів та категорії) в базу даних PostgreSQL?')) {
-                setIsImporting(true);
-                try {
-                  const res = await fetch('/api/admin/seed');
-                  const data = await res.json();
-                  if (res.ok) {
-                    setImportResult({ productsImported: data.totalInDatabase || 340, categoriesImported: 5 });
-                  } else {
-                    setErrorMessage(data.error || 'Помилка сідингу');
-                  }
-                } catch (e) {
-                  setErrorMessage('Помилка відправки запиту');
-                } finally {
-                  setIsImporting(false);
-                }
-              }
-            }}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow-md shadow-emerald-600/20"
-          >
-            ⚡ Завантажити весь базовий каталог (340+ товарів)
-          </button>
           <Link
             href="/admin/products"
             className="text-xs font-bold text-emerald-600 hover:text-emerald-700 flex items-center space-x-1"
