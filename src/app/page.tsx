@@ -34,18 +34,16 @@ export default async function HomePage() {
   let banners: any[] = FALLBACK_BANNERS;
   let products: any[] = FALLBACK_PRODUCTS;
 
-  if (!process.env.VERCEL) {
-    try {
-      const { prisma } = await import('@/lib/prisma');
-      const [b, p] = await Promise.all([
-        prisma.banner.findMany({ where: { isActive: true }, orderBy: { sortOrder: 'asc' } }),
-        prisma.product.findMany({ where: { isFeatured: true }, take: 12 }),
-      ]);
-      if (b && b.length > 0) banners = b;
-      if (p && p.length > 0) products = p;
-    } catch (e) {
-      console.error('Prisma homepage fetch failed, using fallback data:', e);
-    }
+  try {
+    const { prisma } = await import('@/lib/prisma');
+    const [b, p] = await Promise.all([
+      prisma.banner.findMany({ where: { isActive: true }, orderBy: { sortOrder: 'asc' } }),
+      prisma.product.findMany({ where: { isFeatured: true }, take: 12 }),
+    ]);
+    if (b && b.length > 0) banners = b;
+    if (p && p.length > 0) products = p;
+  } catch (e) {
+    console.error('Prisma homepage fetch failed, using fallback data:', e);
   }
 
   const safeBanners: Banner[] = JSON.parse(JSON.stringify(banners));

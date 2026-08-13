@@ -28,7 +28,17 @@ export default function AdminProductsPage() {
     try {
       const resProd = await fetch('/api/products');
       const dataProd = await resProd.json();
-      const serverItems = Array.isArray(dataProd) ? dataProd : [];
+      const serverItems: Product[] = Array.isArray(dataProd) ? dataProd : [];
+
+      let customProducts: Product[] = [];
+      if (typeof window !== 'undefined') {
+        try {
+          const saved = localStorage.getItem('ukrtab_custom_products');
+          if (saved) customProducts = JSON.parse(saved);
+        } catch (e) {}
+      }
+
+      // Build product map starting with server items as primary source of truth
       const map = new Map<string, Product>();
       serverItems.forEach((p: Product) => {
         if (!p || !p.name) return;
@@ -37,6 +47,25 @@ export default function AdminProductsPage() {
           map.set(key, p);
         }
       });
+
+      // Merge custom products created locally ONLY if they don't already exist on server
+      if (Array.isArray(customProducts)) {
+        customProducts.forEach((cp: Product) => {
+          if (!cp || !cp.name) return;
+          const cpKey = cp.name.trim().toLowerCase();
+          let existsOnServer = false;
+          for (const [k, p] of Array.from(map.entries())) {
+            if (p.id === cp.id || (p.slug && cp.slug && p.slug === cp.slug) || k === cpKey) {
+              existsOnServer = true;
+              break;
+            }
+          }
+          if (!existsOnServer) {
+            map.set(cpKey, cp);
+          }
+        });
+      }
+
       const unique = Array.from(map.values());
       const clean = unique.filter(
         (p: Product) =>
@@ -189,7 +218,12 @@ export default function AdminProductsPage() {
         if (typeof window !== 'undefined') {
           const existing = localStorage.getItem('ukrtab_custom_products');
           const customArr: Product[] = existing ? JSON.parse(existing) : [];
-          const idx = customArr.findIndex((p) => p.id === editingProduct.id);
+          const idx = customArr.findIndex(
+            (p) =>
+              p.id === editingProduct.id ||
+              (p.slug && editingProduct.slug && p.slug === editingProduct.slug) ||
+              (p.name && editingProduct.name && p.name.trim().toLowerCase() === editingProduct.name.trim().toLowerCase())
+          );
           if (idx !== -1) {
             customArr[idx] = updatedProdObj;
           } else {

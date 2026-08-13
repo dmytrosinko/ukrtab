@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { INITIAL_PRODUCTS } from '@/lib/store';
 
-// Dynamic in-memory store for newly added products on serverless Vercel
-export let MEMORY_PRODUCTS: any[] = [...INITIAL_PRODUCTS];
+// Dynamic in-memory store for newly added products fallback on serverless Vercel
+export let MEMORY_PRODUCTS: any[] = [];
 
 export async function GET(request: Request) {
   try {
@@ -75,7 +75,7 @@ export async function GET(request: Request) {
       }
     }
 
-    // Merge DB products, in-memory custom products, and full INITIAL_PRODUCTS catalog
+    // Merge DB products FIRST, then in-memory custom products, then initial catalog fallbacks
     const combined = [...products, ...MEMORY_PRODUCTS, ...INITIAL_PRODUCTS];
     const mapByName = new Map<string, any>();
     const seenIds = new Set<string>();
@@ -97,7 +97,7 @@ export async function GET(request: Request) {
     console.error('Error fetching products from DB, serving memory store:', error);
     const { searchParams } = new URL(request.url);
     const search = searchParams.get('search');
-    let filtered = MEMORY_PRODUCTS;
+    let filtered = [...MEMORY_PRODUCTS, ...INITIAL_PRODUCTS];
     if (search) {
       filtered = filtered.filter((p) =>
         p.name.toLowerCase().includes(search.toLowerCase())

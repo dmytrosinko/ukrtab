@@ -70,21 +70,43 @@ export async function PUT(
 
     let product = null;
 
-    // 1. Try Prisma DB update
+    // 1. Try Prisma DB lookup and update / upsert
     try {
-      product = await prisma.product.update({
-        where: { id },
-        data: updateData,
+      const existing = await prisma.product.findFirst({
+        where: {
+          OR: [{ id }, { slug: id }, { name: body.name }],
+        },
       });
+
+      if (existing) {
+        product = await prisma.product.update({
+          where: { id: existing.id },
+          data: updateData,
+        });
+      } else {
+        const slugToUse = body.slug || id;
+        product = await prisma.product.upsert({
+          where: { slug: slugToUse },
+          update: updateData,
+          create: {
+            id: body.id || id,
+            slug: slugToUse,
+            ...updateData,
+          },
+        });
+      }
     } catch (dbErr) {
-      console.warn('Prisma DB update skipped or failed:', dbErr);
+      console.warn('Prisma DB update/upsert skipped or failed:', dbErr);
     }
 
-    // 2. Sync / update in MEMORY_PRODUCTS
-    const memIdx = MEMORY_PRODUCTS.findIndex((p) => p.id === id || p.slug === id);
+    // 2. Sync / update in MEMORY_PRODUCTS if present or fallback
+    const targetName = (body.name || '').trim().toLowerCase();
+    const memIdx = MEMORY_PRODUCTS.findIndex(
+      (p) => p.id === id || p.slug === id || (p.name && p.name.trim().toLowerCase() === targetName)
+    );
     const updatedMemObj = {
-      id: body.id || id,
-      slug: body.slug || id,
+      id: product?.id || body.id || id,
+      slug: product?.slug || body.slug || id,
       ...updateData,
       updatedAt: new Date(),
     };
@@ -94,10 +116,8 @@ export async function PUT(
         ...MEMORY_PRODUCTS[memIdx],
         ...updatedMemObj,
       };
-      if (!product) product = MEMORY_PRODUCTS[memIdx];
-    } else {
+    } else if (!product) {
       MEMORY_PRODUCTS.unshift(updatedMemObj);
-      if (!product) product = updatedMemObj;
     }
 
     return NextResponse.json(product || updatedMemObj);
@@ -112,12 +132,27 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params;
+    const resolved = await params;
+    const rawId = resolved.id || '';
+    const id = decodeURIComponent(rawId);
+
     try {
-      await prisma.product.delete({
-        where: { id },
+      const existing = await prisma.product.findFirst({
+        where: {
+          OR: [{ id }, { slug: id }],
+        },
       });
+      if (existing) {
+        await prisma.product.delete({
+          where: { id: existing.id },
+        });
+      }
     } catch (e) {}
+
+    const memIdx = MEMORY_PRODUCTS.findIndex((p) => p.id === id || p.slug === id);
+    if (memIdx !== -1) {
+      MEMORY_PRODUCTS.splice(memIdx, 1);
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
