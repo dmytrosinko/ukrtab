@@ -22,6 +22,7 @@ export interface Category {
   id: string;
   name: string;
   slug: string;
+  parentId?: string | null;
   image?: string | null;
   description?: string | null;
   isFeatured: boolean;

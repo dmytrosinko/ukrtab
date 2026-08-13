@@ -2,7 +2,9 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Plus, Trash2, Edit3, Image as ImageIcon, Search, Check, RefreshCw, Upload, Tag } from 'lucide-react';
-import { Product } from '@/lib/types';
+import { Product, Category } from '@/lib/types';
+import { INITIAL_CATEGORIES } from '@/lib/store';
+import { getCategoryOptions } from '@/lib/categories';
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -18,14 +20,25 @@ export default function AdminProductsPage() {
     oldPrice: '',
     sku: '',
     status: 'В наявності',
+    categoryId: 'cat-other',
     image: '',
     description: '',
     unit: 'шт.',
   });
 
+  const [categories, setCategories] = useState<Category[]>(INITIAL_CATEGORIES);
+
   const fetchData = async () => {
     setIsLoading(true);
     try {
+      try {
+        const resCat = await fetch('/api/categories');
+        const dataCat = await resCat.json();
+        if (Array.isArray(dataCat) && dataCat.length > 0) {
+          setCategories(dataCat);
+        }
+      } catch (catErr) {}
+
       const resProd = await fetch('/api/products');
       const dataProd = await resProd.json();
       const serverItems: Product[] = Array.isArray(dataProd) ? dataProd : [];
@@ -152,6 +165,7 @@ export default function AdminProductsPage() {
       oldPrice: '',
       sku: autoSku,
       status: 'В наявності',
+      categoryId: 'cat-other',
       image: '',
       description: '',
       unit: 'шт.',
@@ -167,6 +181,7 @@ export default function AdminProductsPage() {
       oldPrice: prod.oldPrice !== undefined && prod.oldPrice !== null ? String(prod.oldPrice) : '',
       sku: prod.sku || '',
       status: prod.status || 'В наявності',
+      categoryId: prod.categoryId || 'cat-other',
       image: prod.image || '',
       description: prod.description || '',
       unit: prod.unit || 'шт.',
@@ -203,6 +218,7 @@ export default function AdminProductsPage() {
         oldPrice: formData.oldPrice ? parseFloat(formData.oldPrice) : null,
         sku: formData.sku || editingProduct.sku || generateAutoSku(formData.name),
         status: formData.status || 'В наявності',
+        categoryId: formData.categoryId || 'cat-other',
         description: formData.description || '',
         image: defaultImage,
         images: JSON.stringify([defaultImage]),
@@ -253,6 +269,7 @@ export default function AdminProductsPage() {
         oldPrice: formData.oldPrice ? parseFloat(formData.oldPrice) : null,
         sku: formData.sku || generateAutoSku(formData.name),
         status: formData.status || 'В наявності',
+        categoryId: formData.categoryId || 'cat-other',
         description: formData.description || '',
         image: defaultImage,
         images: JSON.stringify([defaultImage]),
@@ -374,6 +391,7 @@ export default function AdminProductsPage() {
                 <tr>
                   <th className="p-4">Фото</th>
                   <th className="p-4">Назва товару</th>
+                  <th className="p-4">Категорія</th>
                   <th className="p-4">Артикул</th>
                   <th className="p-4">Ціна / Знижка</th>
                   <th className="p-4">Статус</th>
@@ -381,21 +399,28 @@ export default function AdminProductsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-medium">
-                {filteredProducts.map((p) => (
-                  <tr key={p.id} className="hover:bg-slate-50 transition">
-                    <td className="p-4">
-                      <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
-                        <img src={p.image} alt="" className="w-full h-full object-cover" />
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <div className="font-bold text-slate-900 line-clamp-1">{p.name}</div>
-                      {p.description && (
-                        <div className="text-[11px] text-slate-400 line-clamp-1 font-normal mt-0.5">
-                          {p.description}
+                {filteredProducts.map((p) => {
+                  const catMatch = categories.find((c) => c.id === p.categoryId) || INITIAL_CATEGORIES.find((c) => c.id === (p.categoryId || 'cat-other'));
+                  return (
+                    <tr key={p.id} className="hover:bg-slate-50 transition">
+                      <td className="p-4">
+                        <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
+                          <img src={p.image} alt="" className="w-full h-full object-cover" />
                         </div>
-                      )}
-                    </td>
+                      </td>
+                      <td className="p-4">
+                        <div className="font-bold text-slate-900 line-clamp-1">{p.name}</div>
+                        {p.description && (
+                          <div className="text-[11px] text-slate-400 line-clamp-1 font-normal mt-0.5">
+                            {p.description}
+                          </div>
+                        )}
+                      </td>
+                      <td className="p-4">
+                        <span className="bg-slate-100 text-slate-700 font-bold px-2.5 py-1 rounded-lg text-[11px]">
+                          {catMatch ? catMatch.name : 'Інше'}
+                        </span>
+                      </td>
                     <td className="p-4 font-mono text-slate-500">{p.sku || '-'}</td>
                     <td className="p-4">
                       <div className="font-black text-slate-900">{p.price} ₴ <span className="text-[10px] font-normal text-slate-400">/{p.unit || 'шт.'}</span></div>
@@ -433,9 +458,10 @@ export default function AdminProductsPage() {
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -483,6 +509,25 @@ export default function AdminProductsPage() {
                   onChange={(e) => handleNameChange(e.target.value)}
                   className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:border-emerald-500"
                 />
+              </div>
+
+              {/* Category selector */}
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Категорія товару *</label>
+                <select
+                  value={formData.categoryId}
+                  onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:border-emerald-500"
+                >
+                  {getCategoryOptions(categories).map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-[10px] text-slate-400 mt-1">
+                  За замовченням призначається категорія "Інше". Ви можете обрати головну категорію або її підкатегорію.
+                </p>
               </div>
 
               {/* Price & Old Price */}

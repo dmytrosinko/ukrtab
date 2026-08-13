@@ -3,22 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { INITIAL_CATEGORIES } from '@/lib/store';
 
 export async function GET() {
-  try {
-    const categories = await prisma.category.findMany({
-      include: {
-        _count: {
-          select: { products: true },
-        },
-      },
-      orderBy: { name: 'asc' },
-    });
-    return NextResponse.json(categories);
-  } catch (error) {
-    console.error('Error fetching categories from DB, serving fallback:', error);
-    return NextResponse.json(
-      INITIAL_CATEGORIES.map((c) => ({ ...c, _count: { products: 2 } }))
-    );
-  }
+  return NextResponse.json(INITIAL_CATEGORIES);
 }
 
 export async function POST(request: Request) {
