@@ -309,6 +309,7 @@ export default function AdminProductsPage() {
       oldPrice: '',
       sku: '',
       status: 'В наявності',
+      categoryId: 'cat-other',
       image: '',
       description: '',
       unit: 'шт.',
