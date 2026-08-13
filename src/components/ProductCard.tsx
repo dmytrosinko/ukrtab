@@ -20,11 +20,11 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group">
       {/* Image Container */}
-      <Link href={`/product/${product.id}`} className="relative block aspect-square overflow-hidden bg-slate-50">
+      <Link href={`/product/${product.id}`} className="relative block aspect-square overflow-hidden bg-slate-50 flex items-center justify-center p-2">
         <img
           src={product.image}
           alt={product.name}
-          className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-500"
+          className="max-w-full max-h-full w-auto h-auto object-contain group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
         />
         {/* Status Badge */}

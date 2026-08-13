@@ -159,14 +159,14 @@ export default function ProductDetailPage() {
         <div className="space-y-4">
           <div
             onClick={() => activeImg && setIsZoomOpen(true)}
-            className="aspect-square rounded-2xl overflow-hidden bg-slate-50 border border-slate-100 relative group cursor-pointer"
+            className="aspect-square rounded-2xl overflow-hidden bg-slate-50 border border-slate-100 relative group cursor-pointer flex items-center justify-center p-3"
           >
             {activeImg ? (
               <>
                 <img
                   src={activeImg}
                   alt={product.name}
-                  className="w-full h-full object-contain p-2 transition-transform duration-300 group-hover:scale-105"
+                  className="max-w-full max-h-full w-auto h-auto object-contain transition-transform duration-300 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-colors flex items-center justify-center">
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 backdrop-blur-sm text-slate-800 px-4 py-2 rounded-full shadow-lg flex items-center space-x-2 text-xs font-bold">
