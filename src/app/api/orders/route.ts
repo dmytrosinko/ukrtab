@@ -34,6 +34,9 @@ async function sendTelegramNotification(order: any) {
       .map((item: any) => `• ${escapeHtml(item.productName)} (${item.quantity} x ${item.price} ₴)`)
       .join('\n');
 
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ukrtab.com.ua';
+    const adminOrderUrl = `${siteUrl}/admin/orders#order-${order.orderNumber}`;
+
     const message =
       `🛍 <b>НОВЕ ЗАМОВЛЕННЯ #${order.orderNumber}</b>\n\n` +
       `👤 <b>Клієнт:</b> ${escapeHtml(order.customerName)}\n` +
@@ -44,7 +47,8 @@ async function sendTelegramNotification(order: any) {
       `💳 <b>Оплата:</b> ${escapeHtml(order.paymentMethod)}\n` +
       `${order.notes ? `📝 <b>Примітка (коментар):</b> ${escapeHtml(order.notes)}\n` : ''}\n` +
       `📦 <b>Товари:</b>\n${itemsList}\n\n` +
-      `💰 <b>Разом:</b> ${order.total} ₴`;
+      `💰 <b>Разом:</b> ${order.total} ₴\n\n` +
+      `🔗 <a href="${adminOrderUrl}"><b>Відкрити в адмінці</b></a>`;
 
     const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: 'POST',

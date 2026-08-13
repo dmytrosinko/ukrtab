@@ -113,7 +113,8 @@ export default function AdminOrdersPage() {
           {orders.map((o) => (
             <div
               key={o.id}
-              className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-5 hover:border-slate-300 transition"
+              id={`order-${o.orderNumber}`}
+              className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-5 hover:border-slate-300 transition target:ring-4 target:ring-emerald-500/30 target:border-emerald-500"
             >
               {/* Order Header */}
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-100 pb-3">
