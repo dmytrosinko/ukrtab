@@ -22,9 +22,12 @@ export default function AdminProductsPage() {
     status: 'В наявності',
     categoryId: 'cat-other',
     image: '',
+    images: [] as string[],
     description: '',
     unit: 'шт.',
   });
+
+  const [newImageUrlInput, setNewImageUrlInput] = useState('');
 
   const [categories, setCategories] = useState<Category[]>(INITIAL_CATEGORIES);
 
@@ -70,45 +73,78 @@ export default function AdminProductsPage() {
     }
   }, []);
 
-  // Handle Photo File Upload & Compress to max 500px JPEG (~20KB)
+  // Handle Photo File Upload & Compress to max 600px JPEG (~30KB)
   const handleImageFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        const resultSrc = ev.target?.result as string;
-        if (resultSrc) {
-          const img = new Image();
-          img.src = resultSrc;
-          img.onload = () => {
-            const canvas = document.createElement('canvas');
-            const maxDim = 500;
-            let w = img.width;
-            let h = img.height;
-            if (w > maxDim || h > maxDim) {
-              if (w > h) {
-                h = Math.round((h * maxDim) / w);
-                w = maxDim;
-              } else {
-                w = Math.round((w * maxDim) / h);
-                h = maxDim;
+    if (e.target.files && e.target.files.length > 0) {
+      const files = Array.from(e.target.files);
+      files.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const resultSrc = ev.target?.result as string;
+          if (resultSrc) {
+            const img = new Image();
+            img.src = resultSrc;
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              const maxDim = 600;
+              let w = img.width;
+              let h = img.height;
+              if (w > maxDim || h > maxDim) {
+                if (w > h) {
+                  h = Math.round((h * maxDim) / w);
+                  w = maxDim;
+                } else {
+                  w = Math.round((w * maxDim) / h);
+                  h = maxDim;
+                }
               }
-            }
-            canvas.width = w;
-            canvas.height = h;
-            const ctx = canvas.getContext('2d');
-            if (ctx) {
-              ctx.drawImage(img, 0, 0, w, h);
-              const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
-              setFormData((prev) => ({ ...prev, image: compressedDataUrl }));
-            } else {
-              setFormData((prev) => ({ ...prev, image: resultSrc }));
-            }
-          };
-        }
-      };
-      reader.readAsDataURL(file);
+              canvas.width = w;
+              canvas.height = h;
+              const ctx = canvas.getContext('2d');
+              if (ctx) {
+                ctx.drawImage(img, 0, 0, w, h);
+                const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.75);
+                setFormData((prev) => {
+                  const updatedImgs = [...prev.images, compressedDataUrl];
+                  return {
+                    ...prev,
+                    image: prev.image || compressedDataUrl,
+                    images: updatedImgs,
+                  };
+                });
+              }
+            };
+          }
+        };
+        reader.readAsDataURL(file);
+      });
     }
+  };
+
+  const handleAddImageUrl = () => {
+    if (!newImageUrlInput.trim()) return;
+    const url = newImageUrlInput.trim();
+    setFormData((prev) => {
+      const updated = [...prev.images, url];
+      return {
+        ...prev,
+        image: prev.image || url,
+        images: updated,
+      };
+    });
+    setNewImageUrlInput('');
+  };
+
+  const handleRemoveImage = (indexToRemove: number) => {
+    setFormData((prev) => {
+      const updated = prev.images.filter((_, idx) => idx !== indexToRemove);
+      const newMain = updated[0] || '';
+      return {
+        ...prev,
+        image: newMain,
+        images: updated,
+      };
+    });
   };
 
   const generateAutoSku = (name?: string) => {
@@ -132,14 +168,28 @@ export default function AdminProductsPage() {
       status: 'В наявності',
       categoryId: 'cat-other',
       image: '',
+      images: [],
       description: '',
       unit: 'шт.',
     });
+    setNewImageUrlInput('');
     setIsModalOpen(true);
   };
 
   const handleEditProduct = (prod: Product) => {
     setEditingProduct(prod);
+
+    let parsedImgs: string[] = [];
+    if (prod.images) {
+      try {
+        const arr = JSON.parse(prod.images);
+        if (Array.isArray(arr)) parsedImgs = arr;
+      } catch (e) {}
+    }
+    if (parsedImgs.length === 0 && prod.image) {
+      parsedImgs = [prod.image];
+    }
+
     setFormData({
       name: prod.name || '',
       price: prod.price !== undefined && prod.price !== null ? String(prod.price) : '',
@@ -147,10 +197,12 @@ export default function AdminProductsPage() {
       sku: prod.sku || '',
       status: prod.status || 'В наявності',
       categoryId: prod.categoryId || 'cat-other',
-      image: prod.image || '',
+      image: prod.image || (parsedImgs[0] || ''),
+      images: parsedImgs,
       description: prod.description || '',
       unit: prod.unit || 'шт.',
     });
+    setNewImageUrlInput('');
     setIsModalOpen(true);
   };
 
@@ -172,7 +224,8 @@ export default function AdminProductsPage() {
       return;
     }
 
-    const defaultImage = formData.image || 'https://images.prom.ua/4296986097_w297_h200_magnitni-nalipki-na.jpg';
+    const defaultImage = formData.image || formData.images[0] || 'https://images.prom.ua/4296986097_w297_h200_magnitni-nalipki-na.jpg';
+    const allImagesList = formData.images.length > 0 ? formData.images : [defaultImage];
 
     if (editingProduct) {
       // Editing existing product
@@ -186,7 +239,7 @@ export default function AdminProductsPage() {
         categoryId: formData.categoryId || 'cat-other',
         description: formData.description || '',
         image: defaultImage,
-        images: JSON.stringify([defaultImage]),
+        images: JSON.stringify(allImagesList),
         unit: formData.unit || 'шт.',
       };
 
@@ -217,7 +270,7 @@ export default function AdminProductsPage() {
         categoryId: formData.categoryId || 'cat-other',
         description: formData.description || '',
         image: defaultImage,
-        images: JSON.stringify([defaultImage]),
+        images: JSON.stringify(allImagesList),
         unit: formData.unit || 'шт.',
         features: '[]',
         isFeatured: false,
@@ -233,6 +286,7 @@ export default function AdminProductsPage() {
           body: JSON.stringify({
             ...newProdObj,
             image: defaultImage,
+            images: allImagesList,
           }),
         });
       } catch (err) {
@@ -248,6 +302,7 @@ export default function AdminProductsPage() {
       status: 'В наявності',
       categoryId: 'cat-other',
       image: '',
+      images: [],
       description: '',
       unit: 'шт.',
     });
@@ -557,42 +612,89 @@ export default function AdminProductsPage() {
               </div>
 
               {/* Photo Upload Area */}
-              <div className="space-y-2">
-                <label className="block font-bold text-slate-700">Фото товару</label>
+              <div className="space-y-3 bg-slate-50 p-3.5 rounded-2xl border border-slate-200/70">
+                <div className="flex items-center justify-between">
+                  <label className="block font-bold text-slate-800">
+                    Фотографії товару ({formData.images.length})
+                  </label>
+                  <span className="text-[10px] text-slate-400 font-medium">Перше фото — головне</span>
+                </div>
                 
                 <input
                   type="file"
                   ref={fileInputRef}
                   accept="image/*"
+                  multiple
                   onChange={handleImageFileUpload}
                   className="hidden"
                 />
 
-                <div className="flex items-center space-x-3">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-4 py-2.5 rounded-xl text-xs flex items-center space-x-2 border transition shrink-0"
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center justify-center space-x-2 shadow-sm transition shrink-0"
                   >
-                    <Upload className="w-4 h-4 text-emerald-600" />
-                    <span>Завантажити фото</span>
+                    <Upload className="w-4 h-4" />
+                    <span>Додати фото з пристрою</span>
                   </button>
 
-                  <span className="text-slate-400 font-bold">або</span>
-
-                  <input
-                    type="url"
-                    placeholder="Вставити посилання на фото (URL)"
-                    value={formData.image}
-                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                    className="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium"
-                  />
+                  <div className="flex items-center gap-2 flex-1">
+                    <input
+                      type="url"
+                      placeholder="Або вставити URL фото..."
+                      value={newImageUrlInput}
+                      onChange={(e) => setNewImageUrlInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          handleAddImageUrl();
+                        }
+                      }}
+                      className="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-emerald-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddImageUrl}
+                      className="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold px-3 py-2 rounded-xl text-xs transition shrink-0"
+                    >
+                      + Додати URL
+                    </button>
+                  </div>
                 </div>
 
-                {/* Photo Preview Box */}
-                {formData.image && (
-                  <div className="mt-2 relative w-24 h-24 rounded-2xl border border-slate-200 overflow-hidden bg-slate-100">
-                    <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+                {/* Multiple Photos Gallery List */}
+                {formData.images.length > 0 ? (
+                  <div className="grid grid-cols-4 sm:grid-cols-5 gap-2.5 pt-2">
+                    {formData.images.map((imgUrl, idx) => (
+                      <div
+                        key={idx}
+                        className={`group relative aspect-square rounded-xl overflow-hidden border-2 bg-white transition ${
+                          idx === 0 ? 'border-emerald-500 shadow-xs' : 'border-slate-200'
+                        }`}
+                      >
+                        <img src={imgUrl} alt="" className="w-full h-full object-cover" />
+                        
+                        {idx === 0 && (
+                          <span className="absolute bottom-0 inset-x-0 bg-emerald-600/90 text-white text-[9px] font-black text-center py-0.5">
+                            ГОЛОВНЕ
+                          </span>
+                        )}
+
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveImage(idx)}
+                          className="absolute top-1 right-1 bg-red-600/90 hover:bg-red-700 text-white p-1 rounded-lg text-[10px] transition opacity-90 sm:opacity-0 group-hover:opacity-100 shadow-sm"
+                          title="Видалити фото"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-[11px] text-slate-400 italic text-center py-2">
+                    Жодної фотографії ще не додано. Натисніть «Додати фото з пристрою» або вставте посилання.
                   </div>
                 )}
               </div>
