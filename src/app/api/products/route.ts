@@ -75,35 +75,14 @@ export async function GET(request: Request) {
       }
     }
 
-    // Merge DB products FIRST, then in-memory custom products, then initial catalog fallbacks
-    const combined = [...products, ...MEMORY_PRODUCTS, ...INITIAL_PRODUCTS];
-    const mapByName = new Map<string, any>();
-    const seenIds = new Set<string>();
-    const unique: any[] = [];
-
-    combined.forEach((p) => {
-      if (!p || !p.name) return;
-      const key = String(p.name).trim().toLowerCase();
-      const id = String(p.id);
-      if (!seenIds.has(id) && !mapByName.has(key)) {
-        seenIds.add(id);
-        mapByName.set(key, p);
-        unique.push(p);
-      }
-    });
-
-    return NextResponse.json(unique);
-  } catch (error) {
-    console.error('Error fetching products from DB, serving memory store:', error);
-    const { searchParams } = new URL(request.url);
-    const search = searchParams.get('search');
-    let filtered = [...MEMORY_PRODUCTS, ...INITIAL_PRODUCTS];
-    if (search) {
-      filtered = filtered.filter((p) =>
-        p.name.toLowerCase().includes(search.toLowerCase())
-      );
+    if (products.length > 0) {
+      return NextResponse.json(products);
     }
-    return NextResponse.json(filtered);
+
+    return NextResponse.json(INITIAL_PRODUCTS);
+  } catch (error) {
+    console.error('Error fetching products from DB, serving initial store fallback:', error);
+    return NextResponse.json(INITIAL_PRODUCTS);
   }
 }
 

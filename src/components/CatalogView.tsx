@@ -45,52 +45,15 @@ export function CatalogView() {
         setCategories(INITIAL_CATEGORIES);
       });
 
-    // Fetch products
+    // Fetch products directly from Database API
     fetch('/api/products')
       .then((r) => r.json())
       .then((data) => {
         const serverItems = Array.isArray(data) && data.length > 0 ? data : INITIAL_PRODUCTS;
-        
-        let customProducts: Product[] = [];
-        if (typeof window !== 'undefined') {
-          try {
-            const saved = localStorage.getItem('ukrtab_custom_products');
-            if (saved) customProducts = JSON.parse(saved);
-          } catch (e) {}
-        }
-
-        const map = new Map<string, Product>();
-        serverItems.forEach((p) => {
-          if (!p || !p.name) return;
-          const key = p.name.trim().toLowerCase();
-          if (!map.has(key) && !map.has(p.id)) {
-            map.set(key, p);
-          }
-        });
-
-        // Overlay edited / local custom products so changes persist locally on browser
-        if (Array.isArray(customProducts)) {
-          customProducts.forEach((cp: Product) => {
-            if (!cp || !cp.name) return;
-            const cpKey = cp.name.trim().toLowerCase();
-            let matchedKey = null;
-            for (const [k, p] of Array.from(map.entries())) {
-              if (p.id === cp.id || (p.slug && cp.slug && p.slug === cp.slug) || k === cpKey) {
-                matchedKey = k;
-                break;
-              }
-            }
-            if (matchedKey) {
-              map.set(matchedKey, { ...map.get(matchedKey), ...cp });
-            } else {
-              map.set(cpKey, cp);
-            }
-          });
-        }
-
-        const unique = Array.from(map.values());
-        const clean = unique.filter(
-          (p) =>
+        const clean = serverItems.filter(
+          (p: Product) =>
+            p &&
+            p.name &&
             p.name !== 'top of the top' &&
             p.name !== 'еталон краси' &&
             p.name !== 'Mavvir'

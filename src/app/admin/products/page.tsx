@@ -43,47 +43,10 @@ export default function AdminProductsPage() {
       const dataProd = await resProd.json();
       const serverItems: Product[] = Array.isArray(dataProd) ? dataProd : [];
 
-      let customProducts: Product[] = [];
-      if (typeof window !== 'undefined') {
-        try {
-          const saved = localStorage.getItem('ukrtab_custom_products');
-          if (saved) customProducts = JSON.parse(saved);
-        } catch (e) {}
-      }
-
-      // Build product map starting with server items as primary source of truth
-      const map = new Map<string, Product>();
-      serverItems.forEach((p: Product) => {
-        if (!p || !p.name) return;
-        const key = p.name.trim().toLowerCase();
-        if (!map.has(key) && !map.has(p.id)) {
-          map.set(key, p);
-        }
-      });
-
-      // Overlay custom/edited products created locally so edited values take priority
-      if (Array.isArray(customProducts)) {
-        customProducts.forEach((cp: Product) => {
-          if (!cp || !cp.name) return;
-          const cpKey = cp.name.trim().toLowerCase();
-          let matchedKey = null;
-          for (const [k, p] of Array.from(map.entries())) {
-            if (p.id === cp.id || (p.slug && cp.slug && p.slug === cp.slug) || k === cpKey) {
-              matchedKey = k;
-              break;
-            }
-          }
-          if (matchedKey) {
-            map.set(matchedKey, { ...map.get(matchedKey), ...cp });
-          } else {
-            map.set(cpKey, cp);
-          }
-        });
-      }
-
-      const unique = Array.from(map.values());
-      const clean = unique.filter(
+      const clean = serverItems.filter(
         (p: Product) =>
+          p &&
+          p.name &&
           p.name !== 'top of the top' &&
           p.name !== 'еталон краси' &&
           p.name !== 'Mavvir'
@@ -231,26 +194,6 @@ export default function AdminProductsPage() {
       setIsModalOpen(false);
       setEditingProduct(null);
 
-      // Sync to localStorage
-      try {
-        if (typeof window !== 'undefined') {
-          const existing = localStorage.getItem('ukrtab_custom_products');
-          const customArr: Product[] = existing ? JSON.parse(existing) : [];
-          const idx = customArr.findIndex(
-            (p) =>
-              p.id === editingProduct.id ||
-              (p.slug && editingProduct.slug && p.slug === editingProduct.slug) ||
-              (p.name && editingProduct.name && p.name.trim().toLowerCase() === editingProduct.name.trim().toLowerCase())
-          );
-          if (idx !== -1) {
-            customArr[idx] = updatedProdObj;
-          } else {
-            customArr.unshift(updatedProdObj);
-          }
-          localStorage.setItem('ukrtab_custom_products', JSON.stringify(customArr));
-        }
-      } catch (err) {}
-
       // PUT to API
       try {
         await fetch(`/api/products/${editingProduct.id}`, {
@@ -279,14 +222,6 @@ export default function AdminProductsPage() {
         features: '[]',
         isFeatured: false,
       };
-
-      try {
-        if (typeof window !== 'undefined') {
-          const existing = localStorage.getItem('ukrtab_custom_products');
-          const customArr = existing ? JSON.parse(existing) : [];
-          localStorage.setItem('ukrtab_custom_products', JSON.stringify([newProdObj, ...customArr]));
-        }
-      } catch (e) {}
 
       setProducts((prev) => [newProdObj, ...prev]);
       setIsModalOpen(false);
@@ -321,15 +256,6 @@ export default function AdminProductsPage() {
   const handleDeleteProduct = async (id: string) => {
     if (!confirm('Ви дійсно бажаєте видалити цей товар?')) return;
     setProducts((prev) => prev.filter((p) => p.id !== id));
-    try {
-      if (typeof window !== 'undefined') {
-        const existing = localStorage.getItem('ukrtab_custom_products');
-        if (existing) {
-          const customArr = JSON.parse(existing).filter((p: any) => p.id !== id);
-          localStorage.setItem('ukrtab_custom_products', JSON.stringify(customArr));
-        }
-      }
-    } catch (e) {}
 
     try {
       await fetch(`/api/products/${id}`, { method: 'DELETE' });
