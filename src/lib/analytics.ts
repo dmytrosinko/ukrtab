@@ -19,24 +19,19 @@ function extractCategoryName(cat: any): string {
 function sendGtagEvent(eventName: string, params: Record<string, any>) {
   if (typeof window === 'undefined') return;
   
-  // Try gtag function call
   if (typeof window.gtag === 'function') {
     try {
       window.gtag('event', eventName, params);
     } catch (e) {
       console.error('[GA4 Analytics] Error calling window.gtag:', e);
     }
-  }
-
-  // Also push to dataLayer directly for GTM / fallback analytics listeners
-  try {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      event: eventName,
-      ...params,
-    });
-  } catch (e) {
-    console.error('[GA4 Analytics] Error pushing to dataLayer:', e);
+  } else {
+    try {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push(['event', eventName, params]);
+    } catch (e) {
+      console.error('[GA4 Analytics] Error pushing to dataLayer:', e);
+    }
   }
 }
 

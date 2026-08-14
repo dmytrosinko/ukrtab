@@ -43,7 +43,8 @@ export function GoogleAnalytics({ gaId }: { gaId: string }) {
           window.gtag = gtag;
           gtag('js', new Date());
           gtag('config', '${gaId}', {
-            send_page_view: true
+            send_page_view: true,
+            debug_mode: true
           });
         `}
       </Script>
