@@ -180,29 +180,25 @@ export function CatalogView() {
         {(rawSearch || selectedCategorySlug) && (
           <div className="flex flex-wrap items-center gap-2 pt-2 text-xs">
             <span className="text-slate-500 font-medium">Активні фільтри:</span>
-            {selectedCategorySlug && activeCategory && (
-              <span className="bg-emerald-600 text-white font-bold px-3 py-1 rounded-full flex items-center space-x-2">
-                <span>Категорія: {activeCategory.name}</span>
-                <button
-                  onClick={() => handleSelectCategory('')}
-                  className="hover:text-emerald-200 font-bold ml-1"
-                  title="Скинути категорію"
-                >
-                  ✕
-                </button>
-              </span>
+            {selectedCategorySlug && (
+              <Link
+                href={rawSearch ? `/catalog?search=${encodeURIComponent(rawSearch)}` : '/catalog'}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-full flex items-center space-x-2 transition cursor-pointer shadow-sm"
+                title="Скинути категорію"
+              >
+                <span>Категорія: {activeCategory ? activeCategory.name : selectedCategorySlug}</span>
+                <X className="w-3.5 h-3.5 ml-1 inline-block" />
+              </Link>
             )}
             {rawSearch && (
-              <span className="bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold px-3 py-1 rounded-full flex items-center space-x-2">
+              <Link
+                href={selectedCategorySlug ? `/catalog?category=${encodeURIComponent(selectedCategorySlug)}` : '/catalog'}
+                className="bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 text-emerald-800 font-bold px-3 py-1.5 rounded-full flex items-center space-x-2 transition cursor-pointer shadow-sm"
+                title="Скинути пошук"
+              >
                 <span>Пошук: "{rawSearch}"</span>
-                <button
-                  onClick={handleClearSearch}
-                  className="hover:text-red-600 font-bold ml-1"
-                  title="Скинути пошук"
-                >
-                  ✕
-                </button>
-              </span>
+                <X className="w-3.5 h-3.5 ml-1 inline-block text-emerald-700" />
+              </Link>
             )}
           </div>
         )}
