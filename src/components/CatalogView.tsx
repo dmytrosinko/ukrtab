@@ -67,9 +67,18 @@ export function CatalogView() {
               p.name !== 'еталон краси' &&
               p.name !== 'Mavvir'
           );
-          setCurrentProducts(clean);
-          setTotalItems(data.total || clean.length);
-          setTotalPages(data.totalPages || 1);
+
+          if (clean.length === 0 && !selectedCategorySlug && !rawSearch) {
+            const fallback = INITIAL_PRODUCTS;
+            const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+            setCurrentProducts(fallback.slice(startIndex, startIndex + ITEMS_PER_PAGE));
+            setTotalItems(fallback.length);
+            setTotalPages(Math.ceil(fallback.length / ITEMS_PER_PAGE) || 1);
+          } else {
+            setCurrentProducts(clean);
+            setTotalItems(data.total || clean.length);
+            setTotalPages(data.totalPages || 1);
+          }
         } else if (Array.isArray(data)) {
           const clean = data.filter(
             (p: Product) =>
@@ -79,10 +88,31 @@ export function CatalogView() {
               p.name !== 'еталон краси' &&
               p.name !== 'Mavvir'
           );
+
+          if (clean.length === 0 && !selectedCategorySlug && !rawSearch) {
+            const fallback = INITIAL_PRODUCTS;
+            const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+            setCurrentProducts(fallback.slice(startIndex, startIndex + ITEMS_PER_PAGE));
+            setTotalItems(fallback.length);
+            setTotalPages(Math.ceil(fallback.length / ITEMS_PER_PAGE) || 1);
+          } else {
+            const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+            setCurrentProducts(clean.slice(startIndex, startIndex + ITEMS_PER_PAGE));
+            setTotalItems(clean.length);
+            setTotalPages(Math.ceil(clean.length / ITEMS_PER_PAGE) || 1);
+          }
+        } else {
+          // Fallback if data is object with error or invalid
+          let fallback = INITIAL_PRODUCTS;
+          if (selectedCategorySlug) {
+            const catMatch = categories.find((c) => c.slug === selectedCategorySlug);
+            if (catMatch) fallback = fallback.filter((p) => p.categoryId === catMatch.id);
+          }
+          if (rawSearch) fallback = searchProducts(fallback, rawSearch);
           const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-          setCurrentProducts(clean.slice(startIndex, startIndex + ITEMS_PER_PAGE));
-          setTotalItems(clean.length);
-          setTotalPages(Math.ceil(clean.length / ITEMS_PER_PAGE) || 1);
+          setCurrentProducts(fallback.slice(startIndex, startIndex + ITEMS_PER_PAGE));
+          setTotalItems(fallback.length);
+          setTotalPages(Math.ceil(fallback.length / ITEMS_PER_PAGE) || 1);
         }
       })
       .catch((e) => {

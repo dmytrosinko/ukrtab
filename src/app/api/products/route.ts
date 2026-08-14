@@ -20,7 +20,7 @@ export async function GET(request: Request) {
     if (categorySlug) {
       const category = await prisma.category.findUnique({
         where: { slug: categorySlug },
-      });
+      }).catch(() => null);
       if (category) {
         where.categoryId = category.id;
       }
@@ -44,56 +44,105 @@ export async function GET(request: Request) {
     const limit = Math.max(1, Math.min(100, parseInt(limitParam || '16', 10)));
     const skip = (page - 1) * limit;
 
-    if (isPaginated) {
-      const [total, items] = await Promise.all([
-        prisma.product.count({ where }),
-        prisma.product.findMany({
+    let dbItems: any[] = [];
+    let dbTotal = 0;
+    let isDbSuccess = false;
+
+    try {
+      if (isPaginated) {
+        const [total, items] = await Promise.all([
+          prisma.product.count({ where }),
+          prisma.product.findMany({
+            where,
+            include: { category: true },
+            orderBy: { createdAt: 'desc' },
+            skip,
+            take: limit,
+          }),
+        ]);
+        dbTotal = total;
+        dbItems = items;
+        if (total > 0 || items.length > 0) isDbSuccess = true;
+      } else {
+        const takeLimit = limitParam ? parseInt(limitParam, 10) : undefined;
+        dbItems = await prisma.product.findMany({
           where,
           include: { category: true },
           orderBy: { createdAt: 'desc' },
-          skip,
-          take: limit,
-        }),
-      ]);
+          ...(takeLimit ? { take: takeLimit } : {}),
+        });
+        if (dbItems && dbItems.length > 0) isDbSuccess = true;
+      }
+    } catch (dbErr) {
+      console.warn('Prisma products query error, serving static fallback:', dbErr);
+      isDbSuccess = false;
+    }
 
-      const totalPages = Math.ceil(total / limit) || 1;
-
-      return NextResponse.json(
-        {
-          items,
-          total,
-          page,
-          totalPages,
-          limit,
-        },
-        {
-          headers: {
-            'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+    if (isDbSuccess) {
+      if (isPaginated) {
+        const totalPages = Math.ceil(dbTotal / limit) || 1;
+        return NextResponse.json(
+          {
+            items: dbItems,
+            total: dbTotal,
+            page,
+            totalPages,
+            limit,
           },
-        }
-      );
+          {
+            headers: {
+              'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+            },
+          }
+        );
+      }
+
+      return NextResponse.json(dbItems, {
+        headers: {
+          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+        },
+      });
+    }
+
+    // Static store fallback if DB returns 0 items or DB connection fails
+    const { searchProducts } = await import('@/lib/search');
+    let fallback = [...MEMORY_PRODUCTS, ...INITIAL_PRODUCTS];
+
+    if (categorySlug) {
+      const { INITIAL_CATEGORIES } = await import('@/lib/store');
+      const catObj = INITIAL_CATEGORIES.find((c) => c.slug === categorySlug);
+      if (catObj) {
+        fallback = fallback.filter((p) => p.categoryId === catObj.id);
+      }
+    }
+
+    if (search && search.trim().length > 0) {
+      fallback = searchProducts(fallback, search);
+    }
+
+    if (featured === 'true') {
+      fallback = fallback.filter((p) => p.isFeatured);
+    }
+
+    if (isPaginated) {
+      const total = fallback.length;
+      const totalPages = Math.ceil(total / limit) || 1;
+      const items = fallback.slice(skip, skip + limit);
+      return NextResponse.json({
+        items,
+        total,
+        page,
+        totalPages,
+        limit,
+      });
     }
 
     const takeLimit = limitParam ? parseInt(limitParam, 10) : undefined;
-
-    const products = await prisma.product.findMany({
-      where,
-      include: { category: true },
-      orderBy: { createdAt: 'desc' },
-      ...(takeLimit ? { take: takeLimit } : {}),
-    });
-
-    return NextResponse.json(products, {
-      headers: {
-        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
-      },
-    });
+    const items = takeLimit ? fallback.slice(0, takeLimit) : fallback;
+    return NextResponse.json(items);
   } catch (error) {
-    console.error('Error fetching products from DB:', error);
-    return NextResponse.json(
-      { error: 'Помилка підключення до бази даних. Будь ласка, спробуйте пізніше.' },
-      { status: 500 }
-    );
+    console.error('Error fetching products from DB/fallback:', error);
+    return NextResponse.json(INITIAL_PRODUCTS);
   }
 }
 

@@ -8,17 +8,18 @@ export async function GET() {
       orderBy: { name: 'asc' },
     });
 
-    return NextResponse.json(categories, {
-      headers: {
-        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
-      },
-    });
+    if (categories && categories.length > 0) {
+      return NextResponse.json(categories, {
+        headers: {
+          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+        },
+      });
+    }
+
+    return NextResponse.json(INITIAL_CATEGORIES);
   } catch (error) {
     console.error('Error fetching categories from DB:', error);
-    return NextResponse.json(
-      { error: 'Помилка підключення до бази даних.' },
-      { status: 500 }
-    );
+    return NextResponse.json(INITIAL_CATEGORIES);
   }
 }
 
