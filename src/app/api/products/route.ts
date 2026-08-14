@@ -11,23 +11,42 @@ export async function GET(request: Request) {
     const categorySlug = searchParams.get('category');
     const search = searchParams.get('search');
     const featured = searchParams.get('featured');
+    const pageParam = searchParams.get('page');
+    const limitParam = searchParams.get('limit');
+    const isPaginatedParam = searchParams.get('paginated') === 'true';
+
+    const isPaginated = isPaginatedParam || pageParam !== null || limitParam !== null;
+    const page = Math.max(1, parseInt(pageParam || '1', 10));
+    const limit = Math.max(1, Math.min(100, parseInt(limitParam || '16', 10)));
+    const skip = (page - 1) * limit;
 
     const where: any = {};
 
     if (categorySlug) {
-      const category = await prisma.category.findUnique({
-        where: { slug: categorySlug },
+      const category = await prisma.category.findFirst({
+        where: {
+          OR: [
+            { slug: categorySlug },
+            { id: categorySlug },
+          ],
+        },
       });
       if (category) {
-        where.categoryId = category.id;
+        where.OR = [
+          { categoryId: category.id },
+          { categoryId: category.slug },
+        ];
+      } else {
+        where.categoryId = categorySlug;
       }
     }
 
-    if (search) {
+    if (search && search.trim().length > 0) {
+      const q = search.trim();
       where.OR = [
-        { name: { contains: search } },
-        { description: { contains: search } },
-        { sku: { contains: search } },
+        { name: { contains: q, mode: 'insensitive' } },
+        { description: { contains: q, mode: 'insensitive' } },
+        { sku: { contains: q, mode: 'insensitive' } },
       ];
     }
 
@@ -35,13 +54,48 @@ export async function GET(request: Request) {
       where.isFeatured = true;
     }
 
+    if (isPaginated) {
+      const [total, items] = await Promise.all([
+        prisma.product.count({ where }),
+        prisma.product.findMany({
+          where,
+          include: { category: true },
+          orderBy: { createdAt: 'desc' },
+          skip,
+          take: limit,
+        }),
+      ]);
+
+      const totalPages = Math.ceil(total / limit) || 1;
+      return NextResponse.json(
+        {
+          items,
+          total,
+          page,
+          totalPages,
+          limit,
+        },
+        {
+          headers: {
+            'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+          },
+        }
+      );
+    }
+
+    const takeLimit = limitParam ? parseInt(limitParam, 10) : undefined;
     const products = await prisma.product.findMany({
       where,
       include: { category: true },
       orderBy: { createdAt: 'desc' },
+      ...(takeLimit ? { take: takeLimit } : {}),
     });
 
-    return NextResponse.json(products);
+    return NextResponse.json(products, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+      },
+    });
   } catch (error) {
     console.error('Error fetching products from DB:', error);
     return NextResponse.json(

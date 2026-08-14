@@ -8,7 +8,11 @@ export async function GET() {
       orderBy: { name: 'asc' },
     });
 
-    return NextResponse.json(categories);
+    return NextResponse.json(categories, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+      },
+    });
   } catch (error) {
     console.error('Error fetching categories from DB:', error);
     return NextResponse.json(

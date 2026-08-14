@@ -62,40 +62,25 @@ export default function ProductDetailPage() {
       (p) => p.id === targetId || p.slug === targetId || p.id === rawId || p.slug === rawId
     );
 
-    // 3. Fallback fetch all products API or fallback to first catalog item
-    fetch('/api/products')
-      .then((r) => r.json())
+    // 3. Fetch single product API directly
+    fetch(`/api/products/${encodeURIComponent(targetId)}`)
+      .then((r) => {
+        if (!r.ok) throw new Error('Product not found in API');
+        return r.json();
+      })
       .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          const found = data.find(
-            (p: Product) =>
-              p.id === targetId ||
-              p.slug === targetId ||
-              p.id === rawId ||
-              p.slug === rawId
-          );
-          if (found) {
-            setProduct(found);
-            setSelectedImage(found.image);
-            return;
-          }
-        }
-        // If not found in API list, use initMatch if found
-        if (initMatch) {
+        if (data && data.name && !data.error) {
+          setProduct(data);
+          setSelectedImage(data.image);
+        } else if (initMatch) {
           setProduct(initMatch);
           setSelectedImage(initMatch.image);
-        } else if (INITIAL_PRODUCTS.length > 0) {
-          setProduct(INITIAL_PRODUCTS[0]);
-          setSelectedImage(INITIAL_PRODUCTS[0].image);
         }
       })
       .catch(() => {
         if (initMatch) {
           setProduct(initMatch);
           setSelectedImage(initMatch.image);
-        } else if (INITIAL_PRODUCTS.length > 0) {
-          setProduct(INITIAL_PRODUCTS[0]);
-          setSelectedImage(INITIAL_PRODUCTS[0].image);
         }
       });
   }, [targetId, rawId]);

@@ -11,7 +11,10 @@ function createPrismaClient(): PrismaClient | null {
     const dbUrl =
       process.env.DATABASE_URL ||
       process.env.POSTGRES_PRISMA_URL ||
-      process.env.POSTGRES_URL;
+      process.env.POSTGRES_URL ||
+      process.env.POSTGRES_URL_NON_POOLING ||
+      process.env.SUPABASE_DATABASE_URL ||
+      process.env.VERCEL_POSTGRES_URL;
 
     const client = new PrismaClient({
       datasources: dbUrl ? { db: { url: dbUrl } } : undefined,
