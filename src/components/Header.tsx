@@ -36,17 +36,38 @@ export function Header() {
     setIsSearchFocused(false);
   }, [pathname]);
 
-  // Fetch products for live search dropdown
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
+  const [totalMatchCount, setTotalMatchCount] = useState<number>(0);
+  const [isSearching, setIsSearching] = useState<boolean>(false);
+
+  // Debounced live search query (fetch max 5 items when query >= 2 chars)
   useEffect(() => {
-    fetch('/api/products')
-      .then((r) => r.json())
-      .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          setAllProducts(data);
-        }
-      })
-      .catch(() => {});
-  }, []);
+    const q = searchQuery.trim();
+    if (q.length < 2) {
+      setSearchResults([]);
+      setTotalMatchCount(0);
+      return;
+    }
+
+    setIsSearching(true);
+    const timer = setTimeout(() => {
+      fetch(`/api/products?search=${encodeURIComponent(q)}&limit=5`)
+        .then((r) => r.json())
+        .then((data) => {
+          if (Array.isArray(data)) {
+            setSearchResults(data);
+            setTotalMatchCount(data.length);
+          } else if (data && Array.isArray(data.items)) {
+            setSearchResults(data.items);
+            setTotalMatchCount(data.total || data.items.length);
+          }
+        })
+        .catch(() => {})
+        .finally(() => setIsSearching(false));
+    }, 250);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   // Close search dropdown on click outside
   useEffect(() => {
@@ -68,8 +89,7 @@ export function Header() {
     }
   };
 
-  const matchedProducts = searchQuery.trim() ? searchProducts(allProducts, searchQuery).slice(0, 5) : [];
-  const totalMatchCount = searchQuery.trim() ? searchProducts(allProducts, searchQuery).length : 0;
+  const matchedProducts = searchResults;
 
   const isLinkActive = (path: string) => pathname === path;
 

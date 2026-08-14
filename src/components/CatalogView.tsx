@@ -23,7 +23,11 @@ export function CatalogView() {
   const [allProducts, setAllProducts] = useState<Product[]>(INITIAL_PRODUCTS);
   const [categories, setCategories] = useState<Category[]>(INITIAL_CATEGORIES);
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
+  const [currentProducts, setCurrentProducts] = useState<Product[]>([]);
+  const [totalItems, setTotalItems] = useState<number>(0);
+  const [totalPages, setTotalPages] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Keep local search input synced with URL search parameter
   useEffect(() => {
@@ -39,12 +43,34 @@ export function CatalogView() {
         if (Array.isArray(data)) setCategories(data);
       })
       .catch(() => {});
+  }, []);
 
-    // Fetch products directly from DB API
-    fetch('/api/products')
+  // Server-side paginated query for products
+  useEffect(() => {
+    setIsLoading(true);
+    const params = new URLSearchParams();
+    params.set('page', String(currentPage));
+    params.set('limit', String(ITEMS_PER_PAGE));
+    params.set('paginated', 'true');
+    if (selectedCategorySlug) params.set('category', selectedCategorySlug);
+    if (rawSearch.trim()) params.set('search', rawSearch.trim());
+
+    fetch(`/api/products?${params.toString()}`)
       .then((r) => r.json())
       .then((data) => {
-        if (Array.isArray(data)) {
+        if (data && Array.isArray(data.items)) {
+          const clean = data.items.filter(
+            (p: Product) =>
+              p &&
+              p.name &&
+              p.name !== 'top of the top' &&
+              p.name !== 'еталон краси' &&
+              p.name !== 'Mavvir'
+          );
+          setCurrentProducts(clean);
+          setTotalItems(data.total || clean.length);
+          setTotalPages(data.totalPages || 1);
+        } else if (Array.isArray(data)) {
           const clean = data.filter(
             (p: Product) =>
               p &&
@@ -53,13 +79,34 @@ export function CatalogView() {
               p.name !== 'еталон краси' &&
               p.name !== 'Mavvir'
           );
-          setAllProducts(clean);
+          const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+          setCurrentProducts(clean.slice(startIndex, startIndex + ITEMS_PER_PAGE));
+          setTotalItems(clean.length);
+          setTotalPages(Math.ceil(clean.length / ITEMS_PER_PAGE) || 1);
         }
       })
       .catch((e) => {
         console.error('Error fetching catalog products from DB:', e);
+        // Fallback to local INITIAL_PRODUCTS if API fails
+        let fallback = INITIAL_PRODUCTS;
+        if (selectedCategorySlug) {
+          const catMatch = categories.find((c) => c.slug === selectedCategorySlug);
+          if (catMatch) {
+            fallback = fallback.filter((p) => p.categoryId === catMatch.id);
+          }
+        }
+        if (rawSearch) {
+          fallback = searchProducts(fallback, rawSearch);
+        }
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        setCurrentProducts(fallback.slice(startIndex, startIndex + ITEMS_PER_PAGE));
+        setTotalItems(fallback.length);
+        setTotalPages(Math.ceil(fallback.length / ITEMS_PER_PAGE) || 1);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-  }, []);
+  }, [selectedCategorySlug, rawSearch, currentPage]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,34 +137,10 @@ export function CatalogView() {
 
   // Find active category or subcategory
   const activeCategory = categories.find((c) => c.slug === selectedCategorySlug);
-  
-  // Find all category IDs to match (including child categories if a parent is selected)
-  const targetCategoryIds = new Set<string>();
-  if (activeCategory) {
-    targetCategoryIds.add(activeCategory.id);
-    // Find all children
-    categories.filter((c) => c.parentId === activeCategory.id).forEach((child) => targetCategoryIds.add(child.id));
-  }
-
-  // Filter products by category and search
-  let filteredProducts = allProducts;
-  if (targetCategoryIds.size > 0) {
-    filteredProducts = filteredProducts.filter((p) => p.categoryId && targetCategoryIds.has(p.categoryId));
-  }
-  if (rawSearch) {
-    filteredProducts = searchProducts(filteredProducts, rawSearch);
-  }
 
   const categoryTree = getCategoryTree(categories);
 
-  // Calculate pagination
-  const totalItems = filteredProducts.length;
-  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
   const safeCurrentPage = Math.min(Math.max(1, currentPage), totalPages);
-
-  const startIndex = (safeCurrentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalItems);
-  const currentProducts = filteredProducts.slice(startIndex, endIndex);
 
   useEffect(() => {
     if (currentProducts.length > 0) {

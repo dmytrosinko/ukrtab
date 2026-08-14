@@ -62,42 +62,33 @@ export default function ProductDetailPage() {
       (p) => p.id === targetId || p.slug === targetId || p.id === rawId || p.slug === rawId
     );
 
-    // 3. Fallback fetch all products API or fallback to first catalog item
-    fetch('/api/products')
-      .then((r) => r.json())
-      .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          const found = data.find(
-            (p: Product) =>
-              p.id === targetId ||
-              p.slug === targetId ||
-              p.id === rawId ||
-              p.slug === rawId
-          );
-          if (found) {
-            setProduct(found);
-            setSelectedImage(found.image);
-            return;
+    // 3. Targeted fetch single product by ID or slug
+    const fetchId = targetId || rawId;
+    if (fetchId) {
+      fetch(`/api/products/${encodeURIComponent(fetchId)}`)
+        .then((r) => r.json())
+        .then((data) => {
+          if (data && data.name) {
+            setProduct(data);
+            setSelectedImage(data.image);
+          } else if (initMatch) {
+            setProduct(initMatch);
+            setSelectedImage(initMatch.image);
+          } else if (INITIAL_PRODUCTS.length > 0) {
+            setProduct(INITIAL_PRODUCTS[0]);
+            setSelectedImage(INITIAL_PRODUCTS[0].image);
           }
-        }
-        // If not found in API list, use initMatch if found
-        if (initMatch) {
-          setProduct(initMatch);
-          setSelectedImage(initMatch.image);
-        } else if (INITIAL_PRODUCTS.length > 0) {
-          setProduct(INITIAL_PRODUCTS[0]);
-          setSelectedImage(INITIAL_PRODUCTS[0].image);
-        }
-      })
-      .catch(() => {
-        if (initMatch) {
-          setProduct(initMatch);
-          setSelectedImage(initMatch.image);
-        } else if (INITIAL_PRODUCTS.length > 0) {
-          setProduct(INITIAL_PRODUCTS[0]);
-          setSelectedImage(INITIAL_PRODUCTS[0].image);
-        }
-      });
+        })
+        .catch(() => {
+          if (initMatch) {
+            setProduct(initMatch);
+            setSelectedImage(initMatch.image);
+          } else if (INITIAL_PRODUCTS.length > 0) {
+            setProduct(INITIAL_PRODUCTS[0]);
+            setSelectedImage(INITIAL_PRODUCTS[0].image);
+          }
+        });
+    }
   }, [targetId, rawId]);
 
   useEffect(() => {

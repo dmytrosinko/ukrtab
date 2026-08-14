@@ -28,6 +28,11 @@ model Product {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   orderItems  OrderItem[]
+
+  @@index([categoryId])
+  @@index([isFeatured])
+  @@index([status])
+  @@index([createdAt])
 }
 
 model Category {
@@ -57,6 +62,9 @@ model Order {
   items          OrderItem[]
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
 }
 
 model OrderItem {
@@ -68,6 +76,9 @@ model OrderItem {
   productName String
   price       Float
   quantity    Int
+
+  @@index([orderId])
+  @@index([productId])
 }
 
 model Banner {
@@ -78,6 +89,8 @@ model Banner {
   sortOrder Int      @default(0)
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
+
+  @@index([isActive, sortOrder])
 }
 
 model SiteSettings {
@@ -100,4 +113,6 @@ model PartnerLogo {
   sortOrder Int      @default(0)
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
+
+  @@index([isActive, sortOrder])
 }

@@ -1,38 +1,20 @@
 import { PrismaClient } from '@prisma/client';
-import fs from 'fs';
-import path from 'path';
 
-const globalForPrisma = global as unknown as { prismaInstance?: PrismaClient | null };
+const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
-function createPrismaClient(): PrismaClient | null {
-  if (globalForPrisma.prismaInstance) return globalForPrisma.prismaInstance;
+const dbUrl =
+  process.env.POSTGRES_PRISMA_URL ||
+  process.env.DATABASE_URL ||
+  process.env.POSTGRES_URL;
 
-  try {
-    const dbUrl =
-      process.env.DATABASE_URL ||
-      process.env.POSTGRES_PRISMA_URL ||
-      process.env.POSTGRES_URL;
+export const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    datasources: dbUrl ? { db: { url: dbUrl } } : undefined,
+    log: ['error', 'warn'],
+  });
 
-    const client = new PrismaClient({
-      datasources: dbUrl ? { db: { url: dbUrl } } : undefined,
-      log: ['error', 'warn'],
-    });
-
-    if (process.env.NODE_ENV !== 'production') globalForPrisma.prismaInstance = client;
-    return client;
-  } catch (e) {
-    console.error('Failed to initialize PrismaClient:', e);
-    return null;
-  }
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma;
 }
 
-export const prisma = new Proxy({} as PrismaClient, {
-  get(_target, prop) {
-    const instance = createPrismaClient();
-    if (!instance) {
-      throw new Error('Prisma Client is not available in this environment');
-    }
-    const val = (instance as any)[prop];
-    return typeof val === 'function' ? val.bind(instance) : val;
-  },
-});

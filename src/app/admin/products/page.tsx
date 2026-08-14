@@ -44,7 +44,8 @@ export default function AdminProductsPage() {
 
       const resProd = await fetch('/api/products');
       const dataProd = await resProd.json();
-      const serverItems: Product[] = Array.isArray(dataProd) ? dataProd : [];
+      const rawList = Array.isArray(dataProd) ? dataProd : (dataProd && Array.isArray(dataProd.items) ? dataProd.items : []);
+      const serverItems: Product[] = rawList;
 
       const clean = serverItems.filter(
         (p: Product) =>
