@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { INITIAL_PRODUCTS } from '@/lib/store';
+import { prisma, isDbConfigured } from '@/lib/prisma';
+import { INITIAL_PRODUCTS, INITIAL_CATEGORIES } from '@/lib/store';
+import { searchProducts } from '@/lib/search';
 
 // Dynamic in-memory store for newly added products fallback on serverless Vercel
 export let MEMORY_PRODUCTS: any[] = [];
@@ -15,30 +16,6 @@ export async function GET(request: Request) {
     const limitParam = searchParams.get('limit');
     const isPaginatedParam = searchParams.get('paginated') === 'true';
 
-    const where: any = {};
-
-    if (categorySlug) {
-      const category = await prisma.category.findUnique({
-        where: { slug: categorySlug },
-      }).catch(() => null);
-      if (category) {
-        where.categoryId = category.id;
-      }
-    }
-
-    if (search && search.trim().length > 0) {
-      const q = search.trim();
-      where.OR = [
-        { name: { contains: q, mode: 'insensitive' } },
-        { description: { contains: q, mode: 'insensitive' } },
-        { sku: { contains: q, mode: 'insensitive' } },
-      ];
-    }
-
-    if (featured === 'true') {
-      where.isFeatured = true;
-    }
-
     const isPaginated = isPaginatedParam || pageParam !== null || limitParam !== null;
     const page = Math.max(1, parseInt(pageParam || '1', 10));
     const limit = Math.max(1, Math.min(100, parseInt(limitParam || '16', 10)));
@@ -48,34 +25,60 @@ export async function GET(request: Request) {
     let dbTotal = 0;
     let isDbSuccess = false;
 
-    try {
-      if (isPaginated) {
-        const [total, items] = await Promise.all([
-          prisma.product.count({ where }),
-          prisma.product.findMany({
+    if (isDbConfigured) {
+      try {
+        const where: any = {};
+
+        if (categorySlug) {
+          const category = await prisma.category.findUnique({
+            where: { slug: categorySlug },
+          }).catch(() => null);
+          if (category) {
+            where.categoryId = category.id;
+          }
+        }
+
+        if (search && search.trim().length > 0) {
+          const q = search.trim();
+          where.OR = [
+            { name: { contains: q, mode: 'insensitive' } },
+            { description: { contains: q, mode: 'insensitive' } },
+            { sku: { contains: q, mode: 'insensitive' } },
+          ];
+        }
+
+        if (featured === 'true') {
+          where.isFeatured = true;
+        }
+
+        if (isPaginated) {
+          const [total, items] = await Promise.all([
+            prisma.product.count({ where }),
+            prisma.product.findMany({
+              where,
+              include: { category: true },
+              orderBy: { createdAt: 'desc' },
+              skip,
+              take: limit,
+            }),
+          ]);
+          dbTotal = total;
+          dbItems = items;
+          if (total > 0 || items.length > 0) isDbSuccess = true;
+        } else {
+          const takeLimit = limitParam ? parseInt(limitParam, 10) : undefined;
+          dbItems = await prisma.product.findMany({
             where,
             include: { category: true },
             orderBy: { createdAt: 'desc' },
-            skip,
-            take: limit,
-          }),
-        ]);
-        dbTotal = total;
-        dbItems = items;
-        if (total > 0 || items.length > 0) isDbSuccess = true;
-      } else {
-        const takeLimit = limitParam ? parseInt(limitParam, 10) : undefined;
-        dbItems = await prisma.product.findMany({
-          where,
-          include: { category: true },
-          orderBy: { createdAt: 'desc' },
-          ...(takeLimit ? { take: takeLimit } : {}),
-        });
-        if (dbItems && dbItems.length > 0) isDbSuccess = true;
+            ...(takeLimit ? { take: takeLimit } : {}),
+          });
+          if (dbItems && dbItems.length > 0) isDbSuccess = true;
+        }
+      } catch (dbErr) {
+        console.warn('Prisma products query error, serving static fallback:', dbErr);
+        isDbSuccess = false;
       }
-    } catch (dbErr) {
-      console.warn('Prisma products query error, serving static fallback:', dbErr);
-      isDbSuccess = false;
     }
 
     if (isDbSuccess) {
@@ -105,11 +108,9 @@ export async function GET(request: Request) {
     }
 
     // Static store fallback if DB returns 0 items or DB connection fails
-    const { searchProducts } = await import('@/lib/search');
     let fallback = [...MEMORY_PRODUCTS, ...INITIAL_PRODUCTS];
 
     if (categorySlug) {
-      const { INITIAL_CATEGORIES } = await import('@/lib/store');
       const catObj = INITIAL_CATEGORIES.find((c) => c.slug === categorySlug);
       if (catObj) {
         fallback = fallback.filter((p) => p.categoryId === catObj.id);

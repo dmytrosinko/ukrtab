@@ -1,24 +1,30 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma, isDbConfigured } from '@/lib/prisma';
 import { INITIAL_CATEGORIES } from '@/lib/store';
 
 export async function GET() {
   try {
-    const categories = await prisma.category.findMany({
-      orderBy: { name: 'asc' },
-    });
+    if (isDbConfigured) {
+      try {
+        const categories = await prisma.category.findMany({
+          orderBy: { name: 'asc' },
+        });
 
-    if (categories && categories.length > 0) {
-      return NextResponse.json(categories, {
-        headers: {
-          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
-        },
-      });
+        if (categories && categories.length > 0) {
+          return NextResponse.json(categories, {
+            headers: {
+              'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+            },
+          });
+        }
+      } catch (dbErr) {
+        console.warn('Categories DB query error, serving static fallback:', dbErr);
+      }
     }
 
     return NextResponse.json(INITIAL_CATEGORIES);
   } catch (error) {
-    console.error('Error fetching categories from DB:', error);
+    console.error('Error fetching categories:', error);
     return NextResponse.json(INITIAL_CATEGORIES);
   }
 }

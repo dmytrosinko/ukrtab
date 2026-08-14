@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma, isDbConfigured } from '@/lib/prisma';
 import { INITIAL_PRODUCTS } from '@/lib/store';
 import { MEMORY_PRODUCTS } from '../route';
 
@@ -12,18 +12,20 @@ export async function GET(
     const rawId = resolved.id || '';
     const id = decodeURIComponent(rawId);
 
-    // 1. Try Prisma DB
-    try {
-      const product = await prisma.product.findFirst({
-        where: {
-          OR: [{ id }, { slug: id }],
-        },
-        include: { category: true },
-      });
-      if (product) {
-        return NextResponse.json(product);
-      }
-    } catch (e) {}
+    // 1. Try Prisma DB if configured
+    if (isDbConfigured) {
+      try {
+        const product = await prisma.product.findFirst({
+          where: {
+            OR: [{ id }, { slug: id }],
+          },
+          include: { category: true },
+        });
+        if (product) {
+          return NextResponse.json(product);
+        }
+      } catch (e) {}
+    }
 
     // 2. Try MEMORY_PRODUCTS
     const memMatch = MEMORY_PRODUCTS.find((p) => p.id === id || p.slug === id);

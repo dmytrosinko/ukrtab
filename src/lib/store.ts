@@ -188,4 +188,6 @@ export const INITIAL_PARTNERS: PartnerLogo[] = [
   },
 ];
 
-export const INITIAL_PRODUCTS: Product[] = [];
+import merchantProducts from '../../scripts/merchant_unique_products.json';
+
+export const INITIAL_PRODUCTS: Product[] = merchantProducts as any[];
