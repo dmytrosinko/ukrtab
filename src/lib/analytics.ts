@@ -7,16 +7,36 @@ declare global {
   }
 }
 
+function extractCategoryName(cat: any): string {
+  if (!cat) return 'Загальні';
+  if (typeof cat === 'string') return cat;
+  if (typeof cat === 'object') {
+    if (typeof cat.name === 'string' && cat.name) return cat.name;
+  }
+  return 'Загальні';
+}
+
 function sendGtagEvent(eventName: string, params: Record<string, any>) {
   if (typeof window === 'undefined') return;
+  
+  // Try gtag function call
   if (typeof window.gtag === 'function') {
-    window.gtag('event', eventName, params);
-  } else {
+    try {
+      window.gtag('event', eventName, params);
+    } catch (e) {
+      console.error('[GA4 Analytics] Error calling window.gtag:', e);
+    }
+  }
+
+  // Also push to dataLayer directly for GTM / fallback analytics listeners
+  try {
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
       event: eventName,
       ...params,
     });
+  } catch (e) {
+    console.error('[GA4 Analytics] Error pushing to dataLayer:', e);
   }
 }
 
@@ -28,10 +48,10 @@ export function trackViewItemList(products: Product[], listName = 'Катало�
   sendGtagEvent('view_item_list', {
     item_list_name: listName,
     items: products.slice(0, 30).map((product, index) => ({
-      item_id: product.id,
-      item_name: product.name,
-      price: product.price,
-      item_category: product.category || 'Загальні',
+      item_id: String(product.id),
+      item_name: String(product.name),
+      price: Number(product.price || 0),
+      item_category: extractCategoryName(product.category),
       index: index + 1,
     })),
   });
@@ -46,10 +66,10 @@ export function trackSelectItem(product: Product, listName = 'Каталог т�
     item_list_name: listName,
     items: [
       {
-        item_id: product.id,
-        item_name: product.name,
-        price: product.price,
-        item_category: product.category || 'Загальні',
+        item_id: String(product.id),
+        item_name: String(product.name),
+        price: Number(product.price || 0),
+        item_category: extractCategoryName(product.category),
       },
     ],
   });
@@ -62,13 +82,13 @@ export function trackViewItem(product: Product) {
   if (!product) return;
   sendGtagEvent('view_item', {
     currency: 'UAH',
-    value: product.price,
+    value: Number(product.price || 0),
     items: [
       {
-        item_id: product.id,
-        item_name: product.name,
-        price: product.price,
-        item_category: product.category || 'Загальні',
+        item_id: String(product.id),
+        item_name: String(product.name),
+        price: Number(product.price || 0),
+        item_category: extractCategoryName(product.category),
         quantity: 1,
       },
     ],
@@ -82,13 +102,13 @@ export function trackAddToCart(product: Product, quantity = 1) {
   if (!product) return;
   sendGtagEvent('add_to_cart', {
     currency: 'UAH',
-    value: product.price * quantity,
+    value: Number(product.price || 0) * quantity,
     items: [
       {
-        item_id: product.id,
-        item_name: product.name,
-        price: product.price,
-        item_category: product.category || 'Загальні',
+        item_id: String(product.id),
+        item_name: String(product.name),
+        price: Number(product.price || 0),
+        item_category: extractCategoryName(product.category),
         quantity: quantity,
       },
     ],
@@ -102,13 +122,13 @@ export function trackRemoveFromCart(product: Product, quantity = 1) {
   if (!product) return;
   sendGtagEvent('remove_from_cart', {
     currency: 'UAH',
-    value: product.price * quantity,
+    value: Number(product.price || 0) * quantity,
     items: [
       {
-        item_id: product.id,
-        item_name: product.name,
-        price: product.price,
-        item_category: product.category || 'Загальні',
+        item_id: String(product.id),
+        item_name: String(product.name),
+        price: Number(product.price || 0),
+        item_category: extractCategoryName(product.category),
         quantity: quantity,
       },
     ],
@@ -122,14 +142,14 @@ export function trackViewCart(items: CartItem[], totalPrice: number) {
   if (!items || items.length === 0) return;
   sendGtagEvent('view_cart', {
     currency: 'UAH',
-    value: totalPrice,
+    value: Number(totalPrice || 0),
     items: items.map((item: any) => {
       const p = item.product || item;
       return {
-        item_id: p.id || item.productId || 'item',
-        item_name: p.name || item.productName || 'Товар',
+        item_id: String(p.id || item.productId || 'item'),
+        item_name: String(p.name || item.productName || 'Товар'),
         price: Number(p.price || item.price || 0),
-        item_category: p.category || item.category || 'Загальні',
+        item_category: extractCategoryName(p.category || item.category),
         quantity: Number(item.quantity || 1),
       };
     }),
@@ -143,14 +163,14 @@ export function trackBeginCheckout(items: CartItem[], totalPrice: number) {
   if (!items || items.length === 0) return;
   sendGtagEvent('begin_checkout', {
     currency: 'UAH',
-    value: totalPrice,
+    value: Number(totalPrice || 0),
     items: items.map((item: any) => {
       const p = item.product || item;
       return {
-        item_id: p.id || item.productId || 'item',
-        item_name: p.name || item.productName || 'Товар',
+        item_id: String(p.id || item.productId || 'item'),
+        item_name: String(p.name || item.productName || 'Товар'),
         price: Number(p.price || item.price || 0),
-        item_category: p.category || item.category || 'Загальні',
+        item_category: extractCategoryName(p.category || item.category),
         quantity: Number(item.quantity || 1),
       };
     }),
@@ -169,7 +189,7 @@ export function trackPurchase(orderNumber: string | number, totalPrice: number, 
       item_id: String(p.id || item.productId || 'item'),
       item_name: String(p.name || item.productName || 'Товар'),
       price: Number(p.price || item.price || 0),
-      item_category: String(p.category || item.category || 'Загальні'),
+      item_category: extractCategoryName(p.category || item.category),
       quantity: Number(item.quantity || 1),
     };
   });
@@ -182,19 +202,8 @@ export function trackPurchase(orderNumber: string | number, totalPrice: number, 
   };
 
   console.log('[GA4 Analytics] Sending purchase event:', payload);
-
-  // 1. Send via sendGtagEvent (gtag API)
   sendGtagEvent('purchase', payload);
-
-  // 2. Also push standard GA4 dataLayer ecommerce object as fallback
-  if (typeof window !== 'undefined') {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({ ecommerce: null }); // Clear previous ecommerce object
-    window.dataLayer.push({
-      event: 'purchase',
-      ecommerce: payload,
-    });
-  }
 }
+
 
 
