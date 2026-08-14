@@ -162,21 +162,39 @@ export function trackBeginCheckout(items: CartItem[], totalPrice: number) {
  */
 export function trackPurchase(orderNumber: string | number, totalPrice: number, items: CartItem[]) {
   if (!items || items.length === 0) return;
-  sendGtagEvent('purchase', {
-    transaction_id: String(orderNumber),
-    value: totalPrice,
-    currency: 'UAH',
-    items: items.map((item: any) => {
-      const p = item.product || item;
-      return {
-        item_id: p.id || item.productId || 'item',
-        item_name: p.name || item.productName || 'Товар',
-        price: Number(p.price || item.price || 0),
-        item_category: p.category || item.category || 'Загальні',
-        quantity: Number(item.quantity || 1),
-      };
-    }),
+
+  const formattedItems = items.map((item: any) => {
+    const p = item.product || item;
+    return {
+      item_id: String(p.id || item.productId || 'item'),
+      item_name: String(p.name || item.productName || 'Товар'),
+      price: Number(p.price || item.price || 0),
+      item_category: String(p.category || item.category || 'Загальні'),
+      quantity: Number(item.quantity || 1),
+    };
   });
+
+  const payload = {
+    transaction_id: String(orderNumber),
+    value: Number(totalPrice),
+    currency: 'UAH',
+    items: formattedItems,
+  };
+
+  console.log('[GA4 Analytics] Sending purchase event:', payload);
+
+  // 1. Send via sendGtagEvent (gtag API)
+  sendGtagEvent('purchase', payload);
+
+  // 2. Also push standard GA4 dataLayer ecommerce object as fallback
+  if (typeof window !== 'undefined') {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ ecommerce: null }); // Clear previous ecommerce object
+    window.dataLayer.push({
+      event: 'purchase',
+      ecommerce: payload,
+    });
+  }
 }
 
 

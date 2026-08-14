@@ -68,8 +68,14 @@ export default function CheckoutPage() {
 
       const data = await res.json();
       if (res.ok) {
-        trackPurchase(data.orderNumber || Date.now(), totalPrice, items);
-        setCreatedOrder(data);
+        const currentItems = [...items];
+        const currentTotal = totalPrice;
+        trackPurchase(data.orderNumber || Date.now(), currentTotal, currentItems);
+        setCreatedOrder({
+          ...data,
+          purchasedItems: currentItems,
+          purchasedTotal: currentTotal,
+        });
         clearCart();
       } else {
         setErrorMessage(data.error || 'Помилка створення замовлення');
@@ -80,6 +86,12 @@ export default function CheckoutPage() {
       setIsSubmitting(false);
     }
   };
+
+  useEffect(() => {
+    if (createdOrder && createdOrder.purchasedItems && createdOrder.purchasedItems.length > 0) {
+      trackPurchase(createdOrder.orderNumber || Date.now(), createdOrder.purchasedTotal || 0, createdOrder.purchasedItems);
+    }
+  }, [createdOrder]);
 
   if (createdOrder) {
     return (
