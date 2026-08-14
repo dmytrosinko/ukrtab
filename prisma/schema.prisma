@@ -85,7 +85,7 @@ model SiteSettings {
   companyName  String   @default("Укртаб")
   phone1       String   @default("+380 (66) 441-80-50")
   phone2       String   @default("+380 (68) 367-70-15")
-  email        String   @default("feoktistova.dnepr@gmail.com")
+  email        String   @default("mabitzp@gmail.com")
   address      String   @default("м. Дніпро, вул. Миру 2т")
   reviewsCount Int      @default(553)
   workHours    String   @default("Пн-Нд: 10:00 - 21:00")

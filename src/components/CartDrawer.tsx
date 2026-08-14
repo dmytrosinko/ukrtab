@@ -1,14 +1,26 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { X, ShoppingBag, Trash2, Plus, Minus, ArrowRight } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import { trackViewCart, trackRemoveFromCart } from '@/lib/analytics';
 
 export function CartDrawer() {
   const { items, isCartOpen, setIsCartOpen, removeFromCart, updateQuantity, totalPrice, clearCart } =
     useCart();
+
+  useEffect(() => {
+    if (isCartOpen && items.length > 0) {
+      trackViewCart(items, totalPrice);
+    }
+  }, [isCartOpen]);
+
+  const handleRemove = (item: (typeof items)[0]) => {
+    trackRemoveFromCart(item.product, item.quantity);
+    removeFromCart(item.product.id);
+  };
 
   if (!isCartOpen) return null;
 
@@ -96,7 +108,7 @@ export function CartDrawer() {
                   </div>
 
                   <button
-                    onClick={() => removeFromCart(item.product.id)}
+                    onClick={() => handleRemove(item)}
                     className="p-1.5 text-slate-400 hover:text-red-500 transition"
                   >
                     <Trash2 className="w-4 h-4" />

@@ -9,6 +9,7 @@ import { Product, Category } from '@/lib/types';
 import { INITIAL_PRODUCTS, INITIAL_CATEGORIES } from '@/lib/store';
 import { searchProducts } from '@/lib/search';
 import { getCategoryTree } from '@/lib/categories';
+import { trackViewItemList } from '@/lib/analytics';
 
 const ITEMS_PER_PAGE = 16;
 
@@ -117,6 +118,12 @@ export function CatalogView() {
   const startIndex = (safeCurrentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalItems);
   const currentProducts = filteredProducts.slice(startIndex, endIndex);
+
+  useEffect(() => {
+    if (currentProducts.length > 0) {
+      trackViewItemList(currentProducts, activeCategory ? activeCategory.name : 'Каталог товарів');
+    }
+  }, [currentProducts, activeCategory]);
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {

@@ -55,13 +55,6 @@ export default function DeliveryPage() {
             <li className="flex items-start space-x-2">
               <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
               <div>
-                <b>Оплата при отриманні (Післяплата)</b>
-                <p className="text-slate-500">Оплата готівкою або карткою у відділенні Нової Пошти після огляду товару.</p>
-              </div>
-            </li>
-            <li className="flex items-start space-x-2">
-              <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
-              <div>
                 <b>Безготівковий розрахунок / IBAN / На картку</b>
                 <p className="text-slate-500">Оплата на розрахунковий рахунок або банківську картку для фізичних та юридичних осіб.</p>
               </div>

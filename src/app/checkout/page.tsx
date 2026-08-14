@@ -1,14 +1,20 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { ShoppingBag, CheckCircle, Truck, CreditCard, User, Phone, MapPin, ArrowLeft } from 'lucide-react';
 import NovaPoshtaSelector from '@/components/NovaPoshtaSelector';
-import { trackPurchase } from '@/lib/analytics';
+import { trackPurchase, trackBeginCheckout } from '@/lib/analytics';
 
 export default function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
+
+  useEffect(() => {
+    if (items.length > 0) {
+      trackBeginCheckout(items, totalPrice);
+    }
+  }, []);
 
   const [formData, setFormData] = useState({
     customerName: '',

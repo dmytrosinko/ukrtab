@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ShoppingCart, Check, Tag } from 'lucide-react';
 import { Product } from '@/lib/types';
 import { useCart } from '@/context/CartContext';
+import { trackSelectItem } from '@/lib/analytics';
 
 export function ProductCard({ product }: { product: Product }) {
   const { addToCart } = useCart();
@@ -17,10 +18,18 @@ export function ProductCard({ product }: { product: Product }) {
     setTimeout(() => setAdded(false), 1500);
   };
 
+  const handleCardClick = () => {
+    trackSelectItem(product);
+  };
+
   return (
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group">
       {/* Image Container */}
-      <Link href={`/product/${product.id}`} className="relative block aspect-square overflow-hidden bg-slate-50 flex items-center justify-center p-2">
+      <Link
+        href={`/product/${product.id}`}
+        onClick={handleCardClick}
+        className="relative block aspect-square overflow-hidden bg-slate-50 flex items-center justify-center p-2"
+      >
         <img
           src={product.image}
           alt={product.name}
@@ -51,6 +60,7 @@ export function ProductCard({ product }: { product: Product }) {
           )}
           <Link
             href={`/product/${product.id}`}
+            onClick={handleCardClick}
             className="text-sm font-semibold text-slate-900 group-hover:text-emerald-600 line-clamp-2 transition leading-snug"
           >
             {product.name}

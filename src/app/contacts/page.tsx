@@ -30,9 +30,9 @@ export default function ContactsPage() {
 
           <div>
             <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Електронна пошта</h3>
-            <a href="mailto:feoktistova.dnepr@gmail.com" className="flex items-center space-x-2 text-sm font-bold text-slate-900 hover:text-emerald-600 transition">
+            <a href="mailto:mabitzp@gmail.com" className="flex items-center space-x-2 text-sm font-bold text-slate-900 hover:text-emerald-600 transition">
               <Mail className="w-4 h-4 text-emerald-600" />
-              <span>feoktistova.dnepr@gmail.com</span>
+              <span>mabitzp@gmail.com</span>
             </a>
           </div>
 
