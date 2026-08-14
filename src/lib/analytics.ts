@@ -123,13 +123,16 @@ export function trackViewCart(items: CartItem[], totalPrice: number) {
   sendGtagEvent('view_cart', {
     currency: 'UAH',
     value: totalPrice,
-    items: items.map((item) => ({
-      item_id: item.product.id,
-      item_name: item.product.name,
-      price: item.product.price,
-      item_category: item.product.category || 'Загальні',
-      quantity: item.quantity,
-    })),
+    items: items.map((item: any) => {
+      const p = item.product || item;
+      return {
+        item_id: p.id || item.productId || 'item',
+        item_name: p.name || item.productName || 'Товар',
+        price: Number(p.price || item.price || 0),
+        item_category: p.category || item.category || 'Загальні',
+        quantity: Number(item.quantity || 1),
+      };
+    }),
   });
 }
 
@@ -141,13 +144,16 @@ export function trackBeginCheckout(items: CartItem[], totalPrice: number) {
   sendGtagEvent('begin_checkout', {
     currency: 'UAH',
     value: totalPrice,
-    items: items.map((item) => ({
-      item_id: item.product.id,
-      item_name: item.product.name,
-      price: item.product.price,
-      item_category: item.product.category || 'Загальні',
-      quantity: item.quantity,
-    })),
+    items: items.map((item: any) => {
+      const p = item.product || item;
+      return {
+        item_id: p.id || item.productId || 'item',
+        item_name: p.name || item.productName || 'Товар',
+        price: Number(p.price || item.price || 0),
+        item_category: p.category || item.category || 'Загальні',
+        quantity: Number(item.quantity || 1),
+      };
+    }),
   });
 }
 
@@ -160,13 +166,16 @@ export function trackPurchase(orderNumber: string | number, totalPrice: number, 
     transaction_id: String(orderNumber),
     value: totalPrice,
     currency: 'UAH',
-    items: items.map((item) => ({
-      item_id: item.product.id,
-      item_name: item.product.name,
-      price: item.product.price,
-      item_category: item.product.category || 'Загальні',
-      quantity: item.quantity,
-    })),
+    items: items.map((item: any) => {
+      const p = item.product || item;
+      return {
+        item_id: p.id || item.productId || 'item',
+        item_name: p.name || item.productName || 'Товар',
+        price: Number(p.price || item.price || 0),
+        item_category: p.category || item.category || 'Загальні',
+        quantity: Number(item.quantity || 1),
+      };
+    }),
   });
 }
 
