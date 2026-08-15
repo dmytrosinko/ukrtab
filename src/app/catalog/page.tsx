@@ -12,7 +12,8 @@ export const metadata: Metadata = {
   description: 'Повний каталог продукції Укртаб (Дніпро): магнітні наліпки на авто, адресні таблички, попереджувальні знаки, автономери на замовлення. Доставка по Україні.',
 };
 
-const ITEMS_PER_PAGE = 16;
+const ITEMS_PER_PAGE = 18;
+const INITIAL_CHUNK_SIZE = 9;
 
 export default async function CatalogPage({
   searchParams,
@@ -64,7 +65,7 @@ export default async function CatalogPage({
       ];
     }
 
-    // 3. Parallel count & items fetch
+    // 3. Fast initial fetch: only fetch 9 items on SSR for speed
     const [total, items] = await Promise.all([
       prisma.product.count({ where }),
       prisma.product.findMany({
@@ -72,7 +73,7 @@ export default async function CatalogPage({
         include: { category: true },
         orderBy: { createdAt: 'desc' },
         skip,
-        take: ITEMS_PER_PAGE,
+        take: INITIAL_CHUNK_SIZE,
       }),
     ]);
 

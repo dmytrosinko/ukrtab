@@ -11,7 +11,11 @@ import { searchProducts } from '@/lib/search';
 import { getCategoryTree } from '@/lib/categories';
 import { trackViewItemList } from '@/lib/analytics';
 
-const ITEMS_PER_PAGE = 16;
+const ITEMS_PER_PAGE = 18;
+const INITIAL_CHUNK_SIZE = 9;
+
+// In-memory LRU client cache for instant 0ms category switching
+const catalogMemoryCache = new Map<string, { items: Product[]; total: number; totalPages: number }>();
 
 interface CatalogViewProps {
   initialProducts?: Product[];
@@ -49,6 +53,53 @@ export function CatalogView({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const isFirstMount = React.useRef(true);
 
+  // Cache initial server products
+  useEffect(() => {
+    const initialKey = `${initialCategorySlug}:${initialSearch}:${initialPage}`;
+    if (initialProducts.length > 0 && !catalogMemoryCache.has(initialKey)) {
+      catalogMemoryCache.set(initialKey, {
+        items: initialProducts,
+        total: initialTotal || initialProducts.length,
+        totalPages: initialTotalPages || 1,
+      });
+    }
+  }, []);
+
+  // Background hydration for the rest of initial products if only 9 were loaded on SSR
+  useEffect(() => {
+    if (initialProducts.length > 0 && initialProducts.length < (initialTotal || 0) && initialProducts.length <= INITIAL_CHUNK_SIZE) {
+      const params = new URLSearchParams();
+      params.set('page', String(initialPage));
+      params.set('limit', String(ITEMS_PER_PAGE));
+      params.set('paginated', 'true');
+      if (initialCategorySlug) params.set('category', initialCategorySlug);
+      if (initialSearch.trim()) params.set('search', initialSearch.trim());
+
+      fetch(`/api/products?${params.toString()}`)
+        .then((r) => r.json())
+        .then((data) => {
+          if (data && Array.isArray(data.items)) {
+            const clean = data.items.filter(
+              (p: Product) =>
+                p &&
+                p.name &&
+                p.name !== 'top of the top' &&
+                p.name !== 'еталон краси' &&
+                p.name !== 'Mavvir'
+            );
+            setCurrentProducts(clean);
+            const key = `${initialCategorySlug}:${initialSearch}:${initialPage}`;
+            catalogMemoryCache.set(key, {
+              items: clean,
+              total: data.total || clean.length,
+              totalPages: data.totalPages || 1,
+            });
+          }
+        })
+        .catch(() => {});
+    }
+  }, []);
+
   // Sync state if browser back/forward or external navigation occurs
   useEffect(() => {
     const urlCategory = searchParams.get('category') ?? '';
@@ -69,15 +120,27 @@ export function CatalogView({
       return;
     }
 
-    setIsLoading(true);
-    const params = new URLSearchParams();
-    params.set('page', String(currentPage));
-    params.set('limit', String(ITEMS_PER_PAGE));
-    params.set('paginated', 'true');
-    if (selectedCategorySlug) params.set('category', selectedCategorySlug);
-    if (rawSearch.trim()) params.set('search', rawSearch.trim());
+    const cacheKey = `${selectedCategorySlug}:${rawSearch}:${currentPage}`;
+    if (catalogMemoryCache.has(cacheKey)) {
+      const cached = catalogMemoryCache.get(cacheKey)!;
+      setCurrentProducts(cached.items);
+      setTotalItems(cached.total);
+      setTotalPages(cached.totalPages);
+      setIsLoading(false);
+      return;
+    }
 
-    fetch(`/api/products?${params.toString()}`)
+    setIsLoading(true);
+
+    // Step 1: Fast fetch first 9 items
+    const fastParams = new URLSearchParams();
+    fastParams.set('page', String(currentPage));
+    fastParams.set('limit', String(INITIAL_CHUNK_SIZE));
+    fastParams.set('paginated', 'true');
+    if (selectedCategorySlug) fastParams.set('category', selectedCategorySlug);
+    if (rawSearch.trim()) fastParams.set('search', rawSearch.trim());
+
+    fetch(`/api/products?${fastParams.toString()}`)
       .then((r) => r.json())
       .then((data) => {
         if (data && Array.isArray(data.items)) {
@@ -91,26 +154,50 @@ export function CatalogView({
           );
           setCurrentProducts(clean);
           setTotalItems(data.total || clean.length);
-          setTotalPages(data.totalPages || 1);
-        } else if (Array.isArray(data)) {
-          const clean = data.filter(
-            (p: Product) =>
-              p &&
-              p.name &&
-              p.name !== 'top of the top' &&
-              p.name !== 'еталон краси' &&
-              p.name !== 'Mavvir'
-          );
-          const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-          setCurrentProducts(clean.slice(startIndex, startIndex + ITEMS_PER_PAGE));
-          setTotalItems(clean.length);
-          setTotalPages(Math.ceil(clean.length / ITEMS_PER_PAGE) || 1);
+          setTotalPages(Math.ceil((data.total || clean.length) / ITEMS_PER_PAGE) || 1);
+          setIsLoading(false);
+
+          // Step 2: Background hydration of full page batch (18 items) if more available
+          if ((data.total || clean.length) > INITIAL_CHUNK_SIZE) {
+            const fullParams = new URLSearchParams();
+            fullParams.set('page', String(currentPage));
+            fullParams.set('limit', String(ITEMS_PER_PAGE));
+            fullParams.set('paginated', 'true');
+            if (selectedCategorySlug) fullParams.set('category', selectedCategorySlug);
+            if (rawSearch.trim()) fullParams.set('search', rawSearch.trim());
+
+            fetch(`/api/products?${fullParams.toString()}`)
+              .then((res) => res.json())
+              .then((fullData) => {
+                if (fullData && Array.isArray(fullData.items)) {
+                  const fullClean = fullData.items.filter(
+                    (p: Product) =>
+                      p &&
+                      p.name &&
+                      p.name !== 'top of the top' &&
+                      p.name !== 'еталон краси' &&
+                      p.name !== 'Mavvir'
+                  );
+                  setCurrentProducts(fullClean);
+                  catalogMemoryCache.set(cacheKey, {
+                    items: fullClean,
+                    total: fullData.total || fullClean.length,
+                    totalPages: Math.ceil((fullData.total || fullClean.length) / ITEMS_PER_PAGE) || 1,
+                  });
+                }
+              })
+              .catch(() => {});
+          } else {
+            catalogMemoryCache.set(cacheKey, {
+              items: clean,
+              total: data.total || clean.length,
+              totalPages: 1,
+            });
+          }
         }
       })
       .catch((e) => {
         console.error('Error fetching catalog products from DB:', e);
-      })
-      .finally(() => {
         setIsLoading(false);
       });
   }, [selectedCategorySlug, rawSearch, currentPage]);
