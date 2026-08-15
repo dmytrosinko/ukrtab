@@ -5,6 +5,8 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { CartDrawer } from '@/components/CartDrawer';
 import { GoogleAnalytics } from '@/components/GoogleAnalytics';
+import { NavigationProgressBar } from '@/components/NavigationProgressBar';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://ukrtab.com.ua'),
@@ -23,6 +25,9 @@ export default function RootLayout({
   return (
     <html lang="uk">
       <body className="min-h-screen flex flex-col bg-slate-50 text-slate-900 antialiased selection:bg-emerald-500 selection:text-white">
+        <Suspense fallback={null}>
+          <NavigationProgressBar />
+        </Suspense>
         <CartProvider>
           <Header />
           <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6">

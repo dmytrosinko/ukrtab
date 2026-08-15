@@ -33,10 +33,12 @@ export function CatalogView({
   initialSearch = '',
 }: CatalogViewProps) {
   const searchParams = useSearchParams();
-  const router = useRouter();
-  const rawSearch = searchParams.get('search') ?? initialSearch;
-  const selectedCategorySlug = searchParams.get('category') ?? initialCategorySlug;
-
+  const [selectedCategorySlug, setSelectedCategorySlug] = useState(
+    searchParams.get('category') ?? initialCategorySlug
+  );
+  const [rawSearch, setRawSearch] = useState(
+    searchParams.get('search') ?? initialSearch
+  );
   const [searchInput, setSearchInput] = useState(rawSearch);
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
@@ -47,11 +49,18 @@ export function CatalogView({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const isFirstMount = React.useRef(true);
 
-  // Keep local search input synced with URL search parameter
+  // Sync state if browser back/forward or external navigation occurs
   useEffect(() => {
-    setSearchInput(rawSearch);
-    setCurrentPage(1);
-  }, [rawSearch, selectedCategorySlug]);
+    const urlCategory = searchParams.get('category') ?? '';
+    const urlSearch = searchParams.get('search') ?? '';
+    if (urlCategory !== selectedCategorySlug) {
+      setSelectedCategorySlug(urlCategory);
+    }
+    if (urlSearch !== rawSearch) {
+      setRawSearch(urlSearch);
+      setSearchInput(urlSearch);
+    }
+  }, [searchParams]);
 
   // Client-side query when user filters or changes page (skip on first mount)
   useEffect(() => {
@@ -108,24 +117,40 @@ export function CatalogView({
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const q = searchInput.trim();
+    setRawSearch(q);
+    setCurrentPage(1);
+    setIsLoading(true);
+
     const params = new URLSearchParams();
-    if (searchInput.trim()) params.set('search', searchInput.trim());
+    if (q) params.set('search', q);
     if (selectedCategorySlug) params.set('category', selectedCategorySlug);
-    router.push(`/catalog${params.toString() ? '?' + params.toString() : ''}`);
+    const newUrl = `/catalog${params.toString() ? '?' + params.toString() : ''}`;
+    window.history.pushState(null, '', newUrl);
   };
 
   const handleClearSearch = () => {
     setSearchInput('');
+    setRawSearch('');
+    setCurrentPage(1);
+    setIsLoading(true);
+
     const params = new URLSearchParams();
     if (selectedCategorySlug) params.set('category', selectedCategorySlug);
-    router.push(`/catalog${params.toString() ? '?' + params.toString() : ''}`);
+    const newUrl = `/catalog${params.toString() ? '?' + params.toString() : ''}`;
+    window.history.pushState(null, '', newUrl);
   };
 
   const handleSelectCategory = (slug: string) => {
+    setSelectedCategorySlug(slug);
+    setCurrentPage(1);
+    setIsLoading(true);
+
     const params = new URLSearchParams();
     if (rawSearch) params.set('search', rawSearch);
     if (slug) params.set('category', slug);
-    router.push(`/catalog${params.toString() ? '?' + params.toString() : ''}`);
+    const newUrl = `/catalog${params.toString() ? '?' + params.toString() : ''}`;
+    window.history.pushState(null, '', newUrl);
   };
 
   const toggleCategoryExpand = (id: string, e: React.MouseEvent) => {
@@ -303,7 +328,29 @@ export function CatalogView({
 
         {/* Product Grid Container */}
         <div className="lg:col-span-3 space-y-6">
-          {currentProducts.length > 0 ? (
+          {isLoading ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 md:gap-6 animate-pulse">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col"
+                >
+                  <div className="aspect-square bg-slate-100 relative" />
+                  <div className="p-4 space-y-3 flex-1 flex flex-col justify-between">
+                    <div className="space-y-1.5">
+                      <div className="h-2.5 w-16 bg-slate-100 rounded-md" />
+                      <div className="h-4 w-full bg-slate-200 rounded-md" />
+                      <div className="h-4 w-3/4 bg-slate-200 rounded-md" />
+                    </div>
+                    <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+                      <div className="h-6 w-20 bg-slate-200 rounded-lg" />
+                      <div className="h-9 w-20 bg-emerald-100 rounded-xl" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : currentProducts.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 md:gap-6">
               {currentProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
