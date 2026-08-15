@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { Banner } from '@/lib/types';
 
@@ -24,10 +25,13 @@ export function BannerSlider({ banners }: { banners: Banner[] }) {
     <div className="relative w-full rounded-3xl overflow-hidden shadow-2xl bg-slate-900 border border-slate-800 min-h-[320px] md:min-h-[420px] flex items-center">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
-        <img
+        <Image
           src={current.image}
           alt={current.title || 'Слайд UKRTAB'}
-          className="w-full h-full object-cover opacity-45 transform scale-105 transition-all duration-1000 ease-out"
+          fill
+          priority
+          sizes="(max-width: 1280px) 100vw, 1280px"
+          className="object-cover opacity-45 transform scale-105 transition-all duration-1000 ease-out"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/70 to-transparent" />
       </div>

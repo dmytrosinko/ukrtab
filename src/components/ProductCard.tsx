@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ShoppingCart, Check, Tag } from 'lucide-react';
 import { Product } from '@/lib/types';
 import { useCart } from '@/context/CartContext';
@@ -10,6 +11,7 @@ import { trackSelectItem } from '@/lib/analytics';
 export function ProductCard({ product }: { product: Product }) {
   const { addToCart } = useCart();
   const [added, setAdded] = React.useState(false);
+  const productUrl = `/product/${product.slug || product.id}`;
 
   const handleBuy = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -26,18 +28,26 @@ export function ProductCard({ product }: { product: Product }) {
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group">
       {/* Image Container */}
       <Link
-        href={`/product/${product.id}`}
+        href={productUrl}
         onClick={handleCardClick}
         className="relative block aspect-square overflow-hidden bg-slate-50 flex items-center justify-center p-2"
       >
-        <img
-          src={product.image}
-          alt={product.name}
-          className="max-w-full max-h-full w-auto h-auto object-contain group-hover:scale-105 transition-transform duration-500"
-          loading="lazy"
-        />
+        {product.image ? (
+          <Image
+            src={product.image}
+            alt={product.name}
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className="object-contain p-2 group-hover:scale-105 transition-transform duration-500"
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-slate-300 text-xs font-semibold">
+            Немає фото
+          </div>
+        )}
         {/* Status Badge */}
-        <div className="absolute top-3 left-3 flex flex-col gap-1">
+        <div className="absolute top-3 left-3 flex flex-col gap-1 z-10">
           <span className="bg-emerald-600/90 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm">
             {product.status || 'В наявності'}
           </span>
@@ -59,7 +69,7 @@ export function ProductCard({ product }: { product: Product }) {
             </div>
           )}
           <Link
-            href={`/product/${product.id}`}
+            href={productUrl}
             onClick={handleCardClick}
             className="text-sm font-semibold text-slate-900 group-hover:text-emerald-600 line-clamp-2 transition leading-snug"
           >

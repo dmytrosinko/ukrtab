@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { PartnerLogo } from '@/lib/types';
 import { INITIAL_PARTNERS } from '@/lib/store';
 import { ExternalLink, Handshake, ShieldCheck } from 'lucide-react';
@@ -71,11 +72,13 @@ export function PartnersSection() {
         {activePartners.map((partner) => {
           const content = (
             <div className="bg-slate-50/70 hover:bg-white p-4 rounded-2xl border border-slate-200/80 hover:border-emerald-500 hover:shadow-lg transition-all duration-300 flex flex-col items-center justify-center space-y-3 group h-36 text-center">
-              <div className="w-16 h-16 rounded-xl overflow-hidden bg-white p-1.5 border border-slate-200/60 shadow-xs flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shrink-0">
-                <img
+              <div className="w-16 h-16 rounded-xl overflow-hidden bg-white p-1.5 border border-slate-200/60 shadow-xs relative flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shrink-0">
+                <Image
                   src={partner.image}
                   alt={partner.name || 'Партнер'}
-                  className="max-w-full max-h-full object-contain"
+                  fill
+                  sizes="64px"
+                  className="object-contain p-1"
                 />
               </div>
               {partner.name && (

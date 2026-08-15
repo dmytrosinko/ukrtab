@@ -7,6 +7,7 @@ import { CartDrawer } from '@/components/CartDrawer';
 import { GoogleAnalytics } from '@/components/GoogleAnalytics';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://ukrtab.com.ua'),
   title: 'Укртаб — Виробництво магнітів, наліпок на авто та адресних табличок',
   description: 'Магазин Укртаб (Дніпро). Магнітні наліпки на авто, знаки ЗСУ, Охорона, адресні таблички на будинок, сувенірні автономери. Доставка по всій Україні.',
   keywords: 'укртаб, магнітні наліпки на авто, знаки зсу, міни небезпечно, адресні таблички, автономери на замовлення',

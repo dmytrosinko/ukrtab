@@ -13,20 +13,39 @@ import { trackViewItemList } from '@/lib/analytics';
 
 const ITEMS_PER_PAGE = 16;
 
-export function CatalogView() {
+interface CatalogViewProps {
+  initialProducts?: Product[];
+  initialCategories?: Category[];
+  initialTotal?: number;
+  initialTotalPages?: number;
+  initialPage?: number;
+  initialCategorySlug?: string;
+  initialSearch?: string;
+}
+
+export function CatalogView({
+  initialProducts = [],
+  initialCategories = INITIAL_CATEGORIES,
+  initialTotal = 0,
+  initialTotalPages = 1,
+  initialPage = 1,
+  initialCategorySlug = '',
+  initialSearch = '',
+}: CatalogViewProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const rawSearch = searchParams.get('search') || '';
-  const selectedCategorySlug = searchParams.get('category') || '';
+  const rawSearch = searchParams.get('search') ?? initialSearch;
+  const selectedCategorySlug = searchParams.get('category') ?? initialCategorySlug;
 
   const [searchInput, setSearchInput] = useState(rawSearch);
-  const [categories, setCategories] = useState<Category[]>(INITIAL_CATEGORIES);
+  const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
-  const [currentProducts, setCurrentProducts] = useState<Product[]>([]);
-  const [totalItems, setTotalItems] = useState<number>(0);
-  const [totalPages, setTotalPages] = useState<number>(1);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [currentProducts, setCurrentProducts] = useState<Product[]>(initialProducts);
+  const [totalItems, setTotalItems] = useState<number>(initialTotal || initialProducts.length);
+  const [totalPages, setTotalPages] = useState<number>(initialTotalPages || 1);
+  const [currentPage, setCurrentPage] = useState<number>(initialPage || 1);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const isFirstMount = React.useRef(true);
 
   // Keep local search input synced with URL search parameter
   useEffect(() => {
@@ -34,18 +53,13 @@ export function CatalogView() {
     setCurrentPage(1);
   }, [rawSearch, selectedCategorySlug]);
 
+  // Client-side query when user filters or changes page (skip on first mount)
   useEffect(() => {
-    // Fetch categories directly from DB API
-    fetch('/api/categories')
-      .then((r) => r.json())
-      .then((data) => {
-        if (Array.isArray(data)) setCategories(data);
-      })
-      .catch(() => {});
-  }, []);
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
 
-  // Server-side paginated query for products
-  useEffect(() => {
     setIsLoading(true);
     const params = new URLSearchParams();
     params.set('page', String(currentPage));

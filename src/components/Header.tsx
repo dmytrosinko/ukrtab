@@ -17,9 +17,8 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
-import { INITIAL_PRODUCTS } from '@/lib/store';
 import { Product } from '@/lib/types';
-import { searchProducts } from '@/lib/search';
+import Image from 'next/image';
 
 export function Header() {
   const pathname = usePathname();
@@ -28,7 +27,9 @@ export function Header() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const [allProducts, setAllProducts] = useState<Product[]>(INITIAL_PRODUCTS);
+  const [isSearching, setIsSearching] = useState(false);
+  const [matchedProducts, setMatchedProducts] = useState<Product[]>([]);
+  const [totalMatchCount, setTotalMatchCount] = useState<number>(0);
   const searchContainerRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
@@ -36,17 +37,43 @@ export function Header() {
     setIsSearchFocused(false);
   }, [pathname]);
 
-  // Fetch products for live search dropdown
+  // Debounced live search API query
   useEffect(() => {
-    fetch('/api/products')
-      .then((r) => r.json())
-      .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          setAllProducts(data);
-        }
-      })
-      .catch(() => {});
-  }, []);
+    const query = searchQuery.trim();
+    if (!query || query.length < 2) {
+      setMatchedProducts([]);
+      setTotalMatchCount(0);
+      setIsSearching(false);
+      return;
+    }
+
+    setIsSearching(true);
+    const timer = setTimeout(() => {
+      fetch(`/api/products?search=${encodeURIComponent(query)}&limit=5&paginated=true`)
+        .then((r) => r.json())
+        .then((data) => {
+          if (data && Array.isArray(data.items)) {
+            setMatchedProducts(data.items);
+            setTotalMatchCount(data.total || data.items.length);
+          } else if (Array.isArray(data)) {
+            setMatchedProducts(data.slice(0, 5));
+            setTotalMatchCount(data.length);
+          } else {
+            setMatchedProducts([]);
+            setTotalMatchCount(0);
+          }
+        })
+        .catch(() => {
+          setMatchedProducts([]);
+          setTotalMatchCount(0);
+        })
+        .finally(() => {
+          setIsSearching(false);
+        });
+    }, 250);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   // Close search dropdown on click outside
   useEffect(() => {
@@ -67,9 +94,6 @@ export function Header() {
       router.push(`/catalog?search=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
-
-  const matchedProducts = searchQuery.trim() ? searchProducts(allProducts, searchQuery).slice(0, 5) : [];
-  const totalMatchCount = searchQuery.trim() ? searchProducts(allProducts, searchQuery).length : 0;
 
   const isLinkActive = (path: string) => pathname === path;
 
@@ -141,7 +165,11 @@ export function Header() {
           {/* Instant Search Dropdown */}
           {isSearchFocused && searchQuery.trim().length > 0 && (
             <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl border border-slate-200 shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-              {matchedProducts.length > 0 ? (
+              {isSearching ? (
+                <div className="p-6 text-center text-xs text-slate-400 font-medium">
+                  Пошук...
+                </div>
+              ) : matchedProducts.length > 0 ? (
                 <div>
                   <div className="p-3 bg-slate-50 border-b border-slate-100 text-[11px] font-bold text-slate-500 uppercase tracking-wider flex justify-between items-center">
                     <span>Знайдені товари ({totalMatchCount})</span>
@@ -151,16 +179,22 @@ export function Header() {
                     {matchedProducts.map((prod) => (
                       <Link
                         key={prod.id}
-                        href={`/product/${prod.slug}`}
+                        href={`/product/${prod.slug || prod.id}`}
                         onClick={() => setIsSearchFocused(false)}
                         className="flex items-center space-x-3 p-3 hover:bg-slate-50 transition group"
                       >
-                        <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 shrink-0 overflow-hidden p-1 flex items-center justify-center">
-                          <img
-                            src={prod.image}
-                            alt={prod.name}
-                            className="max-w-full max-h-full object-contain group-hover:scale-110 transition duration-200"
-                          />
+                        <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 shrink-0 overflow-hidden p-1 relative flex items-center justify-center">
+                          {prod.image ? (
+                            <Image
+                              src={prod.image}
+                              alt={prod.name}
+                              fill
+                              sizes="48px"
+                              className="object-contain p-0.5 group-hover:scale-110 transition duration-200"
+                            />
+                          ) : (
+                            <span className="text-[9px] text-slate-400">Фото</span>
+                          )}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="text-xs font-bold text-slate-900 truncate group-hover:text-emerald-600 transition">

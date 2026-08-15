@@ -28,6 +28,11 @@ model Product {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   orderItems  OrderItem[]
+
+  @@index([categoryId])
+  @@index([isFeatured])
+  @@index([createdAt])
+  @@index([categoryId, createdAt])
 }
 
 model Category {
@@ -39,6 +44,8 @@ model Category {
   isFeatured  Boolean   @default(true)
   products    Product[]
   createdAt   DateTime  @default(now())
+
+  @@index([isFeatured])
 }
 
 model Order {

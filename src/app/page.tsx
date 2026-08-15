@@ -7,9 +7,11 @@ import { Product, Banner } from '@/lib/types';
 
 import { INITIAL_PRODUCTS } from '@/lib/store';
 
+import { prisma } from '@/lib/prisma';
+
 export const revalidate = 60;
 
-const FALLBACK_BANNERS = [
+const FALLBACK_BANNERS: Banner[] = [
   {
     id: 'b1',
     title: 'Виготовлення магнітних наліпок на авто будь-якої складності',
@@ -28,27 +30,46 @@ const FALLBACK_BANNERS = [
   },
 ];
 
-const FALLBACK_PRODUCTS: any[] = INITIAL_PRODUCTS.slice(0, 8);
+const FALLBACK_PRODUCTS: Product[] = INITIAL_PRODUCTS.slice(0, 8);
 
 export default async function HomePage() {
-  let banners: any[] = FALLBACK_BANNERS;
-  let products: any[] = FALLBACK_PRODUCTS;
+  let banners: Banner[] = FALLBACK_BANNERS;
+  let products: Product[] = FALLBACK_PRODUCTS;
 
   try {
-    const { prisma } = await import('@/lib/prisma');
-    let featuredProducts = await prisma.product.findMany({ where: { isFeatured: true }, take: 12 });
-    if (!featuredProducts || featuredProducts.length === 0) {
-      featuredProducts = await prisma.product.findMany({ take: 12, orderBy: { createdAt: 'desc' } });
+    const [featuredProducts, dbBanners] = await Promise.all([
+      prisma.product.findMany({
+        where: { isFeatured: true },
+        take: 12,
+        orderBy: { createdAt: 'desc' },
+      }),
+      prisma.banner.findMany({
+        where: { isActive: true },
+        orderBy: { sortOrder: 'asc' },
+      }),
+    ]);
+
+    if (featuredProducts && featuredProducts.length > 0) {
+      products = JSON.parse(JSON.stringify(featuredProducts));
+    } else {
+      const latestProducts = await prisma.product.findMany({
+        take: 12,
+        orderBy: { createdAt: 'desc' },
+      });
+      if (latestProducts && latestProducts.length > 0) {
+        products = JSON.parse(JSON.stringify(latestProducts));
+      }
     }
-    const b = await prisma.banner.findMany({ where: { isActive: true }, orderBy: { sortOrder: 'asc' } });
-    if (b && b.length > 0) banners = b;
-    if (featuredProducts && featuredProducts.length > 0) products = featuredProducts;
+
+    if (dbBanners && dbBanners.length > 0) {
+      banners = JSON.parse(JSON.stringify(dbBanners));
+    }
   } catch (e) {
     console.error('Prisma homepage fetch failed, using fallback data:', e);
   }
 
-  const safeBanners: Banner[] = JSON.parse(JSON.stringify(banners));
-  const safeProducts: Product[] = JSON.parse(JSON.stringify(products));
+  const safeBanners = banners;
+  const safeProducts = products;
 
   return (
     <div className="space-y-12 pb-12">
