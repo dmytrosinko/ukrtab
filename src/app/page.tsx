@@ -9,8 +9,6 @@ import { INITIAL_PRODUCTS } from '@/lib/store';
 
 import { prisma } from '@/lib/prisma';
 
-export const revalidate = 60;
-
 const FALLBACK_BANNERS: Banner[] = [
   {
     id: 'b1',

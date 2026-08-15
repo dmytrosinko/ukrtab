@@ -26,8 +26,7 @@ export async function GET(request: Request) {
           Page: '1',
         },
       }),
-      // Cache query for performance or revalidate
-      next: { revalidate: 3600 },
+      cache: 'force-cache',
     });
 
     const data = await res.json();

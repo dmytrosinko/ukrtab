@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 
 export async function POST(request: Request) {
@@ -219,6 +220,10 @@ export async function POST(request: Request) {
         }
       }
     }
+
+    // On-demand revalidation: refresh pages after mass import
+    revalidatePath('/');
+    revalidatePath('/catalog');
 
     return NextResponse.json({
       success: true,

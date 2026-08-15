@@ -40,7 +40,7 @@ export async function GET(request: Request) {
         calledMethod: 'getWarehouses',
         methodProperties,
       }),
-      next: { revalidate: 3600 },
+      cache: 'force-cache',
     });
 
     const data = await res.json();
@@ -66,7 +66,7 @@ export async function GET(request: Request) {
           calledMethod: 'getWarehouses',
           methodProperties: fallbackProps,
         }),
-        next: { revalidate: 3600 },
+        cache: 'force-cache',
       });
       const fallbackData = await fallbackRes.json();
       if (fallbackData.success && Array.isArray(fallbackData.data)) {

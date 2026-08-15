@@ -8,25 +8,6 @@ import type { Metadata } from 'next';
 
 export const revalidate = 120;
 
-export async function generateStaticParams() {
-  try {
-    const products = await prisma.product.findMany({
-      take: 40,
-      select: { slug: true, id: true },
-      orderBy: { createdAt: 'desc' },
-    });
-
-    const params: { id: string }[] = [];
-    products.forEach((p) => {
-      if (p.slug) params.push({ id: p.slug });
-      if (p.id && p.id !== p.slug) params.push({ id: p.id });
-    });
-    return params;
-  } catch (error) {
-    return [];
-  }
-}
-
 export async function generateMetadata({
   params,
 }: {

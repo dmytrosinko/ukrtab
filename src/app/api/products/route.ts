@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { INITIAL_PRODUCTS } from '@/lib/store';
 
@@ -184,6 +185,10 @@ export async function POST(request: Request) {
     }
 
     MEMORY_PRODUCTS.unshift(product as any);
+
+    // On-demand revalidation: refresh pages that display products
+    revalidatePath('/');
+    revalidatePath('/catalog');
 
     return NextResponse.json(product, { status: 200 });
   } catch (error) {

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { INITIAL_PRODUCTS } from '@/lib/store';
 import { MEMORY_PRODUCTS } from '../route';
@@ -124,6 +125,14 @@ export async function PUT(
       MEMORY_PRODUCTS.unshift(updatedMemObj);
     }
 
+    // On-demand revalidation: refresh pages that display this product
+    revalidatePath('/');
+    revalidatePath('/catalog');
+    revalidatePath('/product/' + id);
+    if (product?.slug && product.slug !== id) {
+      revalidatePath('/product/' + product.slug);
+    }
+
     return NextResponse.json(product || updatedMemObj);
   } catch (error) {
     console.error('Error updating product:', error);
@@ -157,6 +166,11 @@ export async function DELETE(
     if (memIdx !== -1) {
       MEMORY_PRODUCTS.splice(memIdx, 1);
     }
+
+    // On-demand revalidation: refresh listing pages
+    revalidatePath('/');
+    revalidatePath('/catalog');
+    revalidatePath('/product/' + id);
 
     return NextResponse.json({ success: true });
   } catch (error) {
