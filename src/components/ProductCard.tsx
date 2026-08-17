@@ -29,7 +29,7 @@ export function ProductCard({ product }: { product: Product }) {
       {/* Image Container */}
       <Link
         href={productUrl}
-        prefetch={true}
+        prefetch={false}
         onClick={handleCardClick}
         className="relative block aspect-square overflow-hidden bg-slate-50 flex items-center justify-center p-2"
       >
@@ -71,7 +71,7 @@ export function ProductCard({ product }: { product: Product }) {
           )}
           <Link
             href={productUrl}
-            prefetch={true}
+            prefetch={false}
             onClick={handleCardClick}
             className="text-sm font-semibold text-slate-900 group-hover:text-emerald-600 line-clamp-2 transition leading-snug"
           >

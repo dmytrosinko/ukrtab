@@ -5,7 +5,8 @@ import { INITIAL_CATEGORIES } from '@/lib/store';
 import { Product, Category } from '@/lib/types';
 import type { Metadata } from 'next';
 
-export const revalidate = 60;
+// Catalog uses dynamic searchParams and should render on-demand without ISR Data Cache writes
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Каталог товарів — Магніти на авто, знаки ЗСУ, адресні таблички | Укртаб',

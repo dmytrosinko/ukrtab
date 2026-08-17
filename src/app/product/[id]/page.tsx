@@ -6,7 +6,8 @@ import { ProductDetailView } from '@/components/ProductDetailView';
 import { Product } from '@/lib/types';
 import type { Metadata } from 'next';
 
-export const revalidate = 120;
+// Cache product pages for 24h; instant updates happen on-demand via revalidatePath
+export const revalidate = 86400;
 
 export async function generateMetadata({
   params,
