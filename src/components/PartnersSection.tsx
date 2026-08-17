@@ -11,28 +11,11 @@ export function PartnersSection() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // 1. Check localStorage custom partners first
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('ukrtab_custom_partners');
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            setPartners(parsed);
-          }
-        }
-      } catch (e) {}
-    }
-
-    // 2. Fetch from API route
     fetch('/api/partners')
       .then((r) => r.json())
       .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          const activeList = data.filter((p: PartnerLogo) => p.isActive ?? true);
-          if (activeList.length > 0) {
-            setPartners(activeList);
-          }
+        if (Array.isArray(data)) {
+          setPartners(data);
         }
       })
       .catch((err) => {

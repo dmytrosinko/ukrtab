@@ -125,26 +125,19 @@ export default function AdminPartnersPage() {
       setIsModalOpen(false);
       setEditingPartner(null);
 
-      // localStorage sync
-      try {
-        if (typeof window !== 'undefined') {
-          const existing = localStorage.getItem('ukrtab_custom_partners');
-          const arr: PartnerLogo[] = existing ? JSON.parse(existing) : [];
-          const idx = arr.findIndex((p) => p.id === editingPartner.id);
-          if (idx !== -1) arr[idx] = updatedObj;
-          else arr.unshift(updatedObj);
-          localStorage.setItem('ukrtab_custom_partners', JSON.stringify(arr));
-        }
-      } catch (err) {}
-
       // PUT API call
       try {
-        await fetch(`/api/partners/${editingPartner.id}`, {
+        const res = await fetch(`/api/partners/${editingPartner.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(updatedObj),
         });
-      } catch (err) {}
+        if (res.ok) {
+          fetchPartners();
+        }
+      } catch (err) {
+        console.error('Failed to update partner:', err);
+      }
     } else {
       // Creating
       const newObj: PartnerLogo = {
@@ -157,24 +150,21 @@ export default function AdminPartnersPage() {
         createdAt: new Date(),
       };
 
-      try {
-        if (typeof window !== 'undefined') {
-          const existing = localStorage.getItem('ukrtab_custom_partners');
-          const arr: PartnerLogo[] = existing ? JSON.parse(existing) : [];
-          localStorage.setItem('ukrtab_custom_partners', JSON.stringify([newObj, ...arr]));
-        }
-      } catch (err) {}
-
       setPartners((prev) => [newObj, ...prev]);
       setIsModalOpen(false);
 
       try {
-        await fetch('/api/partners', {
+        const res = await fetch('/api/partners', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newObj),
         });
-      } catch (err) {}
+        if (res.ok) {
+          fetchPartners();
+        }
+      } catch (err) {
+        console.error('Failed to create partner:', err);
+      }
     }
 
     setFormData({
@@ -191,18 +181,13 @@ export default function AdminPartnersPage() {
     setPartners((prev) => prev.filter((p) => p.id !== id));
 
     try {
-      if (typeof window !== 'undefined') {
-        const existing = localStorage.getItem('ukrtab_custom_partners');
-        if (existing) {
-          const arr = JSON.parse(existing).filter((p: any) => p.id !== id);
-          localStorage.setItem('ukrtab_custom_partners', JSON.stringify(arr));
-        }
+      const res = await fetch(`/api/partners/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        fetchPartners();
       }
-    } catch (err) {}
-
-    try {
-      await fetch(`/api/partners/${id}`, { method: 'DELETE' });
-    } catch (e) {}
+    } catch (e) {
+      console.error('Failed to delete partner:', e);
+    }
   };
 
   const filteredPartners = partners.filter((p) =>

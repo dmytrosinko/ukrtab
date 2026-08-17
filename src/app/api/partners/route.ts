@@ -1,73 +1,92 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { INITIAL_PARTNERS } from '@/lib/store';
 import { PartnerLogo } from '@/lib/types';
 
-export let MEMORY_PARTNERS: PartnerLogo[] = [...INITIAL_PARTNERS];
-
 export async function GET() {
   try {
     let dbPartners: PartnerLogo[] = [];
+
     try {
-      dbPartners = await (prisma as any).partnerLogo.findMany({
+      dbPartners = await prisma.partnerLogo.findMany({
         orderBy: { sortOrder: 'asc' },
       });
-    } catch (dbErr) {}
 
-    const combined = [...dbPartners, ...MEMORY_PARTNERS, ...INITIAL_PARTNERS];
-    const map = new Map<string, PartnerLogo>();
+      // If DB is completely empty on initial run, seed with initial partners once
+      if (dbPartners.length === 0 && INITIAL_PARTNERS.length > 0) {
+        for (const p of INITIAL_PARTNERS) {
+          try {
+            await prisma.partnerLogo.create({
+              data: {
+                id: p.id,
+                name: p.name || '',
+                image: p.image,
+                linkUrl: p.linkUrl || '',
+                sortOrder: p.sortOrder || 0,
+                isActive: p.isActive ?? true,
+              },
+            });
+          } catch (seedErr) {}
+        }
 
-    combined.forEach((p) => {
-      if (!p || !p.id) return;
-      if (!map.has(p.id)) {
-        map.set(p.id, p);
+        dbPartners = await prisma.partnerLogo.findMany({
+          orderBy: { sortOrder: 'asc' },
+        });
       }
-    });
+    } catch (dbErr) {
+      console.warn('Prisma partner fetch notice:', dbErr);
+    }
 
-    const unique = Array.from(map.values());
-    return NextResponse.json(unique);
+    if (dbPartners.length > 0) {
+      return NextResponse.json(dbPartners);
+    }
+
+    return NextResponse.json(INITIAL_PARTNERS);
   } catch (error) {
     console.error('Error fetching partners:', error);
-    return NextResponse.json(MEMORY_PARTNERS);
+    return NextResponse.json(INITIAL_PARTNERS);
   }
 }
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, image, linkUrl, sortOrder, isActive } = body;
+    const { id: customId, name, image, linkUrl, sortOrder, isActive } = body;
 
     if (!image) {
       return NextResponse.json({ error: 'Зображення є обов’язковим' }, { status: 400 });
     }
 
-    const newPartner: PartnerLogo = {
-      id: 'partner-' + Date.now(),
+    const partnerId = customId || 'partner-' + Date.now();
+
+    const newPartnerData = {
+      id: partnerId,
       name: name || '',
       image,
       linkUrl: linkUrl || '',
       sortOrder: Number(sortOrder) || 0,
       isActive: isActive ?? true,
-      createdAt: new Date(),
     };
 
+    let partner;
     try {
-      await (prisma as any).partnerLogo.create({
-        data: {
-          id: newPartner.id,
-          name: newPartner.name,
-          image: newPartner.image,
-          linkUrl: newPartner.linkUrl,
-          sortOrder: newPartner.sortOrder,
-          isActive: newPartner.isActive,
-        },
+      partner = await prisma.partnerLogo.create({
+        data: newPartnerData,
       });
     } catch (dbErr) {
-      console.warn('Prisma partner DB write skipped/fallback:', dbErr);
+      console.error('Prisma partner creation failed:', dbErr);
+      partner = {
+        ...newPartnerData,
+        createdAt: new Date(),
+      };
     }
 
-    MEMORY_PARTNERS.unshift(newPartner);
-    return NextResponse.json(newPartner, { status: 201 });
+    try {
+      revalidatePath('/');
+    } catch (revErr) {}
+
+    return NextResponse.json(partner, { status: 201 });
   } catch (error) {
     console.error('Error creating partner logo:', error);
     return NextResponse.json({ error: 'Failed to create partner' }, { status: 500 });

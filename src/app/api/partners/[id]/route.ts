@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
-import { MEMORY_PARTNERS } from '../route';
 import { PartnerLogo } from '@/lib/types';
 
 export async function PUT(
@@ -24,29 +24,28 @@ export async function PUT(
     let updatedPartner: PartnerLogo | null = null;
 
     try {
-      updatedPartner = await (prisma as any).partnerLogo.update({
+      updatedPartner = await prisma.partnerLogo.upsert({
         where: { id },
-        data: updateData,
+        update: updateData,
+        create: {
+          id,
+          ...updateData,
+        },
       });
     } catch (dbErr) {
-      console.warn('Prisma partner DB update skipped/fallback:', dbErr);
+      console.warn('Prisma partner DB update failed:', dbErr);
     }
 
-    const idx = MEMORY_PARTNERS.findIndex((p) => p.id === id);
-    const memObj: PartnerLogo = {
+    try {
+      revalidatePath('/');
+    } catch (revErr) {}
+
+    const result = updatedPartner || {
       id,
       ...updateData,
     };
 
-    if (idx !== -1) {
-      MEMORY_PARTNERS[idx] = { ...MEMORY_PARTNERS[idx], ...memObj };
-      if (!updatedPartner) updatedPartner = MEMORY_PARTNERS[idx];
-    } else {
-      MEMORY_PARTNERS.unshift(memObj);
-      if (!updatedPartner) updatedPartner = memObj;
-    }
-
-    return NextResponse.json(updatedPartner || memObj);
+    return NextResponse.json(result);
   } catch (error) {
     console.error('Error updating partner logo:', error);
     return NextResponse.json({ error: 'Failed to update partner' }, { status: 500 });
@@ -63,15 +62,16 @@ export async function DELETE(
     const id = decodeURIComponent(rawId);
 
     try {
-      await (prisma as any).partnerLogo.delete({
+      await prisma.partnerLogo.deleteMany({
         where: { id },
       });
-    } catch (e) {}
-
-    const idx = MEMORY_PARTNERS.findIndex((p) => p.id === id);
-    if (idx !== -1) {
-      MEMORY_PARTNERS.splice(idx, 1);
+    } catch (e) {
+      console.warn('Prisma partner delete failed:', e);
     }
+
+    try {
+      revalidatePath('/');
+    } catch (revErr) {}
 
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -79,3 +79,4 @@ export async function DELETE(
     return NextResponse.json({ error: 'Failed to delete partner' }, { status: 500 });
   }
 }
+
