@@ -662,7 +662,7 @@ export default function AdminProductsPage() {
             className="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold px-4 py-2.5 rounded-xl text-xs flex items-center space-x-1.5 transition active:scale-95 shadow-xs"
           >
             <Plus className="w-4 h-4" />
-            <span>➕ Швидкий рядок</span>
+            <span>Додати товар</span>
           </button>
 
           {/* Open Full Modal */}

@@ -6,6 +6,7 @@ import { Footer } from '@/components/Footer';
 import { CartDrawer } from '@/components/CartDrawer';
 import { GoogleAnalytics } from '@/components/GoogleAnalytics';
 import { NavigationProgressBar } from '@/components/NavigationProgressBar';
+import { Analytics } from '@vercel/analytics/next';
 import { Suspense } from 'react';
 
 export const metadata: Metadata = {
@@ -38,6 +39,7 @@ export default function RootLayout({
         </CartProvider>
 
         <GoogleAnalytics gaId={gaId} />
+        <Analytics />
       </body>
     </html>
   );
