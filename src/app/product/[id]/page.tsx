@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { ProductDetailView } from '@/components/ProductDetailView';
+import { ProductJsonLd, BreadcrumbJsonLd } from '@/components/JsonLd';
 import { Product } from '@/lib/types';
 import type { Metadata } from 'next';
 
@@ -16,12 +17,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const resolved = await params;
   const targetId = decodeURIComponent(resolved.id || '');
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ukrtab.com.ua';
 
   try {
     const product = await prisma.product.findFirst({
       where: {
         OR: [{ slug: targetId }, { id: targetId }],
       },
+      include: { category: true },
     });
 
     if (!product) {
@@ -30,17 +33,33 @@ export async function generateMetadata({
       };
     }
 
+    const canonicalUrl = `${siteUrl}/product/${product.slug || product.id}`;
     const description = product.description
-      ? product.description.slice(0, 160)
-      : `Купити ${product.name} за ціною ${product.price} ₴ від виробника Укртаб. Доставка по Україні Новою Поштою.`;
+      ? product.description.replace(/<[^>]*>?/gm, '').slice(0, 160)
+      : `Купити ${product.name} за ціною ${product.price} ₴ від виробника Укртаб. Якісний УФ-друк, магнітна основа, доставка 1-2 дні по всій Україні.`;
+
+    const title = `${product.name} — купити в Україні за ціною ${product.price} ₴ | Укртаб`;
 
     return {
-      title: `${product.name} — купити в Україні за ціною ${product.price} ₴ | Укртаб`,
+      title,
       description,
+      alternates: {
+        canonical: canonicalUrl,
+      },
       openGraph: {
         title: `${product.name} | Укртаб`,
         description,
-        images: product.image ? [{ url: product.image }] : [],
+        url: canonicalUrl,
+        type: 'website',
+        images: product.image ? [{ url: product.image, alt: product.name }] : [],
+        siteName: 'Ukrtab',
+        locale: 'uk_UA',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title,
+        description,
+        images: product.image ? [product.image] : [],
       },
     };
   } catch (e) {
@@ -88,5 +107,20 @@ export default async function ProductDetailPage({
     );
   }
 
-  return <ProductDetailView product={product} />;
+  const categoryName = product.category?.name || 'Каталог';
+  const categorySlug = product.category?.slug || '';
+
+  const breadcrumbs = [
+    { name: 'Каталог', url: '/catalog' },
+    ...(categorySlug ? [{ name: categoryName, url: `/catalog/${categorySlug}` }] : []),
+    { name: product.name, url: `/product/${product.slug || product.id}` },
+  ];
+
+  return (
+    <>
+      <ProductJsonLd product={product} />
+      <BreadcrumbJsonLd items={breadcrumbs} />
+      <ProductDetailView product={product} />
+    </>
+  );
 }

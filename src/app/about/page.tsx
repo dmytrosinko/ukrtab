@@ -1,6 +1,15 @@
 import React from 'react';
 import Link from 'next/link';
-import { ShieldCheck, Award, ThumbsUp, Truck } from 'lucide-react';
+import { ShieldCheck, Award, ThumbsUp } from 'lucide-react';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Про компанію Укртаб — Виробник магнітів на авто, автономерів та табличок у Дніпрі',
+  description: 'Дізнайтеся більше про виробничу компанію Укртаб (Дніпро). Понад 5 років досвіду, власне ЧПУ та УФ-обладнання, якісний магнітний вініл 0.8 мм та надійні матеріали.',
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://ukrtab.com.ua'}/about`,
+  },
+};
 
 export default function AboutPage() {
   return (

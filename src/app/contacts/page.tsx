@@ -1,5 +1,14 @@
 import React from 'react';
 import { Phone, Mail, MapPin, Clock, Star } from 'lucide-react';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Контакти Укртаб — Телефони, адреса виробництва в Дніпрі та графік роботи',
+  description: 'Контакти компанії Укртаб у Дніпрі: телефони відділу продажів +380 (66) 441-80-50, +380 (68) 367-70-15, адреса вул. Миру 2т. Працюємо без вихідних з 10:00 до 21:00.',
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://ukrtab.com.ua'}/contacts`,
+  },
+};
 
 export default function ContactsPage() {
   return (

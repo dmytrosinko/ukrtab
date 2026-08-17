@@ -1,5 +1,14 @@
 import React from 'react';
-import { Truck, CreditCard, MapPin, CheckCircle } from 'lucide-react';
+import { Truck, CreditCard, CheckCircle } from 'lucide-react';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Доставка та оплата — Укртаб | Нова Пошта, Укрпошта по всій Україні',
+  description: 'Інформація про доставку та способи оплати продукції Укртаб. Швидка відправка Новою Поштою (1-2 дні), Укрпоштою або самовивіз у Дніпрі. Зручні способи оплати.',
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://ukrtab.com.ua'}/delivery`,
+  },
+};
 
 export default function DeliveryPage() {
   return (

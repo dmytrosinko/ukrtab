@@ -9,11 +9,81 @@ import { NavigationProgressBar } from '@/components/NavigationProgressBar';
 import { Analytics } from '@vercel/analytics/next';
 import { Suspense } from 'react';
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://ukrtab.com.ua';
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://ukrtab.com.ua'),
-  title: 'Укртаб — Виробництво магнітів, наліпок на авто та адресних табличок',
-  description: 'Магазин Укртаб (Дніпро). Магнітні наліпки на авто, знаки ЗСУ, Охорона, адресні таблички на будинок, сувенірні автономери. Доставка по всій Україні.',
-  keywords: 'укртаб, магнітні наліпки на авто, знаки зсу, міни небезпечно, адресні таблички, автономери на замовлення',
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: 'Укртаб — Виробництво магнітів, наліпок на авто та адресних табличок',
+    template: '%s | Укртаб',
+  },
+  description:
+    'Магазин та виробництво Укртаб (Дніпро). Магнітні наклейки на авто, сувенірні автономери ЗСУ, адресні таблички на будинок, УФ-друк та трафарети. Доставка по Україні 1-2 дні.',
+  keywords: [
+    'магнітні наклейки на авто',
+    'магніти на авто',
+    'магнітна реклама на авто',
+    'сувенірні номери на авто',
+    'номери для військових',
+    'номер з позивним',
+    'адресні таблички на будинок',
+    'таблички на двері',
+    'інформаційні таблички',
+    'ритуальні таблички',
+    'трафарети на замовлення',
+    'УФ друк',
+    'укртаб',
+    'ukrtab',
+  ],
+  authors: [{ name: 'Ukrtab', url: SITE_URL }],
+  creator: 'Ukrtab',
+  publisher: 'Ukrtab',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  alternates: {
+    canonical: './',
+  },
+  verification: {
+    google: 'google7ead0cd001d0819d',
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'uk_UA',
+    url: SITE_URL,
+    siteName: 'Укртаб',
+    title: 'Укртаб — Магніти на авто, сувенірні номери та адресні таблички',
+    description:
+      'Власне виробництво автомобільних магнітів, сувенірних номерів для ЗСУ, адресних табличок та УФ-друку в Україні.',
+    images: [
+      {
+        url: '/favicon.ico',
+        width: 1200,
+        height: 630,
+        alt: 'Укртаб — виробництво магнітних наліпок та табличок',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Укртаб — Магніти на авто, сувенірні номери та адресні таблички',
+    description:
+      'Власне виробництво автомобільних магнітів, сувенірних номерів для ЗСУ та адресних табличок.',
+    images: ['/favicon.ico'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
 export default function RootLayout({

@@ -305,26 +305,14 @@ export function Header() {
               {/* Category 1 */}
               <div className="space-y-1">
                 <Link
-                  href="/catalog?category=informatsijni-tablichki"
+                  href="/catalog/magniti-na-avto"
                   className="block px-3 py-1.5 rounded-xl text-xs font-black text-slate-900 hover:bg-emerald-50 hover:text-emerald-700 transition"
                 >
-                  📋 Інформаційні таблички
+                  🚗 Магнітні наклейки на авто
                 </Link>
                 <div className="pl-4 space-y-1 text-[11px] text-slate-600 font-medium">
-                  <Link href="/catalog?category=poperedzhuvalni-tablichki" className="block hover:text-emerald-600">
-                    • Попереджувальні таблички
-                  </Link>
-                  <Link href="/catalog?category=zaboronyayuchi-tablichki" className="block hover:text-emerald-600">
-                    • Забороняючі таблички
-                  </Link>
-                  <Link href="/catalog?category=videosposterezhennya" className="block hover:text-emerald-600">
-                    • Відеоспостереження
-                  </Link>
-                  <Link href="/catalog?category=zlij-sobaka" className="block hover:text-emerald-600">
-                    • Злий собака
-                  </Link>
-                  <Link href="/catalog?category=ne-parkuvati" className="block hover:text-emerald-600">
-                    • Не паркувати
+                  <Link href="/catalog/reklamni-magniti" className="block hover:text-emerald-600">
+                    • Магнітна реклама на авто
                   </Link>
                 </div>
               </div>
@@ -332,20 +320,17 @@ export function Header() {
               {/* Category 2 */}
               <div className="space-y-1 border-t border-slate-100 pt-1.5">
                 <Link
-                  href="/catalog?category=tablichki-dlya-biznesu"
+                  href="/catalog/suvenirni-avtonomera"
                   className="block px-3 py-1.5 rounded-xl text-xs font-black text-slate-900 hover:bg-emerald-50 hover:text-emerald-700 transition"
                 >
-                  💼 Таблички для бізнесу
+                  🚙 Сувенірні автономера
                 </Link>
                 <div className="pl-4 space-y-1 text-[11px] text-slate-600 font-medium">
-                  <Link href="/catalog?category=grafik-roboti" className="block hover:text-emerald-600">
-                    • Графік роботи
+                  <Link href="/catalog/vijskovi-nomeri" className="block hover:text-emerald-600">
+                    • Номери для військових ЗСУ
                   </Link>
-                  <Link href="/catalog?category=tablichki-na-dveri" className="block hover:text-emerald-600">
-                    • Таблички на двері
-                  </Link>
-                  <Link href="/catalog?category=kabinetni-tablichki" className="block hover:text-emerald-600">
-                    • Кабінетні таблички
+                  <Link href="/catalog/nomeri-dlya-avtosaloniv" className="block hover:text-emerald-600">
+                    • Номери для автосалонів та СТО
                   </Link>
                 </div>
               </div>
@@ -353,38 +338,24 @@ export function Header() {
               {/* Category 3 */}
               <div className="space-y-1 border-t border-slate-100 pt-1.5">
                 <Link
-                  href="/catalog?category=magniti-na-avto"
+                  href="/catalog/adresni-tablichki"
                   className="block px-3 py-1.5 rounded-xl text-xs font-black text-slate-900 hover:bg-emerald-50 hover:text-emerald-700 transition"
                 >
-                  🚗 Магніти на авто
+                  🏠 Адресні таблички на будинок
                 </Link>
-                <div className="pl-4 space-y-1 text-[11px] text-slate-600 font-medium">
-                  <Link href="/catalog?category=reklamni-magniti" className="block hover:text-emerald-600">
-                    • Рекламні магніти
-                  </Link>
-                  <Link href="/catalog?category=informatsijni-magniti" className="block hover:text-emerald-600">
-                    • Інформаційні магніти
-                  </Link>
-                </div>
               </div>
 
               {/* Category 4 */}
               <div className="space-y-1 border-t border-slate-100 pt-1.5">
                 <Link
-                  href="/catalog?category=suvenirni-avtonomera"
+                  href="/catalog/tablichki-na-dveri"
                   className="block px-3 py-1.5 rounded-xl text-xs font-black text-slate-900 hover:bg-emerald-50 hover:text-emerald-700 transition"
                 >
-                  🚙 Сувенірні автономера
+                  🚪 Таблички на двері та кабінети
                 </Link>
                 <div className="pl-4 space-y-1 text-[11px] text-slate-600 font-medium">
-                  <Link href="/catalog?category=imenni-nomeri" className="block hover:text-emerald-600">
-                    • Іменні номери
-                  </Link>
-                  <Link href="/catalog?category=nomeri-z-napisom" className="block hover:text-emerald-600">
-                    • Номери з написом
-                  </Link>
-                  <Link href="/catalog?category=vijskovi-nomeri" className="block hover:text-emerald-600">
-                    • Військові номери
+                  <Link href="/catalog/tablichki-dlya-biznesu" className="block hover:text-emerald-600">
+                    • Таблички для офісу та бізнесу
                   </Link>
                 </div>
               </div>
@@ -392,27 +363,23 @@ export function Header() {
               {/* Category 5 */}
               <div className="space-y-1 border-t border-slate-100 pt-1.5">
                 <Link
-                  href="/catalog?category=adresni-tablichki"
+                  href="/catalog/informatsijni-tablichki"
                   className="block px-3 py-1.5 rounded-xl text-xs font-black text-slate-900 hover:bg-emerald-50 hover:text-emerald-700 transition"
                 >
-                  🏠 Адресні таблички
+                  📋 Інформаційні таблички ПВХ
                 </Link>
                 <div className="pl-4 space-y-1 text-[11px] text-slate-600 font-medium">
-                  <Link href="/catalog?category=adresni-tablichki-na-budinok" className="block hover:text-emerald-600">
-                    • Адресні таблички на будинок
+                  <Link href="/catalog/ritualni-tablichki" className="block hover:text-emerald-600">
+                    • Ритуальні таблички з фото
                   </Link>
-                  <Link href="/catalog?category=nomeri-na-budinok" className="block hover:text-emerald-600">
-                    • Номери на будинок
+                  <Link href="/catalog/trafareti" className="block hover:text-emerald-600">
+                    • Трафарети на замовлення
+                  </Link>
+                  <Link href="/catalog/uf-druk" className="block hover:text-emerald-600">
+                    • Прямий УФ-друк
                   </Link>
                 </div>
               </div>
-
-              <Link
-                href="/catalog?category=inshe"
-                className="block px-3 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition border-t border-slate-100"
-              >
-                🔹 Інше
-              </Link>
             </div>
           </div>
           <Link

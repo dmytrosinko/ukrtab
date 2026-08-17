@@ -3,15 +3,58 @@ import { CatalogView } from '@/components/CatalogView';
 import { prisma } from '@/lib/prisma';
 import { INITIAL_CATEGORIES } from '@/lib/store';
 import { Product, Category } from '@/lib/types';
+import { getCategorySeo } from '@/lib/seoData';
+import { BreadcrumbJsonLd, ItemListJsonLd } from '@/components/JsonLd';
 import type { Metadata } from 'next';
 
 // Catalog uses dynamic searchParams and should render on-demand without ISR Data Cache writes
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: 'Каталог товарів — Магніти на авто, знаки ЗСУ, адресні таблички | Укртаб',
-  description: 'Повний каталог продукції Укртаб (Дніпро): магнітні наліпки на авто, адресні таблички, попереджувальні знаки, автономери на замовлення. Доставка по Україні.',
-};
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}): Promise<Metadata> {
+  const resolvedParams = await searchParams;
+  const selectedCategorySlug = typeof resolvedParams.category === 'string' ? resolvedParams.category.trim() : '';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ukrtab.com.ua';
+
+  if (selectedCategorySlug) {
+    const seo = getCategorySeo(selectedCategorySlug);
+    if (seo) {
+      return {
+        title: seo.title,
+        description: seo.metaDescription,
+        keywords: [seo.primaryQuery, ...seo.additionalQueries].join(', '),
+        alternates: {
+          canonical: `${siteUrl}/catalog/${seo.slug}`,
+        },
+        openGraph: {
+          title: seo.title,
+          description: seo.metaDescription,
+          url: `${siteUrl}/catalog/${seo.slug}`,
+          type: 'website',
+          siteName: 'Ukrtab',
+        },
+      };
+    }
+  }
+
+  return {
+    title: 'Каталог товарів — Магніти на авто, сувенірні номери, адресні таблички | Укртаб',
+    description: 'Повний каталог продукції Укртаб (Дніпро): магнітні наліпки на авто, адресні таблички, попереджувальні знаки, автономери на замовлення. Доставка по Україні.',
+    alternates: {
+      canonical: `${siteUrl}/catalog`,
+    },
+    openGraph: {
+      title: 'Каталог товарів | Укртаб',
+      description: 'Повний каталог магнітів на авто, знаків ЗСУ, номерів та табличок від виробника Укртаб.',
+      url: `${siteUrl}/catalog`,
+      type: 'website',
+      siteName: 'Ukrtab',
+    },
+  };
+}
 
 const ITEMS_PER_PAGE = 18;
 const INITIAL_CHUNK_SIZE = 9;
@@ -85,17 +128,30 @@ export default async function CatalogPage({
     console.error('Error in CatalogPage SSR fetch:', error);
   }
 
+  const breadcrumbs = [
+    { name: 'Каталог товарів', url: '/catalog' },
+    ...(selectedCategorySlug ? [{ name: selectedCategorySlug, url: `/catalog?category=${selectedCategorySlug}` }] : []),
+  ];
+
   return (
-    <Suspense fallback={<div className="p-12 text-center text-xs text-slate-400 font-bold">Завантаження каталогу...</div>}>
-      <CatalogView
-        initialProducts={products}
-        initialCategories={categories}
-        initialTotal={totalItems}
-        initialTotalPages={totalPages}
-        initialPage={currentPage}
-        initialCategorySlug={selectedCategorySlug}
-        initialSearch={rawSearch}
+    <>
+      <BreadcrumbJsonLd items={breadcrumbs} />
+      <ItemListJsonLd
+        name="Каталог продукції Укртаб"
+        description="Магнітні наліпки, таблички та автономери"
+        items={products}
       />
-    </Suspense>
+      <Suspense fallback={<div className="p-12 text-center text-xs text-slate-400 font-bold">Завантаження каталогу...</div>}>
+        <CatalogView
+          initialProducts={products}
+          initialCategories={categories}
+          initialTotal={totalItems}
+          initialTotalPages={totalPages}
+          initialPage={currentPage}
+          initialCategorySlug={selectedCategorySlug}
+          initialSearch={rawSearch}
+        />
+      </Suspense>
+    </>
   );
 }
