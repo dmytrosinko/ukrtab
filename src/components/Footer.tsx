@@ -121,7 +121,7 @@ export function Footer() {
           <div className="pt-2 flex flex-wrap gap-2 text-[11px] text-slate-400">
             <Link href="/about" className="hover:text-emerald-400">Про нас</Link>
             <span>•</span>
-            <Link href="/delivery" className="hover:text-emerald-400">Оплата та доставка</Link>
+            <Link href="/delivery" className="hover:text-emerald-400">Оплата, доставка та повернення</Link>
             <span>•</span>
             <Link href="/constructor" className="hover:text-emerald-400">Конструктор</Link>
           </div>
