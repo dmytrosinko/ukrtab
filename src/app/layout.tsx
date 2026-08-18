@@ -4,6 +4,7 @@ import { CartProvider } from '@/context/CartContext';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { CartDrawer } from '@/components/CartDrawer';
+import { FloatingContactWidget } from '@/components/FloatingContactWidget';
 import { GoogleAnalytics } from '@/components/GoogleAnalytics';
 import { NavigationProgressBar } from '@/components/NavigationProgressBar';
 import { Analytics } from '@vercel/analytics/next';
@@ -106,6 +107,7 @@ export default function RootLayout({
           </main>
           <Footer />
           <CartDrawer />
+          <FloatingContactWidget />
         </CartProvider>
 
         <GoogleAnalytics gaId={gaId} />
