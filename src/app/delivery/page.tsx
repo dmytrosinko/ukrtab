@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Доставка, оплата та повернення товару — Укртаб | Нова Пошта, Укрпошта по всій Україні',
-  description: 'Офіційні правила доставки, оплати, повернення та обміну продукції компанії Укртаб. Доставка Новою Поштою (1-2 дні), Укрпоштою або самовивіз у Дніпрі. Гарантія та повернення 14 днів.',
+  description: 'Офіційні правила доставки, оплати, повернення та обміну продукції компанії Укртаб. Доставка Новою Поштою (1-2 дні) або Укрпоштою по всій Україні. Гарантія та повернення 14 днів.',
   alternates: {
     canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://ukrtab.com.ua'}/delivery`,
   },
@@ -57,13 +57,6 @@ export default function DeliveryPage() {
               <div>
                 <b className="text-slate-900">Укрпошта Експрес</b>
                 <p className="text-slate-500 text-xs mt-0.5">Термін доставки: 2–4 робочих дні у будь-яке відділення по Україні.</p>
-              </div>
-            </li>
-            <li className="flex items-start space-x-3">
-              <CheckCircle className="w-5 h-5 text-emerald-600 mt-0.5 shrink-0" />
-              <div>
-                <b className="text-slate-900">Самовивіз у м. Дніпро</b>
-                <p className="text-slate-500 text-xs mt-0.5">Видача готових замовлень за адресою: м. Дніпро, вул. Миру 2т (за попереднім узгодженням з менеджером).</p>
               </div>
             </li>
           </ul>
