@@ -91,13 +91,6 @@ export default function DeliveryPage() {
                 <p className="text-slate-500 text-xs mt-0.5">Швидка оплата через інтернет-банкінг (Приват24, Monobank тощо).</p>
               </div>
             </li>
-            <li className="flex items-start space-x-3">
-              <CheckCircle className="w-5 h-5 text-emerald-600 mt-0.5 shrink-0" />
-              <div>
-                <b className="text-slate-900">Оплата при отриманні (Накладений платіж)</b>
-                <p className="text-slate-500 text-xs mt-0.5">Оплата готівкою або карткою у відділенні Нової Пошти при отриманні та огляді посилки.</p>
-              </div>
-            </li>
           </ul>
         </div>
       </div>
