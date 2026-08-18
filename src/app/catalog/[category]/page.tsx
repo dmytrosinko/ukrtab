@@ -112,15 +112,6 @@ export default async function CategoryLandingPage({
     for (const cat of matchingCategories) {
       categoryIds.add(cat.id);
       if (cat.slug) categoryIds.add(cat.slug);
-
-      // Gather child subcategories from DB
-      const children = await prisma.category.findMany({
-        where: { parentId: cat.id },
-      });
-      for (const child of children) {
-        categoryIds.add(child.id);
-        if (child.slug) categoryIds.add(child.slug);
-      }
     }
 
     let where: any = {};

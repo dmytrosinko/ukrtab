@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
-import { INITIAL_PRODUCTS } from '@/lib/store';
+import { INITIAL_PRODUCTS, INITIAL_CATEGORIES } from '@/lib/store';
 
 // Dynamic in-memory store for newly added products fallback on serverless Vercel
 export let MEMORY_PRODUCTS: any[] = [];
