@@ -47,6 +47,8 @@ export function getCategoryOptions(categories: Category[] = INITIAL_CATEGORIES):
         options.push({ id: subCat.id, name: `— ${subCat.name}`, isSub: true, parentId: mainCat.id });
       });
     }
+  });
+
   return options;
 }
 
