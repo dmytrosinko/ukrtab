@@ -22,7 +22,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { Product, Banner } from '@/lib/types';
-import { INITIAL_PRODUCTS } from '@/lib/store';
+import { INITIAL_PRODUCTS, INITIAL_BANNERS } from '@/lib/store';
 import { prisma } from '@/lib/prisma';
 import type { Metadata } from 'next';
 
@@ -36,24 +36,7 @@ export const metadata: Metadata = {
   },
 };
 
-const FALLBACK_BANNERS: Banner[] = [
-  {
-    id: 'b1',
-    title: 'Виготовлення магнітних наліпок на авто будь-якої складності',
-    image: 'https://images.prom.ua/6956069219_6956069219.jpg',
-    linkUrl: '/catalog/magniti-na-avto',
-    sortOrder: 1,
-    isActive: true,
-  },
-  {
-    id: 'b2',
-    title: 'Патріотична продукція ЗСУ та військова символіка',
-    image: 'https://images.prom.ua/6956070005_6956070005.jpg',
-    linkUrl: '/catalog/vijskovi-nomeri',
-    sortOrder: 2,
-    isActive: true,
-  },
-];
+const FALLBACK_BANNERS: Banner[] = INITIAL_BANNERS;
 
 const FALLBACK_PRODUCTS: Product[] = INITIAL_PRODUCTS.slice(0, 8);
 

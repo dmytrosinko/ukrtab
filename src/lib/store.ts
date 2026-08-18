@@ -1,4 +1,4 @@
-import { Product, Category, PartnerLogo } from './types';
+import { Product, Category, PartnerLogo, Banner } from './types';
 
 export const INITIAL_CATEGORIES: Category[] = [
   // 1. Магніти на авто
@@ -223,6 +223,25 @@ export const INITIAL_PARTNERS: PartnerLogo[] = [
     image: 'https://images.prom.ua/4296986097_w297_h200_magnitni-nalipki-na.jpg',
     linkUrl: 'https://novaposhta.ua',
     sortOrder: 3,
+    isActive: true,
+  },
+];
+
+export const INITIAL_BANNERS: Banner[] = [
+  {
+    id: 'b1',
+    title: 'Виготовлення магнітних наліпок на авто будь-якої складності',
+    image: 'https://images.prom.ua/6956069219_6956069219.jpg',
+    linkUrl: '/catalog/magniti-na-avto',
+    sortOrder: 1,
+    isActive: true,
+  },
+  {
+    id: 'b2',
+    title: 'Патріотична продукція ЗСУ та військова символіка',
+    image: 'https://images.prom.ua/6956070005_6956070005.jpg',
+    linkUrl: '/catalog/vijskovi-nomeri',
+    sortOrder: 2,
     isActive: true,
   },
 ];

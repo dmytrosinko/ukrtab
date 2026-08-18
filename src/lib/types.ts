@@ -66,6 +66,7 @@ export interface Banner {
   linkUrl?: string | null;
   sortOrder: number;
   isActive: boolean;
+  createdAt?: Date | string;
 }
 
 export interface SiteSettings {

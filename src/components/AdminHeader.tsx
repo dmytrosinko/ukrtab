@@ -9,6 +9,7 @@ import {
   ShoppingCart, 
   Upload, 
   Handshake,
+  SlidersHorizontal,
   ArrowLeft,
   ShieldCheck,
   LogOut
@@ -46,6 +47,12 @@ export default function AdminHeader() {
       href: '/admin/orders',
       icon: ShoppingCart,
       isActive: pathname ? pathname.startsWith('/admin/orders') : false,
+    },
+    {
+      label: 'Банери',
+      href: '/admin/banners',
+      icon: SlidersHorizontal,
+      isActive: pathname ? pathname.startsWith('/admin/banners') : false,
     },
     {
       label: 'Партнери',
