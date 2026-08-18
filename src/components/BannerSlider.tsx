@@ -31,22 +31,26 @@ export function BannerSlider({ banners }: { banners: Banner[] }) {
           fill
           priority
           sizes="(max-width: 1280px) 100vw, 1280px"
-          className="object-cover opacity-45 transform scale-105 transition-all duration-1000 ease-out"
+          className="object-cover opacity-90 transform scale-105 transition-all duration-1000 ease-out"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/70 to-transparent" />
+        <div className={`absolute inset-0 ${current.title ? 'bg-gradient-to-r from-slate-950/50 via-slate-950/20 to-transparent' : 'bg-gradient-to-t from-slate-950/30 via-transparent to-transparent'}`} />
       </div>
 
       {/* Content */}
       <div className="relative z-10 max-w-2xl px-6 md:px-12 py-10 space-y-4">
-        <div className="inline-flex items-center space-x-2 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider backdrop-blur-md">
-          <span>🇺🇦 Виробництво в Україні • Дніпро</span>
-        </div>
-        <h2 className="text-2xl md:text-4xl font-black text-white leading-tight tracking-tight drop-shadow-md">
-          {current.title || 'Якісні магніти та знаки на замовлення'}
-        </h2>
-        <p className="text-sm md:text-base text-slate-300 leading-relaxed font-normal">
-          Виготовлення вінілових магнітів для авто, захисних знаків та номерних табличок з доставкою Новою Поштою.
-        </p>
+        {current.title && (
+          <>
+            <div className="inline-flex items-center space-x-2 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider backdrop-blur-md">
+              <span>🇺🇦 Виробництво в Україні • Дніпро</span>
+            </div>
+            <h2 className="text-2xl md:text-4xl font-black text-white leading-tight tracking-tight drop-shadow-md">
+              {current.title}
+            </h2>
+            <p className="text-sm md:text-base text-slate-300 leading-relaxed font-normal">
+              Виготовлення вінілових магнітів для авто, захисних знаків та номерних табличок з доставкою Новою Поштою.
+            </p>
+          </>
+        )}
 
         {current.linkUrl && (
           <div className="pt-2">
