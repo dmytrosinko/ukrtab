@@ -11,7 +11,7 @@ export function PartnersSection() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/partners')
+    fetch('/api/partners', { cache: 'no-store' })
       .then((r) => r.json())
       .then((data) => {
         if (Array.isArray(data)) {

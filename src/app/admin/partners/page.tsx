@@ -23,7 +23,9 @@ export default function AdminPartnersPage() {
   const fetchPartners = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch('/api/partners');
+      const res = await fetch(`/api/partners?t=${Date.now()}`, {
+        cache: 'no-store',
+      });
       const data = await res.json();
       if (Array.isArray(data)) {
         setPartners(data);
@@ -111,7 +113,7 @@ export default function AdminPartnersPage() {
     }
 
     if (editingPartner) {
-      // Editing
+      const partnerId = editingPartner.id;
       const updatedObj: PartnerLogo = {
         ...editingPartner,
         name: formData.name || '',
@@ -121,27 +123,30 @@ export default function AdminPartnersPage() {
         isActive: formData.isActive,
       };
 
-      setPartners((prev) => prev.map((p) => (p.id === editingPartner.id ? updatedObj : p)));
+      setPartners((prev) => prev.map((p) => (p.id === partnerId ? updatedObj : p)));
       setIsModalOpen(false);
       setEditingPartner(null);
 
       // PUT API call
       try {
-        const res = await fetch(`/api/partners/${editingPartner.id}`, {
+        const res = await fetch(`/api/partners/${encodeURIComponent(partnerId)}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(updatedObj),
         });
-        if (res.ok) {
-          fetchPartners();
+        if (!res.ok) {
+          throw new Error('Помилка сервера при оновленні партнера');
         }
+        await fetchPartners();
       } catch (err) {
         console.error('Failed to update partner:', err);
+        alert('Не вдалося зберегти зміни партнера на сервері');
+        await fetchPartners();
       }
     } else {
-      // Creating
+      const partnerId = 'partner-' + Date.now();
       const newObj: PartnerLogo = {
-        id: 'partner-' + Date.now(),
+        id: partnerId,
         name: formData.name || '',
         image: formData.image,
         linkUrl: formData.linkUrl || '',
@@ -159,11 +164,14 @@ export default function AdminPartnersPage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newObj),
         });
-        if (res.ok) {
-          fetchPartners();
+        if (!res.ok) {
+          throw new Error('Помилка сервера при створенні партнера');
         }
+        await fetchPartners();
       } catch (err) {
         console.error('Failed to create partner:', err);
+        alert('Не вдалося додати компанію на сервері');
+        await fetchPartners();
       }
     }
 
@@ -181,12 +189,15 @@ export default function AdminPartnersPage() {
     setPartners((prev) => prev.filter((p) => p.id !== id));
 
     try {
-      const res = await fetch(`/api/partners/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        fetchPartners();
+      const res = await fetch(`/api/partners/${encodeURIComponent(id)}`, { method: 'DELETE' });
+      if (!res.ok) {
+        throw new Error('Помилка сервера при видаленні партнера');
       }
+      await fetchPartners();
     } catch (e) {
       console.error('Failed to delete partner:', e);
+      alert('Не вдалося видалити компанію на сервері');
+      await fetchPartners();
     }
   };
 

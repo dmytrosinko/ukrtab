@@ -4,6 +4,9 @@ import { prisma } from '@/lib/prisma';
 import { INITIAL_PARTNERS } from '@/lib/store';
 import { PartnerLogo } from '@/lib/types';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET() {
   try {
     let dbPartners: PartnerLogo[] = [];
@@ -38,14 +41,20 @@ export async function GET() {
       console.warn('Prisma partner fetch notice:', dbErr);
     }
 
-    if (dbPartners.length > 0) {
-      return NextResponse.json(dbPartners);
-    }
+    const result = dbPartners.length > 0 ? dbPartners : INITIAL_PARTNERS;
 
-    return NextResponse.json(INITIAL_PARTNERS);
+    return NextResponse.json(result, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+      },
+    });
   } catch (error) {
     console.error('Error fetching partners:', error);
-    return NextResponse.json(INITIAL_PARTNERS);
+    return NextResponse.json(INITIAL_PARTNERS, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+      },
+    });
   }
 }
 
@@ -84,6 +93,7 @@ export async function POST(request: Request) {
 
     try {
       revalidatePath('/');
+      revalidatePath('/admin/partners');
     } catch (revErr) {}
 
     return NextResponse.json(partner, { status: 201 });

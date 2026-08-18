@@ -3,13 +3,16 @@ import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { PartnerLogo } from '@/lib/types';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function PUT(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> | { id: string } }
 ) {
   try {
-    const resolved = await params;
-    const rawId = resolved.id || '';
+    const resolved = params instanceof Promise ? await params : params;
+    const rawId = resolved?.id || '';
     const id = decodeURIComponent(rawId);
     const body = await request.json();
 
@@ -38,6 +41,7 @@ export async function PUT(
 
     try {
       revalidatePath('/');
+      revalidatePath('/admin/partners');
     } catch (revErr) {}
 
     const result = updatedPartner || {
@@ -45,7 +49,11 @@ export async function PUT(
       ...updateData,
     };
 
-    return NextResponse.json(result);
+    return NextResponse.json(result, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+      },
+    });
   } catch (error) {
     console.error('Error updating partner logo:', error);
     return NextResponse.json({ error: 'Failed to update partner' }, { status: 500 });
@@ -54,11 +62,11 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> | { id: string } }
 ) {
   try {
-    const resolved = await params;
-    const rawId = resolved.id || '';
+    const resolved = params instanceof Promise ? await params : params;
+    const rawId = resolved?.id || '';
     const id = decodeURIComponent(rawId);
 
     try {
@@ -71,12 +79,18 @@ export async function DELETE(
 
     try {
       revalidatePath('/');
+      revalidatePath('/admin/partners');
     } catch (revErr) {}
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true }, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+      },
+    });
   } catch (error) {
     console.error('Error deleting partner logo:', error);
     return NextResponse.json({ error: 'Failed to delete partner' }, { status: 500 });
   }
 }
+
 
