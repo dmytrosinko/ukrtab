@@ -26,6 +26,7 @@ export function Header() {
   const { totalItems, totalPrice, setIsCartOpen } = useCart();
   const [searchQuery, setSearchQuery] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileCatalogOpen, setIsMobileCatalogOpen] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [matchedProducts, setMatchedProducts] = useState<Product[]>([]);
@@ -290,96 +291,152 @@ export function Header() {
               }`}
             >
               <span>Каталог товарів</span>
-              <span className="text-[10px] text-slate-400 group-hover:text-emerald-600">▼</span>
+              <span className="text-[10px] text-slate-400 group-hover:text-emerald-600 transition-transform group-hover:rotate-180">▼</span>
             </Link>
 
-            {/* Categories Dropdown Menu */}
-            <div className="absolute top-full left-0 hidden group-hover:block w-80 bg-white rounded-2xl border border-slate-200 shadow-2xl p-3 z-50 animate-in fade-in slide-in-from-top-2 duration-150 space-y-2 max-h-[80vh] overflow-y-auto">
-              <Link
-                href="/catalog"
-                className="block px-3 py-2 rounded-xl text-xs font-black text-emerald-600 hover:bg-emerald-50 transition border-b border-slate-100"
-              >
-                📦 Всі товари каталогу
-              </Link>
+            {/* Categories Dropdown Menu (Main Categories Only) */}
+            <div className="absolute top-full left-0 hidden group-hover:grid grid-cols-2 gap-2.5 w-[560px] bg-white rounded-3xl border border-slate-200 shadow-2xl p-3.5 z-50 animate-in fade-in slide-in-from-top-2 duration-150 max-h-[85vh] overflow-y-auto">
+              {/* Full Catalog Action */}
+              <div className="col-span-full">
+                <Link
+                  href="/catalog"
+                  className="flex items-center justify-between p-3 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-black text-xs transition border border-emerald-100 group/all"
+                >
+                  <span className="flex items-center space-x-2.5">
+                    <span className="text-lg">📦</span>
+                    <span>Всі товари каталогу UKRTAB</span>
+                  </span>
+                  <ArrowRight className="w-4 h-4 text-emerald-600 group-hover/all:translate-x-0.5 transition-transform" />
+                </Link>
+              </div>
 
               {/* Category 1 */}
-              <div className="space-y-1">
-                <Link
-                  href="/catalog/magniti-na-avto"
-                  className="block px-3 py-1.5 rounded-xl text-xs font-black text-slate-900 hover:bg-emerald-50 hover:text-emerald-700 transition"
-                >
-                  🚗 Магнітні наклейки на авто
-                </Link>
-                <div className="pl-4 space-y-1 text-[11px] text-slate-600 font-medium">
-                  <Link href="/catalog/reklamni-magniti" className="block hover:text-emerald-600">
-                    • Магнітна реклама на авто
-                  </Link>
+              <Link
+                href="/catalog/magniti-na-avto"
+                className="flex items-start space-x-3 p-3 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition group/cat"
+              >
+                <span className="text-2xl shrink-0 mt-0.5">🚗</span>
+                <div className="space-y-0.5">
+                  <div className="text-xs font-black text-slate-900 group-hover/cat:text-emerald-600 transition">
+                    Магнітні наклейки на авто
+                  </div>
+                  <div className="text-[11px] text-slate-500 font-medium line-clamp-1">
+                    Реклама, шеврони ЗСУ, авто-магніти
+                  </div>
                 </div>
-              </div>
+              </Link>
 
               {/* Category 2 */}
-              <div className="space-y-1 border-t border-slate-100 pt-1.5">
-                <Link
-                  href="/catalog/suvenirni-avtonomera"
-                  className="block px-3 py-1.5 rounded-xl text-xs font-black text-slate-900 hover:bg-emerald-50 hover:text-emerald-700 transition"
-                >
-                  🚙 Сувенірні автономера
-                </Link>
-                <div className="pl-4 space-y-1 text-[11px] text-slate-600 font-medium">
-                  <Link href="/catalog/vijskovi-nomeri" className="block hover:text-emerald-600">
-                    • Номери для військових ЗСУ
-                  </Link>
-                  <Link href="/catalog/nomeri-dlya-avtosaloniv" className="block hover:text-emerald-600">
-                    • Номери для автосалонів та СТО
-                  </Link>
+              <Link
+                href="/catalog/suvenirni-avtonomera"
+                className="flex items-start space-x-3 p-3 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition group/cat"
+              >
+                <span className="text-2xl shrink-0 mt-0.5">🚙</span>
+                <div className="space-y-0.5">
+                  <div className="text-xs font-black text-slate-900 group-hover/cat:text-emerald-600 transition">
+                    Сувенірні автономера
+                  </div>
+                  <div className="text-[11px] text-slate-500 font-medium line-clamp-1">
+                    Номери ЗСУ, для автосалонів, іменні
+                  </div>
                 </div>
-              </div>
+              </Link>
 
               {/* Category 3 */}
-              <div className="space-y-1 border-t border-slate-100 pt-1.5">
-                <Link
-                  href="/catalog/adresni-tablichki"
-                  className="block px-3 py-1.5 rounded-xl text-xs font-black text-slate-900 hover:bg-emerald-50 hover:text-emerald-700 transition"
-                >
-                  🏠 Адресні таблички на будинок
-                </Link>
-              </div>
+              <Link
+                href="/catalog/adresni-tablichki"
+                className="flex items-start space-x-3 p-3 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition group/cat"
+              >
+                <span className="text-2xl shrink-0 mt-0.5">🏠</span>
+                <div className="space-y-0.5">
+                  <div className="text-xs font-black text-slate-900 group-hover/cat:text-emerald-600 transition">
+                    Адресні таблички на будинок
+                  </div>
+                  <div className="text-[11px] text-slate-500 font-medium line-clamp-1">
+                    Таблички на фасад будинку та паркан
+                  </div>
+                </div>
+              </Link>
 
               {/* Category 4 */}
-              <div className="space-y-1 border-t border-slate-100 pt-1.5">
-                <Link
-                  href="/catalog/tablichki-na-dveri"
-                  className="block px-3 py-1.5 rounded-xl text-xs font-black text-slate-900 hover:bg-emerald-50 hover:text-emerald-700 transition"
-                >
-                  🚪 Таблички на двері та кабінети
-                </Link>
-                <div className="pl-4 space-y-1 text-[11px] text-slate-600 font-medium">
-                  <Link href="/catalog/tablichki-dlya-biznesu" className="block hover:text-emerald-600">
-                    • Таблички для офісу та бізнесу
-                  </Link>
+              <Link
+                href="/catalog/tablichki-dlya-biznesu"
+                className="flex items-start space-x-3 p-3 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition group/cat"
+              >
+                <span className="text-2xl shrink-0 mt-0.5">🚪</span>
+                <div className="space-y-0.5">
+                  <div className="text-xs font-black text-slate-900 group-hover/cat:text-emerald-600 transition">
+                    Таблички для бізнесу та дверей
+                  </div>
+                  <div className="text-[11px] text-slate-500 font-medium line-clamp-1">
+                    На двері, кабінети, графік роботи
+                  </div>
                 </div>
-              </div>
+              </Link>
 
               {/* Category 5 */}
-              <div className="space-y-1 border-t border-slate-100 pt-1.5">
-                <Link
-                  href="/catalog/informatsijni-tablichki"
-                  className="block px-3 py-1.5 rounded-xl text-xs font-black text-slate-900 hover:bg-emerald-50 hover:text-emerald-700 transition"
-                >
-                  📋 Інформаційні таблички ПВХ
-                </Link>
-                <div className="pl-4 space-y-1 text-[11px] text-slate-600 font-medium">
-                  <Link href="/catalog/ritualni-tablichki" className="block hover:text-emerald-600">
-                    • Ритуальні таблички з фото
-                  </Link>
-                  <Link href="/catalog/trafareti" className="block hover:text-emerald-600">
-                    • Трафарети на замовлення
-                  </Link>
-                  <Link href="/catalog/uf-druk" className="block hover:text-emerald-600">
-                    • Прямий УФ-друк
-                  </Link>
+              <Link
+                href="/catalog/informatsijni-tablichki"
+                className="flex items-start space-x-3 p-3 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition group/cat"
+              >
+                <span className="text-2xl shrink-0 mt-0.5">📋</span>
+                <div className="space-y-0.5">
+                  <div className="text-xs font-black text-slate-900 group-hover/cat:text-emerald-600 transition">
+                    Інформаційні таблички ПВХ
+                  </div>
+                  <div className="text-[11px] text-slate-500 font-medium line-clamp-1">
+                    Відеоспостереження, знаки безпеки
+                  </div>
                 </div>
-              </div>
+              </Link>
+
+              {/* Category 6 */}
+              <Link
+                href="/catalog/ritualni-tablichki"
+                className="flex items-start space-x-3 p-3 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition group/cat"
+              >
+                <span className="text-2xl shrink-0 mt-0.5">🪦</span>
+                <div className="space-y-0.5">
+                  <div className="text-xs font-black text-slate-900 group-hover/cat:text-emerald-600 transition">
+                    Ритуальні таблички
+                  </div>
+                  <div className="text-[11px] text-slate-500 font-medium line-clamp-1">
+                    На пам'ятник та хрест з фото
+                  </div>
+                </div>
+              </Link>
+
+              {/* Category 7 */}
+              <Link
+                href="/catalog/trafareti"
+                className="flex items-start space-x-3 p-3 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition group/cat"
+              >
+                <span className="text-2xl shrink-0 mt-0.5">🎨</span>
+                <div className="space-y-0.5">
+                  <div className="text-xs font-black text-slate-900 group-hover/cat:text-emerald-600 transition">
+                    Трафарети на замовлення
+                  </div>
+                  <div className="text-[11px] text-slate-500 font-medium line-clamp-1">
+                    Багаторазові пластикові трафарети
+                  </div>
+                </div>
+              </Link>
+
+              {/* Category 8 */}
+              <Link
+                href="/catalog/uf-druk"
+                className="flex items-start space-x-3 p-3 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition group/cat"
+              >
+                <span className="text-2xl shrink-0 mt-0.5">🖨️</span>
+                <div className="space-y-0.5">
+                  <div className="text-xs font-black text-slate-900 group-hover/cat:text-emerald-600 transition">
+                    Прямий УФ-друк
+                  </div>
+                  <div className="text-[11px] text-slate-500 font-medium line-clamp-1">
+                    Фотодрук на пластику та композиті
+                  </div>
+                </div>
+              </Link>
             </div>
           </div>
           <Link
@@ -428,7 +485,7 @@ export function Header() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden border-t border-slate-100 bg-white px-4 pt-3 pb-6 space-y-4 shadow-xl">
+        <div className="md:hidden border-t border-slate-100 bg-white px-4 pt-3 pb-6 space-y-4 shadow-xl max-h-[85vh] overflow-y-auto">
           {/* Mobile Search */}
           <form onSubmit={handleSearch} className="relative">
             <input
@@ -446,7 +503,7 @@ export function Header() {
             </button>
           </form>
 
-          <div className="flex flex-col space-y-3 text-sm font-semibold text-slate-800">
+          <div className="flex flex-col space-y-2 text-sm font-semibold text-slate-800">
             <Link
               href="/"
               className={`p-2 rounded-xl transition ${
@@ -455,14 +512,63 @@ export function Header() {
             >
               Головна
             </Link>
-            <Link
-              href="/catalog"
-              className={`p-2 rounded-xl transition ${
-                isLinkActive('/catalog') ? 'bg-emerald-50 text-emerald-600 font-bold' : 'hover:bg-slate-50'
-              }`}
-            >
-              Каталог товарів
-            </Link>
+
+            {/* Mobile Catalog with Categories Toggle */}
+            <div className="rounded-2xl border border-slate-100 bg-slate-50/50 p-2 space-y-2">
+              <div className="flex items-center justify-between">
+                <Link
+                  href="/catalog"
+                  className="font-bold text-slate-900 hover:text-emerald-600 flex items-center space-x-1.5 p-1"
+                >
+                  <span>📦 Каталог товарів (Усі)</span>
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => setIsMobileCatalogOpen(!isMobileCatalogOpen)}
+                  className="text-xs font-bold text-emerald-700 bg-emerald-100/70 hover:bg-emerald-100 px-2.5 py-1 rounded-lg transition"
+                >
+                  {isMobileCatalogOpen ? 'Згорнути ▲' : 'Категорії ▼'}
+                </button>
+              </div>
+
+              {isMobileCatalogOpen && (
+                <div className="grid grid-cols-1 gap-1 pt-2 pl-1 border-t border-slate-200/70 text-xs animate-in fade-in duration-150">
+                  <Link href="/catalog/magniti-na-avto" className="p-2 rounded-xl hover:bg-white flex items-center space-x-2 font-bold text-slate-800">
+                    <span>🚗</span>
+                    <span>Магнітні наклейки на авто</span>
+                  </Link>
+                  <Link href="/catalog/suvenirni-avtonomera" className="p-2 rounded-xl hover:bg-white flex items-center space-x-2 font-bold text-slate-800">
+                    <span>🚙</span>
+                    <span>Сувенірні автономера</span>
+                  </Link>
+                  <Link href="/catalog/adresni-tablichki" className="p-2 rounded-xl hover:bg-white flex items-center space-x-2 font-bold text-slate-800">
+                    <span>🏠</span>
+                    <span>Адресні таблички на будинок</span>
+                  </Link>
+                  <Link href="/catalog/tablichki-dlya-biznesu" className="p-2 rounded-xl hover:bg-white flex items-center space-x-2 font-bold text-slate-800">
+                    <span>🚪</span>
+                    <span>Таблички для бізнесу та дверей</span>
+                  </Link>
+                  <Link href="/catalog/informatsijni-tablichki" className="p-2 rounded-xl hover:bg-white flex items-center space-x-2 font-bold text-slate-800">
+                    <span>📋</span>
+                    <span>Інформаційні таблички ПВХ</span>
+                  </Link>
+                  <Link href="/catalog/ritualni-tablichki" className="p-2 rounded-xl hover:bg-white flex items-center space-x-2 font-bold text-slate-800">
+                    <span>🪦</span>
+                    <span>Ритуальні таблички з фото</span>
+                  </Link>
+                  <Link href="/catalog/trafareti" className="p-2 rounded-xl hover:bg-white flex items-center space-x-2 font-bold text-slate-800">
+                    <span>🎨</span>
+                    <span>Трафарети на замовлення</span>
+                  </Link>
+                  <Link href="/catalog/uf-druk" className="p-2 rounded-xl hover:bg-white flex items-center space-x-2 font-bold text-slate-800">
+                    <span>🖨️</span>
+                    <span>Прямий УФ-друк</span>
+                  </Link>
+                </div>
+              )}
+            </div>
+
             <Link
               href="/constructor"
               className="p-2 rounded-xl bg-amber-500/10 text-amber-700 font-extrabold flex items-center space-x-2"

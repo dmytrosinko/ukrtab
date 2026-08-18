@@ -18,6 +18,7 @@ import {
   HelpCircle,
   PhoneCall,
   Sparkles,
+  Package,
 } from 'lucide-react';
 import type { Metadata } from 'next';
 
@@ -80,27 +81,80 @@ export default async function CategoryLandingPage({
   let totalItems = 0;
 
   try {
-    // Look up category in database
-    const dbCategory = await prisma.category.findFirst({
+    const searchSlug = categorySlug.toLowerCase().trim();
+
+    // Gather all matching categories and subcategories
+    const categoryIds = new Set<string>();
+    categoryIds.add(searchSlug);
+
+    // 1. Check in INITIAL_CATEGORIES definition
+    const storeMatching = INITIAL_CATEGORIES.filter(
+      (c) => c.slug === searchSlug || c.id === searchSlug
+    );
+    for (const cat of storeMatching) {
+      categoryIds.add(cat.id);
+      categoryIds.add(cat.slug);
+      // All child subcategories
+      const children = INITIAL_CATEGORIES.filter((c) => c.parentId === cat.id);
+      for (const child of children) {
+        categoryIds.add(child.id);
+        categoryIds.add(child.slug);
+      }
+    }
+
+    // 2. Also check in Prisma DB
+    const matchingCategories = await prisma.category.findMany({
       where: {
-        OR: [{ slug: categorySlug }, { id: categorySlug }],
+        OR: [{ slug: searchSlug }, { id: searchSlug }],
       },
     });
 
-    const where: any = {};
-    if (dbCategory) {
-      where.OR = [{ categoryId: dbCategory.id }, { categoryId: dbCategory.slug }];
-    } else if (seo) {
-      // Fallback search by keywords in category name / description
-      where.OR = [
-        { name: { contains: seo.primaryQuery, mode: 'insensitive' } },
-        { description: { contains: seo.primaryQuery, mode: 'insensitive' } },
-        ...seo.additionalQueries.slice(0, 3).map((q) => ({
-          name: { contains: q, mode: 'insensitive' },
-        })),
-      ];
+    for (const cat of matchingCategories) {
+      categoryIds.add(cat.id);
+      if (cat.slug) categoryIds.add(cat.slug);
+
+      // Gather child subcategories from DB
+      const children = await prisma.category.findMany({
+        where: { parentId: cat.id },
+      });
+      for (const child of children) {
+        categoryIds.add(child.id);
+        if (child.slug) categoryIds.add(child.slug);
+      }
+    }
+
+    let where: any = {};
+
+    if (searchSlug === 'inshe' || searchSlug === 'cat-other' || searchSlug === 'other') {
+      const nonOtherCategories = INITIAL_CATEGORIES.filter(
+        (c) => c.slug !== 'inshe' && c.id !== 'cat-other'
+      );
+      const knownIds = nonOtherCategories.flatMap((c) => [c.id, c.slug]);
+      where = {
+        OR: [
+          { categoryId: null },
+          { categoryId: '' },
+          { categoryId: 'inshe' },
+          { categoryId: 'cat-other' },
+          { category: null },
+          { categoryId: { notIn: knownIds } },
+        ],
+      };
     } else {
-      where.categoryId = categorySlug;
+      where = {
+        OR: [
+          { categoryId: { in: Array.from(categoryIds) } },
+          { category: { slug: { in: Array.from(categoryIds) } } },
+          { category: { id: { in: Array.from(categoryIds) } } },
+        ],
+      };
+
+      if (seo) {
+        where.OR.push(
+          { name: { contains: seo.primaryQuery, mode: 'insensitive' } },
+          { description: { contains: seo.primaryQuery, mode: 'insensitive' } }
+        );
+      }
     }
 
     const [total, items] = await Promise.all([
@@ -115,17 +169,6 @@ export default async function CategoryLandingPage({
 
     totalItems = total;
     products = JSON.parse(JSON.stringify(items));
-
-    // If query was too restrictive and returned 0, fetch featured products
-    if (products.length === 0) {
-      const fallbackItems = await prisma.product.findMany({
-        include: { category: true },
-        orderBy: { isFeatured: 'desc' },
-        take: 24,
-      });
-      products = JSON.parse(JSON.stringify(fallbackItems));
-      totalItems = products.length;
-    }
   } catch (error) {
     console.error('Error loading category SSR products:', error);
   }
@@ -217,15 +260,40 @@ export default async function CategoryLandingPage({
             ))}
           </div>
         ) : (
-          <div className="p-12 text-center bg-white rounded-2xl border border-slate-100 space-y-3">
-            <p className="text-sm font-bold text-slate-700">За цією категорією наразі готуються нові моделі</p>
-            <p className="text-xs text-slate-500">Зателефонуйте нам для індивідуального розрахунку та виготовлення!</p>
-            <Link
-              href="/catalog"
-              className="inline-block bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition"
-            >
-              Переглянути всі товари
-            </Link>
+          <div className="p-8 sm:p-12 text-center bg-white rounded-3xl border border-slate-100 shadow-sm space-y-4">
+            <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto">
+              <Package className="w-8 h-8" />
+            </div>
+            <div className="space-y-1.5 max-w-lg mx-auto">
+              <h3 className="text-base sm:text-lg font-bold text-slate-900">
+                За цією категорією наразі готуються нові моделі
+              </h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Ми виготовляємо <strong>{categoryName.toLowerCase()}</strong> за індивідуальними розмірами, написами та дизайном за 1-2 робочих дні на власному виробництві!
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+              <Link
+                href="/constructor"
+                className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs px-5 py-2.5 rounded-xl transition shadow-md shadow-amber-500/20 flex items-center space-x-1.5"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>Створити дизайн у конструкторі</span>
+              </Link>
+              <a
+                href="tel:+380664418050"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow-md shadow-emerald-600/20 flex items-center space-x-1.5"
+              >
+                <PhoneCall className="w-4 h-4" />
+                <span>Замовити: +380 (66) 441-80-50</span>
+              </a>
+              <Link
+                href="/catalog"
+                className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-5 py-2.5 rounded-xl transition"
+              >
+                Всі товари каталогу
+              </Link>
+            </div>
           </div>
         )}
       </section>

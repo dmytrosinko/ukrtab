@@ -8,7 +8,7 @@ import { ProductCard } from '@/components/ProductCard';
 import { Product, Category } from '@/lib/types';
 import { INITIAL_PRODUCTS, INITIAL_CATEGORIES } from '@/lib/store';
 import { searchProducts } from '@/lib/search';
-import { getCategoryTree } from '@/lib/categories';
+import { getCategoryTree, getCategoryIcon } from '@/lib/categories';
 import { trackViewItemList } from '@/lib/analytics';
 
 const ITEMS_PER_PAGE = 18;
@@ -343,41 +343,56 @@ export function CatalogView({
             <div className="space-y-1 text-xs font-semibold">
               <button
                 onClick={() => handleSelectCategory('')}
-                className={`w-full text-left px-3.5 py-2 rounded-xl transition flex items-center justify-between ${
+                className={`w-full text-left px-3.5 py-2.5 rounded-xl transition flex items-center justify-between ${
                   !selectedCategorySlug
                     ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20'
                     : 'text-slate-700 hover:bg-slate-100'
                 }`}
               >
-                <span>Усі товари</span>
+                <span className="flex items-center space-x-2">
+                  <span>📦</span>
+                  <span>Усі товари</span>
+                </span>
                 <span className="text-[10px] opacity-75">{totalItems}</span>
               </button>
 
               {categoryTree.map((mainCat) => {
                 const isMainSelected = selectedCategorySlug === mainCat.slug;
-                const hasChildren = mainCat.children && mainCat.children.length > 0;
+                const hasChildren = Boolean(mainCat.children && mainCat.children.length > 0);
+                const isAnyChildSelected = Boolean(
+                  hasChildren && mainCat.children!.some((c) => c.slug === selectedCategorySlug)
+                );
                 const isExplicitlyCollapsed = expandedCategories[mainCat.id] === false;
-                const isExpanded = hasChildren && !isExplicitlyCollapsed;
+                // Auto-expand if child is selected, otherwise default expanded unless toggled off
+                const isExpanded = hasChildren && (isAnyChildSelected || !isExplicitlyCollapsed);
+                const icon = getCategoryIcon(mainCat.slug);
 
                 return (
                   <div key={mainCat.id} className="space-y-1">
                     <div
                       onClick={() => handleSelectCategory(mainCat.slug)}
-                      className={`w-full text-left px-3.5 py-2.5 rounded-xl transition flex items-center justify-between cursor-pointer group ${
+                      className={`w-full text-left px-3 py-2 rounded-xl transition flex items-center justify-between cursor-pointer group ${
                         isMainSelected
-                          ? 'bg-emerald-50 text-emerald-700 font-bold border border-emerald-200'
+                          ? 'bg-emerald-50 text-emerald-700 font-black border border-emerald-200'
+                          : isAnyChildSelected
+                          ? 'text-emerald-700 font-bold bg-slate-50/80'
                           : 'text-slate-800 hover:bg-slate-50'
                       }`}
                     >
-                      <span className="line-clamp-1">{mainCat.name}</span>
+                      <span className="flex items-center space-x-2 min-w-0 pr-1">
+                        <span className="shrink-0 text-sm">{icon}</span>
+                        <span className="truncate">{mainCat.name}</span>
+                      </span>
+
                       {hasChildren && (
                         <button
                           type="button"
                           onClick={(e) => toggleCategoryExpand(mainCat.id, e)}
-                          className="p-1 text-slate-400 hover:text-slate-700 rounded transition"
+                          className="p-1 text-slate-400 hover:text-slate-700 rounded transition shrink-0"
+                          title={isExpanded ? 'Згорнути підкатегорії' : 'Розгорнути підкатегорії'}
                         >
                           <ChevronDown
-                            className={`w-3.5 h-3.5 transform transition-transform ${
+                            className={`w-3.5 h-3.5 transform transition-transform duration-200 ${
                               isExpanded ? 'rotate-180 text-emerald-600' : ''
                             }`}
                           />
@@ -387,20 +402,20 @@ export function CatalogView({
 
                     {/* Subcategories List */}
                     {hasChildren && isExpanded && (
-                      <div className="pl-4 space-y-1 border-l-2 border-slate-100 ml-3 my-1">
+                      <div className="pl-4 space-y-1 border-l-2 border-slate-100 ml-4 my-1">
                         {mainCat.children!.map((subCat) => {
                           const isSubSelected = selectedCategorySlug === subCat.slug;
                           return (
                             <button
                               key={subCat.id}
                               onClick={() => handleSelectCategory(subCat.slug)}
-                              className={`w-full text-left px-3 py-1.5 rounded-lg text-[11px] transition block ${
+                              className={`w-full text-left px-2.5 py-1.5 rounded-lg text-[11px] transition block ${
                                 isSubSelected
-                                  ? 'bg-emerald-600 text-white font-bold'
+                                  ? 'bg-emerald-600 text-white font-bold shadow-sm'
                                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                               }`}
                             >
-                              {subCat.name}
+                              • {subCat.name}
                             </button>
                           );
                         })}

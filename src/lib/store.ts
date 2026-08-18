@@ -1,7 +1,124 @@
 import { Product, Category, PartnerLogo } from './types';
 
 export const INITIAL_CATEGORIES: Category[] = [
-  // Main Categories
+  // 1. Магніти на авто
+  {
+    id: 'cat-magnets',
+    name: 'Магніти на авто',
+    slug: 'magniti-na-avto',
+    image: 'https://images.prom.ua/4296986097_w297_h200_magnitni-nalipki-na.jpg',
+    description: 'Рекламні та інформаційні магніти на автомобілі, шеврони',
+    isFeatured: true,
+  },
+  {
+    id: 'cat-magnets-promo',
+    parentId: 'cat-magnets',
+    name: 'Рекламні магніти',
+    slug: 'reklamni-magniti',
+    isFeatured: true,
+  },
+  {
+    id: 'cat-magnets-info',
+    parentId: 'cat-magnets',
+    name: 'Інформаційні магніти',
+    slug: 'informatsijni-magniti',
+    isFeatured: true,
+  },
+
+  // 2. Сувенірні автономера
+  {
+    id: 'cat-plates',
+    name: 'Сувенірні автономера',
+    slug: 'suvenirni-avtonomera',
+    image: 'https://images.prom.ua/6960951508_w500_h500_suvenirni-avtonomera-z.jpg',
+    description: 'Іменні, військові та номери з оригінальним написом',
+    isFeatured: true,
+  },
+  {
+    id: 'cat-plates-military',
+    parentId: 'cat-plates',
+    name: 'Військові номери ЗСУ',
+    slug: 'vijskovi-nomeri',
+    isFeatured: true,
+  },
+  {
+    id: 'cat-plates-salon',
+    parentId: 'cat-plates',
+    name: 'Номери для автосалонів та СТО',
+    slug: 'nomeri-dlya-avtosaloniv',
+    isFeatured: true,
+  },
+  {
+    id: 'cat-plates-name',
+    parentId: 'cat-plates',
+    name: 'Іменні номери',
+    slug: 'imenni-nomeri',
+    isFeatured: true,
+  },
+  {
+    id: 'cat-plates-text',
+    parentId: 'cat-plates',
+    name: 'Номери з написом',
+    slug: 'nomeri-z-napisom',
+    isFeatured: true,
+  },
+
+  // 3. Адресні таблички
+  {
+    id: 'cat-address',
+    name: 'Адресні таблички',
+    slug: 'adresni-tablichki',
+    image: 'https://images.prom.ua/6974843980_w500_h500_patriotichnij-magnit-na.jpg',
+    description: 'Адресні таблички та номери на будинок',
+    isFeatured: true,
+  },
+  {
+    id: 'cat-address-house',
+    parentId: 'cat-address',
+    name: 'Адресні таблички на будинок',
+    slug: 'adresni-tablichki-na-budinok',
+    isFeatured: true,
+  },
+  {
+    id: 'cat-address-numbers',
+    parentId: 'cat-address',
+    name: 'Номери на будинок та паркан',
+    slug: 'nomeri-na-budinok',
+    isFeatured: true,
+  },
+
+  // 4. Таблички для бізнесу
+  {
+    id: 'cat-business',
+    name: 'Таблички для бізнесу',
+    slug: 'tablichki-dlya-biznesu',
+    image: 'https://images.prom.ua/6972629971_w500_h500_magnitni-vizitki-dlya.jpg',
+    description: 'Графік роботи, таблички на двері, кабінетні таблички',
+    isFeatured: true,
+  },
+  {
+    id: 'cat-business-doors',
+    parentId: 'cat-business',
+    name: 'Таблички на двері та кабінети',
+    slug: 'tablichki-na-dveri',
+    isFeatured: true,
+  },
+  {
+    id: 'cat-business-cabinet',
+    parentId: 'cat-business',
+    name: 'Кабінетні таблички',
+    slug: 'kabinetni-tablichki',
+    isFeatured: true,
+  },
+  {
+    id: 'cat-business-schedule',
+    parentId: 'cat-business',
+    name: 'Графік роботи',
+    slug: 'grafik-roboti',
+    isFeatured: true,
+  },
+
+  // 5. Інформаційні таблички
   {
     id: 'cat-info',
     name: 'Інформаційні таблички',
@@ -46,117 +163,39 @@ export const INITIAL_CATEGORIES: Category[] = [
     isFeatured: true,
   },
 
+  // 6. Ритуальні таблички
   {
-    id: 'cat-business',
-    name: 'Таблички для бізнесу',
-    slug: 'tablichki-dlya-biznesu',
-    image: 'https://images.prom.ua/6972629971_w500_h500_magnitni-vizitki-dlya.jpg',
-    description: 'Графік роботи, таблички на двері, кабінетні таблички',
-    isFeatured: true,
-  },
-  {
-    id: 'cat-business-schedule',
-    parentId: 'cat-business',
-    name: 'Графік роботи',
-    slug: 'grafik-roboti',
-    isFeatured: true,
-  },
-  {
-    id: 'cat-business-doors',
-    parentId: 'cat-business',
-    name: 'Таблички на двері',
-    slug: 'tablichki-na-dveri',
-    isFeatured: true,
-  },
-  {
-    id: 'cat-business-cabinet',
-    parentId: 'cat-business',
-    name: 'Кабінетні таблички',
-    slug: 'kabinetni-tablichki',
+    id: 'cat-ritual',
+    name: 'Ритуальні таблички',
+    slug: 'ritualni-tablichki',
+    description: 'Ритуальні таблички на могилу, хрест та пам’ятник з фото',
     isFeatured: true,
   },
 
+  // 7. Трафарети на замовлення
   {
-    id: 'cat-magnets',
-    name: 'Магніти на авто',
-    slug: 'magniti-na-avto',
-    image: 'https://images.prom.ua/4296986097_w297_h200_magnitni-nalipki-na.jpg',
-    description: 'Рекламні та інформаційні магніти на автомобілі',
-    isFeatured: true,
-  },
-  {
-    id: 'cat-magnets-promo',
-    parentId: 'cat-magnets',
-    name: 'Рекламні магніти',
-    slug: 'reklamni-magniti',
-    isFeatured: true,
-  },
-  {
-    id: 'cat-magnets-info',
-    parentId: 'cat-magnets',
-    name: 'Інформаційні магніти',
-    slug: 'informatsijni-magniti',
+    id: 'cat-trafareti',
+    name: 'Трафарети на замовлення',
+    slug: 'trafareti',
+    description: 'Багаторазові пластикові трафарети під фарбування',
     isFeatured: true,
   },
 
+  // 8. Прямий УФ-друк
   {
-    id: 'cat-plates',
-    name: 'Сувенірні автономера',
-    slug: 'suvenirni-avtonomera',
-    image: 'https://images.prom.ua/6960951508_w500_h500_suvenirni-avtonomera-z.jpg',
-    description: 'Іменні, військові та номери з оригінальним написом',
-    isFeatured: true,
-  },
-  {
-    id: 'cat-plates-name',
-    parentId: 'cat-plates',
-    name: 'Іменні номери',
-    slug: 'imenni-nomeri',
-    isFeatured: true,
-  },
-  {
-    id: 'cat-plates-text',
-    parentId: 'cat-plates',
-    name: 'Номери з написом',
-    slug: 'nomeri-z-napisom',
-    isFeatured: true,
-  },
-  {
-    id: 'cat-plates-military',
-    parentId: 'cat-plates',
-    name: 'Військові номери',
-    slug: 'vijskovi-nomeri',
+    id: 'cat-uf-druk',
+    name: 'Прямий УФ-друк',
+    slug: 'uf-druk',
+    description: 'Ультрафіолетовий прямий фотодрук на пластику та композиті',
     isFeatured: true,
   },
 
-  {
-    id: 'cat-address',
-    name: 'Адресні таблички',
-    slug: 'adresni-tablichki',
-    image: 'https://images.prom.ua/6974843980_w500_h500_patriotichnij-magnit-na.jpg',
-    description: 'Адресні таблички та номери на будинок',
-    isFeatured: true,
-  },
-  {
-    id: 'cat-address-house',
-    parentId: 'cat-address',
-    name: 'Адресні таблички на будинок',
-    slug: 'adresni-tablichki-na-budinok',
-    isFeatured: true,
-  },
-  {
-    id: 'cat-address-numbers',
-    parentId: 'cat-address',
-    name: 'Номери на будинок',
-    slug: 'nomeri-na-budinok',
-    isFeatured: true,
-  },
-
+  // 9. Інше (Завжди в кінці)
   {
     id: 'cat-other',
-    name: 'Інше',
+    name: 'Інше (без категорії)',
     slug: 'inshe',
-    description: 'Інші товари та аксесуари',
+    description: 'Товари без категорії та додаткова продукція',
     isFeatured: false,
   },
 ];

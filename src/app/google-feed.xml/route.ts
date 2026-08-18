@@ -31,9 +31,32 @@ function cleanDescription(text?: string | null, fallbackTitle?: string): string 
   if (!text || !text.trim()) {
     return `Купити ${fallbackTitle || 'товар'} від виробника Укртаб. Висока якість, УФ-стійкий друк, швидке виготовлення 1-2 дні та доставка Новою Поштою по всій Україні.`;
   }
-  // Strip HTML tags and normalize whitespace
-  const plain = text.replace(/<[^>]*>?/gm, '').replace(/\s+/g, ' ').trim();
-  return plain.length > 5000 ? plain.slice(0, 4990) + '...' : plain;
+
+  // Remove scripts, styles, embedded images, base64 data and SVG
+  let cleaned = text
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<svg[^>]*>[\s\S]*?<\/svg>/gi, '')
+    .replace(/<img[^>]*>/gi, '')
+    .replace(/data:image\/[a-zA-Z0-9+.-]+;base64,[A-Za-z0-9+/=]+/g, '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (!cleaned) {
+    cleaned = `Купити ${fallbackTitle || 'товар'} від виробника Укртаб. Висока якість, УФ-стійкий друк, швидке виготовлення 1-2 дні та доставка Новою Поштою по всій Україні.`;
+  }
+
+  // Google Merchant limit for description is 5000 chars, limit to 2000 chars for optimal payload size
+  return cleaned.length > 2000 ? cleaned.slice(0, 1990) + '...' : cleaned;
+}
+
+function isValidHttpUrl(url?: string | null): boolean {
+  if (!url || typeof url !== 'string') return false;
+  const trimmed = url.trim();
+  if (trimmed.startsWith('data:') || trimmed.length > 2000) return false;
+  return trimmed.startsWith('http://') || trimmed.startsWith('https://');
 }
 
 export async function GET() {
@@ -70,31 +93,36 @@ export async function GET() {
 
   const xmlItems = validProducts
     .map((product) => {
-      const id = product.sku || `UKR-${product.id}`;
-      const title = product.name;
+      const id = String(product.sku || `UKR-${product.id}`).slice(0, 50);
+      const rawTitle = String(product.name || 'Товар').trim();
+      const title = rawTitle.length > 150 ? rawTitle.slice(0, 147) + '...' : rawTitle;
       const description = cleanDescription(product.description, title);
       const link = `${siteUrl}/product/${product.slug || product.id}`;
       const price = `${Number(product.price).toFixed(2)} UAH`;
       const availability = product.status === 'Немає в наявності' ? 'out_of_stock' : 'in_stock';
-      const mainImage = product.image || `${siteUrl}/favicon.ico`;
+      
+      const mainImage = isValidHttpUrl(product.image) 
+        ? product.image 
+        : `${siteUrl}/favicon.ico`;
 
-      // Additional images
+      // Additional images (strictly validate and cap to 5)
       let additionalImages: string[] = [];
       try {
         if (product.images) {
           const parsed = JSON.parse(product.images);
           if (Array.isArray(parsed)) {
-            additionalImages = parsed.filter((img: string) => img && img !== mainImage);
+            additionalImages = parsed
+              .filter((img: string) => isValidHttpUrl(img) && img !== mainImage)
+              .slice(0, 5);
           }
         }
       } catch (e) {}
 
       const additionalImageTags = additionalImages
-        .slice(0, 10)
         .map((img) => `      <g:additional_image_link>${escapeXml(img)}</g:additional_image_link>`)
         .join('\n');
 
-      const categoryName = product.category?.name || 'Автомобільні аксесуари та таблички';
+      const categoryName = String(product.category?.name || 'Автомобільні аксесуари та таблички').slice(0, 100);
 
       return `    <item>
       <g:id>${escapeXml(id)}</g:id>
@@ -108,11 +136,6 @@ ${additionalImageTags ? additionalImageTags + '\n' : ''}      <g:availability>${
       <g:condition>new</g:condition>
       <g:product_type><![CDATA[${categoryName}]]></g:product_type>
       <g:identifier_exists>no</g:identifier_exists>
-      <g:shipping>
-        <g:country>UA</g:country>
-        <g:service>Нова Пошта</g:service>
-        <g:price>0.00 UAH</g:price>
-      </g:shipping>
     </item>`;
     })
     .join('\n');

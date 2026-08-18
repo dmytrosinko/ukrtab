@@ -24,21 +24,43 @@ export async function GET(request: Request) {
     const where: any = {};
 
     if (categorySlug) {
-      const category = await prisma.category.findFirst({
-        where: {
-          OR: [
-            { slug: categorySlug },
-            { id: categorySlug },
-          ],
-        },
-      });
-      if (category) {
+      const clean = categorySlug.toLowerCase().trim();
+
+      if (clean === 'inshe' || clean === 'cat-other' || clean === 'other') {
+        const nonOtherCategories = INITIAL_CATEGORIES.filter(
+          (c) => c.slug !== 'inshe' && c.id !== 'cat-other'
+        );
+        const knownIds = nonOtherCategories.flatMap((c) => [c.id, c.slug]);
         where.OR = [
-          { categoryId: category.id },
-          { categoryId: category.slug },
+          { categoryId: null },
+          { categoryId: '' },
+          { categoryId: 'inshe' },
+          { categoryId: 'cat-other' },
+          { category: null },
+          { categoryId: { notIn: knownIds } },
         ];
       } else {
-        where.categoryId = categorySlug;
+        const categoryIds = new Set<string>();
+        categoryIds.add(clean);
+
+        const matched = INITIAL_CATEGORIES.filter(
+          (c) => c.slug === clean || c.id === clean
+        );
+        for (const cat of matched) {
+          categoryIds.add(cat.id);
+          categoryIds.add(cat.slug);
+          const children = INITIAL_CATEGORIES.filter((c) => c.parentId === cat.id);
+          for (const child of children) {
+            categoryIds.add(child.id);
+            categoryIds.add(child.slug);
+          }
+        }
+
+        where.OR = [
+          { categoryId: { in: Array.from(categoryIds) } },
+          { category: { slug: { in: Array.from(categoryIds) } } },
+          { category: { id: { in: Array.from(categoryIds) } } },
+        ];
       }
     }
 

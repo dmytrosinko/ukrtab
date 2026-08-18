@@ -4,19 +4,15 @@ import { INITIAL_CATEGORIES } from '@/lib/store';
 
 export async function GET() {
   try {
-    const categories = await prisma.category.findMany({
-      orderBy: { name: 'asc' },
-    });
-
-    return NextResponse.json(categories, {
+    return NextResponse.json(INITIAL_CATEGORIES, {
       headers: {
         'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
       },
     });
   } catch (error) {
-    console.error('Error fetching categories from DB:', error);
+    console.error('Error fetching categories:', error);
     return NextResponse.json(
-      { error: 'Помилка підключення до бази даних.' },
+      { error: 'Помилка завантаження категорій.' },
       { status: 500 }
     );
   }

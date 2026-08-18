@@ -77,28 +77,59 @@ export default async function CatalogPage({
   let totalPages = 1;
 
   try {
-    // 1. Fetch categories
-    const dbCategories = await prisma.category.findMany({
-      orderBy: { name: 'asc' },
-    });
-    if (dbCategories && dbCategories.length > 0) {
-      categories = JSON.parse(JSON.stringify(dbCategories));
-    }
+    // 1. Categories structure
+    categories = INITIAL_CATEGORIES;
 
     // 2. Build where clause
     const where: any = {};
 
-    if (selectedCategorySlug) {
-      const category = await prisma.category.findFirst({
+    if (selectedCategorySlug === 'inshe' || selectedCategorySlug === 'cat-other' || selectedCategorySlug === 'other') {
+      const nonOtherCategories = INITIAL_CATEGORIES.filter(
+        (c) => c.slug !== 'inshe' && c.id !== 'cat-other'
+      );
+      const knownIds = nonOtherCategories.flatMap((c) => [c.id, c.slug]);
+      where.OR = [
+        { categoryId: null },
+        { categoryId: '' },
+        { categoryId: 'inshe' },
+        { categoryId: 'cat-other' },
+        { category: null },
+        { categoryId: { notIn: knownIds } },
+      ];
+    } else if (selectedCategorySlug) {
+      const searchSlug = selectedCategorySlug.toLowerCase().trim();
+      const categoryIds = new Set<string>();
+      categoryIds.add(searchSlug);
+
+      const matched = INITIAL_CATEGORIES.filter(
+        (c) => c.slug === searchSlug || c.id === searchSlug
+      );
+      for (const cat of matched) {
+        categoryIds.add(cat.id);
+        categoryIds.add(cat.slug);
+        const children = INITIAL_CATEGORIES.filter((c) => c.parentId === cat.id);
+        for (const child of children) {
+          categoryIds.add(child.id);
+          categoryIds.add(child.slug);
+        }
+      }
+
+      // Also lookup matching DB categories
+      const dbMatches = await prisma.category.findMany({
         where: {
-          OR: [{ slug: selectedCategorySlug }, { id: selectedCategorySlug }],
+          OR: [{ slug: searchSlug }, { id: searchSlug }],
         },
       });
-      if (category) {
-        where.OR = [{ categoryId: category.id }, { categoryId: category.slug }];
-      } else {
-        where.categoryId = selectedCategorySlug;
+      for (const cat of dbMatches) {
+        categoryIds.add(cat.id);
+        if (cat.slug) categoryIds.add(cat.slug);
       }
+
+      where.OR = [
+        { categoryId: { in: Array.from(categoryIds) } },
+        { category: { slug: { in: Array.from(categoryIds) } } },
+        { category: { id: { in: Array.from(categoryIds) } } },
+      ];
     }
 
     if (rawSearch) {
