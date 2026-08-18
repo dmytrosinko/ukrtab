@@ -59,6 +59,63 @@ function isValidHttpUrl(url?: string | null): boolean {
   return trimmed.startsWith('http://') || trimmed.startsWith('https://');
 }
 
+function getShippingWeight(product: any): string {
+  if (product.features) {
+    try {
+      const features = typeof product.features === 'string' ? JSON.parse(product.features) : product.features;
+      if (Array.isArray(features)) {
+        for (const f of features) {
+          const name = String(f.name || f.key || '').toLowerCase();
+          const val = String(f.value || '');
+          if (name.includes('ваг') || name.includes('weight')) {
+            const matchKg = val.match(/([0-9]+(?:[.,][0-9]+)?)\s*кг/i);
+            if (matchKg) {
+              const kg = parseFloat(matchKg[1].replace(',', '.'));
+              if (!isNaN(kg) && kg > 0) return `${kg} kg`;
+            }
+            const matchG = val.match(/([0-9]+(?:[.,][0-9]+)?)\s*г/i);
+            if (matchG) {
+              const g = parseFloat(matchG[1].replace(',', '.'));
+              if (!isNaN(g) && g > 0) return `${(g / 1000).toFixed(2)} kg`;
+            }
+          }
+        }
+      }
+    } catch (e) {}
+  }
+
+  const nameLower = (product.name || '').toLowerCase();
+  const catLower = (product.category?.name || '').toLowerCase();
+
+  // Address plates, stands, large signs
+  if (
+    nameLower.includes('адресн') || 
+    catLower.includes('адресн') || 
+    nameLower.includes('стенд') || 
+    nameLower.includes('вивіск') || 
+    nameLower.includes('знак')
+  ) {
+    return '1.0 kg';
+  }
+
+  // Sets or multiple items
+  if (nameLower.includes('комплект') || nameLower.includes('набір')) {
+    return '0.8 kg';
+  }
+
+  // License / souvenir plates
+  if (nameLower.includes('номер') || catLower.includes('номер')) {
+    return '0.5 kg';
+  }
+
+  // Car magnets / vinyl stickers
+  if (nameLower.includes('магніт') || catLower.includes('магніт') || nameLower.includes('наліпк') || nameLower.includes('наклейк')) {
+    return '0.4 kg';
+  }
+
+  return '0.5 kg';
+}
+
 export async function GET() {
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://ukrtab.com.ua').replace(/\/+$/, '');
 
@@ -100,6 +157,7 @@ export async function GET() {
       const link = `${siteUrl}/product/${product.slug || product.id}`;
       const price = `${Number(product.price).toFixed(2)} UAH`;
       const availability = product.status === 'Немає в наявності' ? 'out_of_stock' : 'in_stock';
+      const shippingWeight = getShippingWeight(product);
       
       const mainImage = isValidHttpUrl(product.image) 
         ? product.image 
@@ -135,6 +193,7 @@ ${additionalImageTags ? additionalImageTags + '\n' : ''}      <g:availability>${
       <g:brand>Ukrtab</g:brand>
       <g:condition>new</g:condition>
       <g:product_type><![CDATA[${categoryName}]]></g:product_type>
+      <g:shipping_weight>${shippingWeight}</g:shipping_weight>
       <g:identifier_exists>no</g:identifier_exists>
     </item>`;
     })
