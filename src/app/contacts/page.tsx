@@ -38,6 +38,36 @@ export default function ContactsPage() {
           </div>
 
           <div>
+            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Месенджери (швидкий зв'язок)</h3>
+            <div className="flex flex-wrap gap-2 pt-1">
+              <a
+                href="viber://chat?number=%2B380664418050"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[#6F3FAA]/10 hover:bg-[#6F3FAA]/20 text-[#6F3FAA] font-bold text-xs transition"
+              >
+                <span>🟣 Viber</span>
+              </a>
+              <a
+                href="https://t.me/+380664418050"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[#0088cc]/10 hover:bg-[#0088cc]/20 text-[#0088cc] font-bold text-xs transition"
+              >
+                <span>🔵 Telegram</span>
+              </a>
+              <a
+                href="https://wa.me/380664418050"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#128C7E] font-bold text-xs transition"
+              >
+                <span>🟢 WhatsApp</span>
+              </a>
+            </div>
+          </div>
+
+          <div>
             <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Електронна пошта</h3>
             <a href="mailto:mabitzp@gmail.com" className="flex items-center space-x-2 text-sm font-bold text-slate-900 hover:text-emerald-600 transition">
               <Mail className="w-4 h-4 text-emerald-600" />

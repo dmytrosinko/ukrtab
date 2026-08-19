@@ -14,7 +14,7 @@ export function OrganizationJsonLd() {
     logo: `${SITE_URL}/favicon.ico`,
     image: `${SITE_URL}/favicon.ico`,
     description: 'Виробництво та продаж магнітних наклейок на авто, сувенірних автономерів ЗСУ, адресних та інформаційних табличок з доставкою по Україні.',
-    telephone: ['+380664418050', '+380683677015'],
+    telephone: '+380664418050',
     email: 'mabitzp@gmail.com',
     address: {
       '@type': 'PostalAddress',
@@ -48,6 +48,22 @@ export function OrganizationJsonLd() {
     priceRange: '₴₴',
     currenciesAccepted: 'UAH',
     paymentAccepted: 'Cash, Credit Card, Bank Transfer, Monobank',
+    contactPoint: [
+      {
+        '@type': 'ContactPoint',
+        telephone: '+380664418050',
+        contactType: 'customer service',
+        areaServed: 'UA',
+        availableLanguage: ['Ukrainian', 'Russian'],
+      },
+      {
+        '@type': 'ContactPoint',
+        telephone: '+380683677015',
+        contactType: 'sales',
+        areaServed: 'UA',
+        availableLanguage: ['Ukrainian', 'Russian'],
+      },
+    ],
   };
 
   return (
@@ -58,8 +74,10 @@ export function OrganizationJsonLd() {
   );
 }
 
-export const LocalBusinessJsonLd = OrganizationJsonLd;
-
+// Alias kept for backwards compatibility but does not render duplicate schema
+export function LocalBusinessJsonLd() {
+  return null;
+}
 
 export function WebSiteJsonLd() {
   const schema = {
@@ -72,10 +90,7 @@ export function WebSiteJsonLd() {
     inLanguage: 'uk-UA',
     potentialAction: {
       '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: `${SITE_URL}/catalog?search={search_term_string}`,
-      },
+      target: `${SITE_URL}/catalog?search={search_term_string}`,
       'query-input': 'required name=search_term_string',
     },
   };
@@ -94,18 +109,31 @@ export interface ProductJsonLdProps {
 
 export function ProductJsonLd({ product }: ProductJsonLdProps) {
   let images: string[] = [];
-  if (product.image) images.push(product.image);
+  if (product.image) {
+    images.push(product.image.startsWith('http') ? product.image : `${SITE_URL}${product.image}`);
+  }
   try {
     if (product.images) {
       const parsed = JSON.parse(product.images);
       if (Array.isArray(parsed)) {
-        images = Array.from(new Set([...images, ...parsed]));
+        const fullUrls = parsed.map((img: string) =>
+          img.startsWith('http') ? img : `${SITE_URL}${img}`
+        );
+        images = Array.from(new Set([...images, ...fullUrls]));
       }
     }
   } catch (e) {}
 
   const productUrl = `${SITE_URL}/product/${product.slug || product.id}`;
   const isAvailable = product.status !== 'Немає в наявності';
+  const numericPrice =
+    typeof product.price === 'number'
+      ? product.price
+      : parseFloat(String(product.price || '0')) || 0;
+
+  const rawDescription = product.description
+    ? product.description.replace(/<[^>]*>?/gm, '').trim()
+    : '';
 
   const schema = {
     '@context': 'https://schema.org',
@@ -113,10 +141,10 @@ export function ProductJsonLd({ product }: ProductJsonLdProps) {
     name: product.name,
     image: images.length > 0 ? images : undefined,
     description:
-      product.description ||
-      `Купити ${product.name} за ціною ${product.price} ₴ від виробника Укртаб. Доставка по Україні.`,
-    sku: product.sku || `UKR-${product.id.slice(0, 8)}`,
-    mpn: product.sku || `UKR-${product.id.slice(0, 8)}`,
+      rawDescription ||
+      `Купити ${product.name} за ціною ${numericPrice} ₴ від виробника Укртаб. Доставка по Україні.`,
+    sku: product.sku || `UKR-${String(product.id).slice(0, 8)}`,
+    mpn: product.sku || `UKR-${String(product.id).slice(0, 8)}`,
     brand: {
       '@type': 'Brand',
       name: 'Ukrtab',
@@ -125,7 +153,7 @@ export function ProductJsonLd({ product }: ProductJsonLdProps) {
       '@type': 'Offer',
       url: productUrl,
       priceCurrency: 'UAH',
-      price: product.price.toFixed(2),
+      price: numericPrice.toFixed(2),
       priceValidUntil: '2028-12-31',
       itemCondition: 'https://schema.org/NewCondition',
       availability: isAvailable
@@ -139,7 +167,7 @@ export function ProductJsonLd({ product }: ProductJsonLdProps) {
         '@type': 'OfferShippingDetails',
         shippingRate: {
           '@type': 'MonetaryAmount',
-          value: '0',
+          value: 0,
           currency: 'UAH',
         },
         shippingDestination: {
@@ -152,13 +180,13 @@ export function ProductJsonLd({ product }: ProductJsonLdProps) {
             '@type': 'QuantitativeValue',
             minValue: 0,
             maxValue: 1,
-            unitCode: 'd',
+            unitCode: 'DAY',
           },
           transitTime: {
             '@type': 'QuantitativeValue',
             minValue: 1,
             maxValue: 3,
-            unitCode: 'd',
+            unitCode: 'DAY',
           },
         },
       },
@@ -195,14 +223,25 @@ export function ItemListJsonLd({ name, description, items }: ItemListJsonLdProps
     '@type': 'ItemList',
     name,
     description: description || name,
-    numberOfItems: items.length,
-    itemListElement: items.slice(0, 30).map((product, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      name: product.name,
-      url: `${SITE_URL}/product/${product.slug || product.id}`,
-      image: product.image,
-    })),
+    numberOfItems: Math.min(items.length, 30),
+    itemListElement: items.slice(0, 30).map((product, index) => {
+      const imageUrl = product.image
+        ? product.image.startsWith('http')
+          ? product.image
+          : `${SITE_URL}${product.image}`
+        : undefined;
+
+      return {
+        '@type': 'ListItem',
+        position: index + 1,
+        item: {
+          '@type': 'Product',
+          name: product.name,
+          url: `${SITE_URL}/product/${product.slug || product.id}`,
+          image: imageUrl,
+        },
+      };
+    }),
   };
 
   return (

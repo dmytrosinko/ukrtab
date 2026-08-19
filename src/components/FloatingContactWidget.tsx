@@ -168,6 +168,28 @@ export function FloatingContactWidget() {
       ),
     },
     {
+      name: 'whatsapp',
+      label: 'WhatsApp',
+      href: 'https://wa.me/380664418050',
+      bgClass: 'bg-transparent',
+      hoverClass: 'hover:shadow-[#25D366]/50',
+      ariaLabel: "Зв'язатися через WhatsApp (+380664418050)",
+      icon: (
+        <svg
+          className="w-12 h-12 rounded-full overflow-hidden"
+          viewBox="0 0 32 32"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle cx="16" cy="16" r="14" fill="#25D366" />
+          <path
+            d="M21.2 18.3c-.3-.15-1.78-.88-2.06-.98-.28-.1-.48-.15-.68.15-.2.3-.78.98-.95 1.18-.18.2-.35.23-.65.08-.3-.15-1.27-.47-2.42-1.5-.9-.8-1.5-1.79-1.68-2.09-.18-.3-.02-.46.13-.61.14-.14.3-.35.45-.53.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.08-.15-.68-1.63-.93-2.23-.24-.59-.49-.51-.68-.52-.18-.01-.38-.01-.58-.01-.2 0-.53.08-.8.38-.28.3-1.05 1.03-1.05 2.51s1.08 2.91 1.23 3.11c.15.2 2.12 3.24 5.14 4.54.72.31 1.28.5 1.72.63.72.23 1.38.2 1.9.12.58-.09 1.78-.73 2.03-1.43.25-.7.25-1.3.18-1.43-.08-.13-.28-.2-.58-.35z"
+            fill="white"
+          />
+        </svg>
+      ),
+    },
+    {
       name: 'instagram',
       label: 'Instagram',
       href: 'https://www.instagram.com/ksiusha.feoktistova?igsh=Y3k5cHoxMDU3eHFz&igsi=Y3k5cHoxMDU3eHFz&utm_source=qr',

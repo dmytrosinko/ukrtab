@@ -4,7 +4,6 @@ import { ProductCard } from '@/components/ProductCard';
 import { PartnersSection } from '@/components/PartnersSection';
 import {
   OrganizationJsonLd,
-  LocalBusinessJsonLd,
   WebSiteJsonLd,
   ItemListJsonLd,
   FaqJsonLd,
@@ -102,7 +101,6 @@ export default async function HomePage() {
     <div className="space-y-12 pb-12">
       {/* JSON-LD Schemas */}
       <OrganizationJsonLd />
-      <LocalBusinessJsonLd />
       <WebSiteJsonLd />
       <ItemListJsonLd
         name="Популярні товари Укртаб"
