@@ -231,14 +231,40 @@ export function ItemListJsonLd({ name, description, items }: ItemListJsonLdProps
           : `${SITE_URL}${product.image}`
         : undefined;
 
+      const productUrl = `${SITE_URL}/product/${product.slug || product.id}`;
+      const isAvailable = product.status !== 'Немає в наявності';
+      const numericPrice =
+        typeof product.price === 'number'
+          ? product.price
+          : parseFloat(String(product.price || '0')) || 0;
+
       return {
         '@type': 'ListItem',
         position: index + 1,
         item: {
           '@type': 'Product',
           name: product.name,
-          url: `${SITE_URL}/product/${product.slug || product.id}`,
+          url: productUrl,
           image: imageUrl,
+          sku: product.sku || `UKR-${String(product.id).slice(0, 8)}`,
+          brand: {
+            '@type': 'Brand',
+            name: 'Ukrtab',
+          },
+          offers: {
+            '@type': 'Offer',
+            url: productUrl,
+            priceCurrency: 'UAH',
+            price: numericPrice.toFixed(2),
+            availability: isAvailable
+              ? 'https://schema.org/InStock'
+              : 'https://schema.org/OutOfStock',
+            itemCondition: 'https://schema.org/NewCondition',
+            seller: {
+              '@type': 'Organization',
+              name: 'Ukrtab',
+            },
+          },
         },
       };
     }),
