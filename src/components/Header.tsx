@@ -114,9 +114,9 @@ export function Header() {
               <Clock className="w-3.5 h-3.5 text-amber-400" />
               <span>Пн-Нд: 10:00 - 21:00</span>
             </div>
-            <div className="hidden lg:flex items-center space-x-1 text-slate-400">
-              <MapPin className="w-3.5 h-3.5 text-emerald-400" />
-              <span>м. Дніпро, вул. Миру 2т</span>
+            <div className="hidden lg:flex items-center space-x-1.5 text-slate-400">
+              <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              <span>м. Запоріжжя (вул. Миру, 1г) • м. Дніпро (вул. Миру 2т)</span>
             </div>
           </div>
         </div>

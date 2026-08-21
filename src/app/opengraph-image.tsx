@@ -48,7 +48,7 @@ export default async function Image() {
                 УКР<span style={{ color: '#34d399' }}>ТАБ</span>
               </span>
               <span style={{ fontSize: '16px', color: '#94a3b8', fontWeight: 600 }}>
-                ukrtab.com.ua • Виробництво в Дніпрі
+                ukrtab.com.ua • Запоріжжя • Дніпро
               </span>
             </div>
           </div>

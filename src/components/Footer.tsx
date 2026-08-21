@@ -114,9 +114,15 @@ export function Footer() {
               mabitzp@gmail.com
             </a>
           </div>
-          <div className="flex items-start space-x-2 text-xs text-slate-300">
-            <MapPin className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
-            <span>Україна, м. Дніпро, вул. Миру 2т</span>
+          <div className="space-y-1 text-xs text-slate-300">
+            <div className="flex items-start space-x-2">
+              <MapPin className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
+              <span>м. Запоріжжя, вул. Миру, 1г</span>
+            </div>
+            <div className="flex items-start space-x-2">
+              <MapPin className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
+              <span>м. Дніпро, вул. Миру 2т</span>
+            </div>
           </div>
 
           <div className="pt-2 flex items-center space-x-3">

@@ -634,7 +634,7 @@ export default function AdminBannersPage() {
                   {formData.title && (
                     <>
                       <div className="inline-flex items-center space-x-1.5 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider backdrop-blur-md">
-                        <span>🇺🇦 Виробництво в Україні • Дніпро</span>
+                        <span>🇺🇦 Виробництво в Україні • Запоріжжя • Дніпро</span>
                       </div>
                       <h4 className="text-lg sm:text-2xl font-black text-white leading-tight tracking-tight drop-shadow">
                         {formData.title}

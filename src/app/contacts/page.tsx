@@ -3,8 +3,8 @@ import { Phone, Mail, MapPin, Clock, Star } from 'lucide-react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Контакти Укртаб — Телефони, адреса виробництва в Дніпрі та графік роботи',
-  description: 'Контакти компанії Укртаб у Дніпрі: телефони відділу продажів +380 (66) 441-80-50, +380 (68) 367-70-15, адреса вул. Миру 2т. Працюємо без вихідних з 10:00 до 21:00.',
+  title: 'Контакти Укртаб — Виробництво та пункти видачі в Запоріжжі та Дніпрі',
+  description: 'Контакти компанії Укртаб: телефони відділу продажів +380 (66) 441-80-50, +380 (68) 367-70-15. Адреси: м. Запоріжжя, вул. Миру, 1г та м. Дніпро, вул. Миру 2т. Працюємо з 10:00 до 21:00.',
   alternates: {
     canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://ukrtab.com.ua'}/contacts`,
   },
@@ -76,10 +76,22 @@ export default function ContactsPage() {
           </div>
 
           <div>
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Адреса виробництва</h3>
-            <div className="flex items-start space-x-2 text-sm font-bold text-slate-900">
-              <MapPin className="w-4 h-4 text-emerald-600 mt-1 shrink-0" />
-              <span>Україна, м. Дніпро, вул. Миру 2т</span>
+            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Адреси виробництва та офісу</h3>
+            <div className="space-y-3 text-sm font-bold text-slate-900">
+              <div className="flex items-start space-x-2">
+                <MapPin className="w-4 h-4 text-emerald-600 mt-1 shrink-0" />
+                <div>
+                  <div className="text-slate-900 font-bold">м. Запоріжжя</div>
+                  <div className="text-xs text-slate-500 font-normal">вулиця Миру, 1г (Виробництво та головний офіс)</div>
+                </div>
+              </div>
+              <div className="flex items-start space-x-2">
+                <MapPin className="w-4 h-4 text-emerald-600 mt-1 shrink-0" />
+                <div>
+                  <div className="text-slate-900 font-bold">м. Дніпро</div>
+                  <div className="text-xs text-slate-500 font-normal">вул. Миру 2т (Офіс / представництво)</div>
+                </div>
+              </div>
             </div>
           </div>
 

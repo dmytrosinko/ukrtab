@@ -18,17 +18,43 @@ export function OrganizationJsonLd() {
     email: 'mabitzp@gmail.com',
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'вул. Миру 2т',
-      addressLocality: 'Дніпро',
-      addressRegion: 'Дніпропетровська область',
-      postalCode: '49000',
+      streetAddress: 'вулиця Миру, 1г',
+      addressLocality: 'Запоріжжя',
+      addressRegion: 'Запорізька область',
+      postalCode: '69061',
       addressCountry: 'UA',
     },
     geo: {
       '@type': 'GeoCoordinates',
-      latitude: 48.4647,
-      longitude: 35.0462,
+      latitude: 47.8517,
+      longitude: 35.1165,
     },
+    location: [
+      {
+        '@type': 'Place',
+        name: 'Виробництво Укртаб Запоріжжя',
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: 'вулиця Миру, 1г',
+          addressLocality: 'Запоріжжя',
+          addressRegion: 'Запорізька область',
+          postalCode: '69061',
+          addressCountry: 'UA',
+        },
+      },
+      {
+        '@type': 'Place',
+        name: 'Офіс Укртаб Дніпро',
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: 'вул. Миру 2т',
+          addressLocality: 'Дніпро',
+          addressRegion: 'Дніпропетровська область',
+          postalCode: '49000',
+          addressCountry: 'UA',
+        },
+      },
+    ],
     openingHoursSpecification: [
       {
         '@type': 'OpeningHoursSpecification',

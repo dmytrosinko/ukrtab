@@ -243,7 +243,7 @@ export function ProductDetailView({ product }: { product: Product }) {
           <div>
             <h4 className="text-xs font-bold text-slate-900">Доставка по Україні</h4>
             <p className="text-[11px] text-slate-500">
-              Нова Пошта (1-2 дні), Укрпошта або самовивіз у м. Дніпро.
+              Нова Пошта (1-2 дні) та Укрпошта у будь-який куточок України.
             </p>
           </div>
         </div>
@@ -280,14 +280,14 @@ export function ProductDetailView({ product }: { product: Product }) {
             Технічні характеристики та параметри
           </h2>
           <p className="text-xs text-slate-500">
-            Офіційні дані від українського виробника Укртаб (м. Дніпро)
+            Офіційні дані від українського виробника Укртаб (Запоріжжя / Дніпро)
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
           <div className="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 border border-slate-100">
             <span className="text-slate-500 font-medium">Виробник:</span>
-            <span className="font-bold text-slate-900">Укртаб (Україна, Дніпро)</span>
+            <span className="font-bold text-slate-900">Укртаб (Україна: Запоріжжя, Дніпро)</span>
           </div>
 
           <div className="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 border border-slate-100">

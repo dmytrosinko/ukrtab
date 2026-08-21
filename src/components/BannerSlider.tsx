@@ -82,7 +82,7 @@ export function BannerSlider({ banners }: { banners: Banner[] }) {
       {current.title && (
         <div className="hidden md:block relative z-20 max-w-xl px-8 md:px-12 py-8 space-y-4 pointer-events-none">
           <div className="inline-flex items-center space-x-2 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider backdrop-blur-md">
-            <span>🇺🇦 Виробництво в Україні • Дніпро</span>
+            <span>🇺🇦 Виробництво в Україні • Запоріжжя • Дніпро</span>
           </div>
           <h2 className="text-2xl md:text-4xl font-black text-white leading-tight tracking-tight drop-shadow-md">
             {current.title}

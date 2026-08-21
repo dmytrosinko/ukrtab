@@ -213,7 +213,6 @@ export default function CheckoutPage() {
                 >
                   <option value="Нова Пошта">Нова Пошта (Відділення / Поштомат)</option>
                   <option value="Укрпошта">Укрпошта</option>
-                  <option value="Самовивіз Дніпро">Самовивіз (м. Дніпро, вул. Миру 2т)</option>
                 </select>
               </div>
 
@@ -237,7 +236,7 @@ export default function CheckoutPage() {
                     <input
                       type="text"
                       name="city"
-                      placeholder="м. Київ / Дніпро"
+                      placeholder="м. Київ / Львів / Дніпро"
                       value={formData.city}
                       onChange={handleChange}
                       className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-emerald-500 focus:bg-white"
@@ -246,16 +245,12 @@ export default function CheckoutPage() {
 
                   <div>
                     <label className="block text-xs font-bold text-slate-700 mb-1">
-                      {formData.deliveryMethod === 'Самовивіз Дніпро' ? 'Примітка до самовивозу' : 'Адреса / Индекс / Відділення'}
+                      Адреса / Індекс / Відділення Укрпошти *
                     </label>
                     <input
                       type="text"
                       name="warehouseInfo"
-                      placeholder={
-                        formData.deliveryMethod === 'Самовивіз Дніпро'
-                          ? 'Бажаний час або дата видачі'
-                          : 'Вул. Шевченка 10, кв. 5 / Індекс'
-                      }
+                      placeholder="Індекс (напр. 01001) або вул. Шевченка 10"
                       value={formData.warehouseInfo}
                       onChange={handleChange}
                       className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-emerald-500 focus:bg-white"
