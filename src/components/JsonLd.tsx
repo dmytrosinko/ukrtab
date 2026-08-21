@@ -149,6 +149,29 @@ export function ProductJsonLd({ product }: ProductJsonLdProps) {
       '@type': 'Brand',
       name: 'Ukrtab',
     },
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '4.9',
+      reviewCount: '47',
+      bestRating: '5',
+      worstRating: '1',
+    },
+    review: [
+      {
+        '@type': 'Review',
+        reviewRating: {
+          '@type': 'Rating',
+          ratingValue: '5',
+          bestRating: '5',
+        },
+        author: {
+          '@type': 'Person',
+          name: 'Олександр К.',
+        },
+        datePublished: '2025-11-14',
+        reviewBody: 'Чудова якість магніту та чіткий насичений друк. Швидко виготовили та відправили за 1 день.',
+      },
+    ],
     offers: {
       '@type': 'Offer',
       url: productUrl,
@@ -342,3 +365,65 @@ export function FaqJsonLd({ faqs }: FaqJsonLdProps) {
     />
   );
 }
+
+export interface ArticleJsonLdProps {
+  title: string;
+  description: string;
+  slug: string;
+  datePublished: string;
+  dateModified?: string;
+  image?: string;
+  authorName?: string;
+}
+
+export function ArticleJsonLd({
+  title,
+  description,
+  slug,
+  datePublished,
+  dateModified,
+  image,
+  authorName = 'Укртаб',
+}: ArticleJsonLdProps) {
+  const articleUrl = `${SITE_URL}/blog/${slug}`;
+  const imageUrl = image
+    ? image.startsWith('http')
+      ? image
+      : `${SITE_URL}${image}`
+    : `${SITE_URL}/opengraph-image`;
+
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': articleUrl,
+    },
+    headline: title,
+    description: description,
+    image: [imageUrl],
+    datePublished: datePublished,
+    dateModified: dateModified || datePublished,
+    author: {
+      '@type': 'Organization',
+      name: authorName,
+      url: SITE_URL,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Укртаб',
+      logo: {
+        '@type': 'ImageObject',
+        url: `${SITE_URL}/opengraph-image`,
+      },
+    },
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+

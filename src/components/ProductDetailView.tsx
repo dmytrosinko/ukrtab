@@ -273,6 +273,66 @@ export function ProductDetailView({ product }: { product: Product }) {
         </div>
       </div>
 
+      {/* SEO Specifications Table */}
+      <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-100 shadow-sm space-y-6">
+        <div>
+          <h2 className="text-lg font-black text-slate-900 mb-1">
+            Технічні характеристики та параметри
+          </h2>
+          <p className="text-xs text-slate-500">
+            Офіційні дані від українського виробника Укртаб (м. Дніпро)
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <div className="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 border border-slate-100">
+            <span className="text-slate-500 font-medium">Виробник:</span>
+            <span className="font-bold text-slate-900">Укртаб (Україна, Дніпро)</span>
+          </div>
+
+          <div className="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 border border-slate-100">
+            <span className="text-slate-500 font-medium">Технологія нанесення:</span>
+            <span className="font-bold text-slate-900">Прямий УФ-друк (японські чорнила)</span>
+          </div>
+
+          <div className="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 border border-slate-100">
+            <span className="text-slate-500 font-medium">Матеріал основи:</span>
+            <span className="font-bold text-slate-900">
+              {product.name.toLowerCase().includes('магніт')
+                ? 'Потовщений магнітний вініл 0.8 мм'
+                : product.name.toLowerCase().includes('табличк')
+                ? 'Пластик ПВХ 3-4 мм / Алюмінієвий композит'
+                : 'Посилений зносостійкий матеріал'}
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 border border-slate-100">
+            <span className="text-slate-500 font-medium">Стійкість до вигорання:</span>
+            <span className="font-bold text-emerald-600">3-5 років на відкритому сонці</span>
+          </div>
+
+          <div className="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 border border-slate-100">
+            <span className="text-slate-500 font-medium">Температурний режим:</span>
+            <span className="font-bold text-slate-900">від -35°C до +70°C</span>
+          </div>
+
+          <div className="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 border border-slate-100">
+            <span className="text-slate-500 font-medium">Термін виготовлення:</span>
+            <span className="font-bold text-slate-900">1-2 робочих дні</span>
+          </div>
+        </div>
+
+        {/* Product Tips */}
+        <div className="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-100 text-xs text-emerald-900 space-y-1.5">
+          <div className="font-bold flex items-center space-x-1.5 text-emerald-800">
+            <span>💡 Індивідуальне замовлення та брендування:</span>
+          </div>
+          <p className="text-[11px] leading-relaxed text-emerald-800/90">
+            Потрібен індивідуальний розмір, ваш логотип або власний текст/позивний? Наш дизайнер безкоштовно підготує макет перед друком замовлення.
+          </p>
+        </div>
+      </div>
+
       {/* Fullscreen Popup Modal */}
       {isZoomOpen && activeImg && (
         <div

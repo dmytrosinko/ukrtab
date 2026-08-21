@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next';
 import { prisma } from '@/lib/prisma';
 import { getAllCategorySlugs } from '@/lib/seoData';
+import { getAllBlogSlugs } from '@/lib/blogData';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 86400; // 24 hours
@@ -22,6 +23,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: currentDate,
       changeFrequency: 'daily',
       priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.8,
     },
     {
       url: `${baseUrl}/constructor`,
@@ -56,6 +63,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: currentDate,
     changeFrequency: 'daily',
     priority: 0.9,
+  }));
+
+  // 3. SEO Blog Article pages
+  const blogSlugs = getAllBlogSlugs();
+  const blogRoutes: MetadataRoute.Sitemap = blogSlugs.map((slug) => ({
+    url: `${baseUrl}/blog/${slug}`,
+    lastModified: currentDate,
+    changeFrequency: 'monthly',
+    priority: 0.8,
   }));
 
   // 3. Dynamic Products

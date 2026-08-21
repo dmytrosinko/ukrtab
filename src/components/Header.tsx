@@ -451,6 +451,16 @@ export function Header() {
             <span>Конструктор товарів</span>
           </Link>
           <Link
+            href="/blog"
+            className={`py-3 transition border-b-2 ${
+              isLinkActive('/blog')
+                ? 'border-emerald-600 text-emerald-600 font-bold'
+                : 'border-transparent text-slate-700 hover:text-emerald-600'
+            }`}
+          >
+            Статті & Блог
+          </Link>
+          <Link
             href="/delivery"
             className={`py-3 transition border-b-2 ${
               isLinkActive('/delivery')
@@ -575,6 +585,14 @@ export function Header() {
             >
               <Sparkles className="w-4 h-4 fill-amber-600 text-amber-600" />
               <span>🎨 Створити свій дизайн</span>
+            </Link>
+            <Link
+              href="/blog"
+              className={`p-2 rounded-xl transition ${
+                isLinkActive('/blog') ? 'bg-emerald-50 text-emerald-600 font-bold' : 'hover:bg-slate-50'
+              }`}
+            >
+              📚 Статті & Блог
             </Link>
             <Link
               href="/delivery"
