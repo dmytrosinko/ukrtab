@@ -24,7 +24,7 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Catalog Categories Links for SEO Link Juice */}
+        {/* Catalog Categories Links */}
         <div>
           <h4 className="text-white font-bold text-sm mb-4 uppercase tracking-wider">Категорії продукції</h4>
           <ul className="space-y-2 text-xs">
@@ -58,21 +58,9 @@ export function Footer() {
                 Таблички на двері та кабінети
               </Link>
             </li>
-          </ul>
-        </div>
-
-        {/* More Categories & Services */}
-        <div>
-          <h4 className="text-white font-bold text-sm mb-4 uppercase tracking-wider">Послуги та таблички</h4>
-          <ul className="space-y-2 text-xs">
             <li>
               <Link href="/catalog/informatsijni-tablichki" className="hover:text-emerald-400 transition">
                 Інформаційні таблички ПВХ
-              </Link>
-            </li>
-            <li>
-              <Link href="/catalog/ritualni-tablichki" className="hover:text-emerald-400 transition">
-                Ритуальні таблички з фото
               </Link>
             </li>
             <li>
@@ -80,19 +68,59 @@ export function Footer() {
                 Трафарети на замовлення
               </Link>
             </li>
+          </ul>
+        </div>
+
+        {/* Customer Care & Legal Policies (Google Merchant Required) */}
+        <div>
+          <h4 className="text-white font-bold text-sm mb-4 uppercase tracking-wider">Покупцям та правила</h4>
+          <ul className="space-y-2.5 text-xs">
             <li>
-              <Link href="/catalog/uf-druk" className="hover:text-emerald-400 transition">
-                УФ-друк на пластику та композиті
+              <Link href="/delivery" className="hover:text-emerald-400 transition flex items-center space-x-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
+                <span>Оплата та доставка</span>
               </Link>
             </li>
             <li>
-              <Link href="/catalog/tablichki-dlya-biznesu" className="hover:text-emerald-400 transition">
-                Таблички для офісу та бізнесу
+              <Link href="/returns" className="hover:text-emerald-400 transition flex items-center space-x-1.5 font-medium text-emerald-300">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
+                <span>Повернення та обмін (14 днів)</span>
               </Link>
             </li>
             <li>
-              <Link href="/catalog/nomeri-dlya-avtosaloniv" className="hover:text-emerald-400 transition">
-                Номери для автосалонів та СТО
+              <Link href="/terms" className="hover:text-emerald-400 transition flex items-center space-x-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-500 inline-block"></span>
+                <span>Договір публічної оферти</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/privacy" className="hover:text-emerald-400 transition flex items-center space-x-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-500 inline-block"></span>
+                <span>Політика конфіденційності</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/about" className="hover:text-emerald-400 transition flex items-center space-x-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-500 inline-block"></span>
+                <span>Про компанію та виробництво</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/contacts" className="hover:text-emerald-400 transition flex items-center space-x-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-500 inline-block"></span>
+                <span>Контактна інформація</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/constructor" className="hover:text-emerald-400 transition flex items-center space-x-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-500 inline-block"></span>
+                <span>Онлайн-конструктор макетів</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/blog" className="hover:text-emerald-400 transition flex items-center space-x-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-500 inline-block"></span>
+                <span>Блог та корисні статті</span>
               </Link>
             </li>
           </ul>
@@ -100,12 +128,12 @@ export function Footer() {
 
         {/* Contacts */}
         <div className="space-y-3">
-          <h4 className="text-white font-bold text-sm mb-4 uppercase tracking-wider">Контакти & Доставка</h4>
+          <h4 className="text-white font-bold text-sm mb-4 uppercase tracking-wider">Контакти & Адреси</h4>
           <div className="flex items-start space-x-2 text-xs text-slate-300">
             <Phone className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
             <div>
-              <a href="tel:+380664418050" className="block hover:text-white transition">+380 (66) 441-80-50</a>
-              <a href="tel:+380683677015" className="block hover:text-white transition">+380 (68) 367-70-15</a>
+              <a href="tel:+380664418050" className="block hover:text-white transition font-medium">+380 (66) 441-80-50</a>
+              <a href="tel:+380683677015" className="block hover:text-white transition font-medium">+380 (68) 367-70-15</a>
             </div>
           </div>
           <div className="flex items-center space-x-2 text-xs text-slate-300">
@@ -114,15 +142,18 @@ export function Footer() {
               mabitzp@gmail.com
             </a>
           </div>
-          <div className="space-y-1 text-xs text-slate-300">
+          <div className="space-y-1.5 text-xs text-slate-300">
             <div className="flex items-start space-x-2">
               <MapPin className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
-              <span>м. Запоріжжя, вул. Миру, 1г</span>
+              <span>м. Запоріжжя, вул. Миру, 1г (69000)</span>
             </div>
             <div className="flex items-start space-x-2">
               <MapPin className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
-              <span>м. Дніпро, вул. Миру 2т</span>
+              <span>м. Дніпро, вул. Миру 2т (49000)</span>
             </div>
+          </div>
+          <div className="text-[11px] text-slate-400 pt-1">
+            Графік: Пн-Нд 10:00 - 21:00 (онлайн 24/7)
           </div>
 
           <div className="pt-2 flex items-center space-x-3">
@@ -276,27 +307,23 @@ export function Footer() {
               </svg>
             </a>
           </div>
-
-          <div className="pt-2 flex flex-wrap gap-2 text-[11px] text-slate-400">
-            <Link href="/blog" className="hover:text-emerald-400 text-emerald-400 font-semibold">Блог та статті</Link>
-            <span>•</span>
-            <Link href="/about" className="hover:text-emerald-400">Про нас</Link>
-            <span>•</span>
-            <Link href="/delivery" className="hover:text-emerald-400">Оплата та доставка</Link>
-            <span>•</span>
-            <Link href="/constructor" className="hover:text-emerald-400">Конструктор</Link>
-          </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 pt-8 mt-8 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
         <div>
-          © {new Date().getFullYear()} Укртаб. Виробництво в Україні. Всі права захищено.
+          © {new Date().getFullYear()} Укртаб. Офіційний виробник поліграфічної продукції в Україні. Всі права захищено.
         </div>
-        <div className="flex items-center space-x-4">
-          <Link href="/sitemap.xml" className="hover:text-emerald-400">Карта сайту (Sitemap)</Link>
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+          <Link href="/terms" className="hover:text-emerald-400">Публічна оферта</Link>
           <span>•</span>
-          <Link href="/google-feed.xml" className="hover:text-emerald-400">Товарний фід Google</Link>
+          <Link href="/privacy" className="hover:text-emerald-400">Конфіденційність</Link>
+          <span>•</span>
+          <Link href="/returns" className="hover:text-emerald-400">Повернення</Link>
+          <span>•</span>
+          <Link href="/sitemap.xml" className="hover:text-emerald-400">Sitemap</Link>
+          <span>•</span>
+          <Link href="/google-feed.xml" className="hover:text-emerald-400">Google Feed</Link>
         </div>
       </div>
     </footer>
