@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { INITIAL_PRODUCTS, INITIAL_CATEGORIES } from '@/lib/store';
+import { PRODUCT_CARD_SELECT } from '@/lib/data';
 
 // Dynamic in-memory store for newly added products fallback on serverless Vercel
 export let MEMORY_PRODUCTS: any[] = [];
@@ -82,7 +83,7 @@ export async function GET(request: Request) {
         prisma.product.count({ where }),
         prisma.product.findMany({
           where,
-          include: { category: true },
+          select: PRODUCT_CARD_SELECT,
           orderBy: { createdAt: 'desc' },
           skip,
           take: limit,
@@ -109,7 +110,7 @@ export async function GET(request: Request) {
     const takeLimit = limitParam ? parseInt(limitParam, 10) : undefined;
     const products = await prisma.product.findMany({
       where,
-      include: { category: true },
+      select: PRODUCT_CARD_SELECT,
       orderBy: { createdAt: 'desc' },
       ...(takeLimit ? { take: takeLimit } : {}),
     });
@@ -209,8 +210,8 @@ export async function POST(request: Request) {
     MEMORY_PRODUCTS.unshift(product as any);
 
     // On-demand revalidation: refresh pages that display products
-    revalidatePath('/');
-    revalidatePath('/catalog');
+    revalidatePath('/', 'page');
+    revalidatePath('/catalog', 'page');
 
     return NextResponse.json(product, { status: 200 });
   } catch (error) {

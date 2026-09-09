@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { INITIAL_PRODUCTS } from '@/lib/store';
+import { getCachedFeedProducts } from '@/lib/data';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 3600; // Cache feed for 1 hour
+export const revalidate = 43200; // Cache feed for 12 hours
 
 function escapeXml(unsafe: string): string {
   if (!unsafe) return '';
@@ -118,24 +116,7 @@ function getShippingWeight(product: any): string {
 
 export async function GET() {
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://ukrtab.com.ua').replace(/\/+$/, '');
-
-  let products: any[] = [];
-
-  try {
-    const dbProducts = await prisma.product.findMany({
-      include: { category: true },
-      orderBy: { createdAt: 'desc' },
-    });
-
-    if (dbProducts && dbProducts.length > 0) {
-      products = dbProducts;
-    } else {
-      products = INITIAL_PRODUCTS;
-    }
-  } catch (error) {
-    console.error('Error querying products for Google Merchant Feed:', error);
-    products = INITIAL_PRODUCTS;
-  }
+  const products: any[] = await getCachedFeedProducts();
 
   // Filter out any dummy / test products
   const validProducts = products.filter(

@@ -126,11 +126,11 @@ export async function PUT(
     }
 
     // On-demand revalidation: refresh pages that display this product
-    revalidatePath('/');
-    revalidatePath('/catalog');
-    revalidatePath('/product/' + id);
+    revalidatePath('/', 'page');
+    revalidatePath('/catalog', 'page');
+    revalidatePath('/product/' + id, 'page');
     if (product?.slug && product.slug !== id) {
-      revalidatePath('/product/' + product.slug);
+      revalidatePath('/product/' + product.slug, 'page');
     }
 
     return NextResponse.json(product || updatedMemObj);
@@ -168,9 +168,9 @@ export async function DELETE(
     }
 
     // On-demand revalidation: refresh listing pages
-    revalidatePath('/');
-    revalidatePath('/catalog');
-    revalidatePath('/product/' + id);
+    revalidatePath('/', 'page');
+    revalidatePath('/catalog', 'page');
+    revalidatePath('/product/' + id, 'page');
 
     return NextResponse.json({ success: true });
   } catch (error) {

@@ -5,6 +5,7 @@ import { INITIAL_CATEGORIES } from '@/lib/store';
 import { Product, Category } from '@/lib/types';
 import { getCategorySeo } from '@/lib/seoData';
 import { BreadcrumbJsonLd, ItemListJsonLd } from '@/components/JsonLd';
+import { PRODUCT_CARD_SELECT } from '@/lib/data';
 import type { Metadata } from 'next';
 
 // Catalog uses dynamic searchParams and should render on-demand without ISR Data Cache writes
@@ -140,12 +141,12 @@ export default async function CatalogPage({
       ];
     }
 
-    // 3. Fast initial fetch: only fetch 9 items on SSR for speed
+    // 3. Fast initial fetch: only fetch 9 items on SSR with lightweight card fields
     const [total, items] = await Promise.all([
       prisma.product.count({ where }),
       prisma.product.findMany({
         where,
-        include: { category: true },
+        select: PRODUCT_CARD_SELECT,
         orderBy: { createdAt: 'desc' },
         skip,
         take: INITIAL_CHUNK_SIZE,

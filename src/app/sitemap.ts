@@ -1,9 +1,8 @@
 import { MetadataRoute } from 'next';
-import { prisma } from '@/lib/prisma';
+import { getCachedSitemapProducts } from '@/lib/data';
 import { getAllCategorySlugs } from '@/lib/seoData';
 import { getAllBlogSlugs } from '@/lib/blogData';
 
-export const dynamic = 'force-dynamic';
 export const revalidate = 86400; // 24 hours
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -95,19 +94,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 3. Dynamic Products
   let productRoutes: MetadataRoute.Sitemap = [];
   try {
-    const products = await prisma.product.findMany({
-      select: {
-        id: true,
-        slug: true,
-        updatedAt: true,
-      },
-    });
+    const products = await getCachedSitemapProducts();
 
     if (products && products.length > 0) {
-      productRoutes = products.map((product) => ({
+      productRoutes = products.map((product: any) => ({
         url: `${baseUrl}/product/${product.slug || product.id}`,
         lastModified: product.updatedAt ? new Date(product.updatedAt).toISOString() : currentDate,
-        changeFrequency: 'weekly',
+        changeFrequency: 'weekly' as const,
         priority: 0.8,
       }));
     }

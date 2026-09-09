@@ -20,9 +20,10 @@ import {
   Sparkles,
   Package,
 } from 'lucide-react';
+import { getCachedCategoryLandingData } from '@/lib/data';
 import type { Metadata } from 'next';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 1800; // 30 minutes ISR cache
 
 export async function generateMetadata({
   params,
@@ -77,92 +78,7 @@ export default async function CategoryLandingPage({
   const categorySlug = decodeURIComponent(resolved.category || '');
   const seo = getCategorySeo(categorySlug);
 
-  let products: Product[] = [];
-  let totalItems = 0;
-
-  try {
-    const searchSlug = categorySlug.toLowerCase().trim();
-
-    // Gather all matching categories and subcategories
-    const categoryIds = new Set<string>();
-    categoryIds.add(searchSlug);
-
-    // 1. Check in INITIAL_CATEGORIES definition
-    const storeMatching = INITIAL_CATEGORIES.filter(
-      (c) => c.slug === searchSlug || c.id === searchSlug
-    );
-    for (const cat of storeMatching) {
-      categoryIds.add(cat.id);
-      categoryIds.add(cat.slug);
-      // All child subcategories
-      const children = INITIAL_CATEGORIES.filter((c) => c.parentId === cat.id);
-      for (const child of children) {
-        categoryIds.add(child.id);
-        categoryIds.add(child.slug);
-      }
-    }
-
-    // 2. Also check in Prisma DB
-    const matchingCategories = await prisma.category.findMany({
-      where: {
-        OR: [{ slug: searchSlug }, { id: searchSlug }],
-      },
-    });
-
-    for (const cat of matchingCategories) {
-      categoryIds.add(cat.id);
-      if (cat.slug) categoryIds.add(cat.slug);
-    }
-
-    let where: any = {};
-
-    if (searchSlug === 'inshe' || searchSlug === 'cat-other' || searchSlug === 'other') {
-      const nonOtherCategories = INITIAL_CATEGORIES.filter(
-        (c) => c.slug !== 'inshe' && c.id !== 'cat-other'
-      );
-      const knownIds = nonOtherCategories.flatMap((c) => [c.id, c.slug]);
-      where = {
-        OR: [
-          { categoryId: null },
-          { categoryId: '' },
-          { categoryId: 'inshe' },
-          { categoryId: 'cat-other' },
-          { category: null },
-          { categoryId: { notIn: knownIds } },
-        ],
-      };
-    } else {
-      where = {
-        OR: [
-          { categoryId: { in: Array.from(categoryIds) } },
-          { category: { slug: { in: Array.from(categoryIds) } } },
-          { category: { id: { in: Array.from(categoryIds) } } },
-        ],
-      };
-
-      if (seo) {
-        where.OR.push(
-          { name: { contains: seo.primaryQuery, mode: 'insensitive' } },
-          { description: { contains: seo.primaryQuery, mode: 'insensitive' } }
-        );
-      }
-    }
-
-    const [total, items] = await Promise.all([
-      prisma.product.count({ where }),
-      prisma.product.findMany({
-        where,
-        include: { category: true },
-        orderBy: { createdAt: 'desc' },
-        take: 36,
-      }),
-    ]);
-
-    totalItems = total;
-    products = JSON.parse(JSON.stringify(items));
-  } catch (error) {
-    console.error('Error loading category SSR products:', error);
-  }
+  const { products, totalItems } = await getCachedCategoryLandingData(categorySlug);
 
   const categoryName = seo?.name || 'Товари категорії';
   const h1Title = seo?.h1 || categoryName;

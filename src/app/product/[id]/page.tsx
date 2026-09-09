@@ -1,10 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { prisma } from '@/lib/prisma';
 import { ProductDetailView } from '@/components/ProductDetailView';
 import { ProductJsonLd, BreadcrumbJsonLd } from '@/components/JsonLd';
 import { Product } from '@/lib/types';
+import { getProduct } from '@/lib/data';
 import type { Metadata } from 'next';
 
 // Cache product pages for 24h; instant updates happen on-demand via revalidatePath
@@ -20,12 +20,7 @@ export async function generateMetadata({
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ukrtab.com.ua';
 
   try {
-    const product = await prisma.product.findFirst({
-      where: {
-        OR: [{ slug: targetId }, { id: targetId }],
-      },
-      include: { category: true },
-    });
+    const product = await getProduct(targetId);
 
     if (!product) {
       return {
@@ -77,22 +72,7 @@ export default async function ProductDetailPage({
   const resolved = await params;
   const targetId = decodeURIComponent(resolved.id || '');
 
-  let product: Product | null = null;
-
-  try {
-    const dbProduct = await prisma.product.findFirst({
-      where: {
-        OR: [{ slug: targetId }, { id: targetId }],
-      },
-      include: { category: true },
-    });
-
-    if (dbProduct) {
-      product = JSON.parse(JSON.stringify(dbProduct));
-    }
-  } catch (error) {
-    console.error('Error fetching product in ProductDetailPage SSR:', error);
-  }
+  const product = await getProduct(targetId);
 
   if (!product) {
     return (

@@ -21,9 +21,10 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { Product, Banner } from '@/lib/types';
-import { INITIAL_PRODUCTS, INITIAL_BANNERS } from '@/lib/store';
-import { prisma } from '@/lib/prisma';
+import { getFeaturedProducts, getBanners } from '@/lib/data';
 import type { Metadata } from 'next';
+
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: 'Укртаб — Магнітні наклейки на авто, адресні таблички, сувенірні номери | Виробник в Україні',
@@ -34,10 +35,6 @@ export const metadata: Metadata = {
     canonical: process.env.NEXT_PUBLIC_SITE_URL || 'https://ukrtab.com.ua',
   },
 };
-
-const FALLBACK_BANNERS: Banner[] = INITIAL_BANNERS;
-
-const FALLBACK_PRODUCTS: Product[] = INITIAL_PRODUCTS.slice(0, 8);
 
 const HOMEPAGE_FAQS = [
   {
@@ -59,43 +56,10 @@ const HOMEPAGE_FAQS = [
 ];
 
 export default async function HomePage() {
-  let banners: Banner[] = FALLBACK_BANNERS;
-  let products: Product[] = FALLBACK_PRODUCTS;
-
-  try {
-    const [featuredProducts, dbBanners] = await Promise.all([
-      prisma.product.findMany({
-        where: { isFeatured: true },
-        take: 12,
-        orderBy: { createdAt: 'desc' },
-      }),
-      prisma.banner.findMany({
-        where: { isActive: true },
-        orderBy: { sortOrder: 'asc' },
-      }),
-    ]);
-
-    if (featuredProducts && featuredProducts.length > 0) {
-      products = JSON.parse(JSON.stringify(featuredProducts));
-    } else {
-      const latestProducts = await prisma.product.findMany({
-        take: 12,
-        orderBy: { createdAt: 'desc' },
-      });
-      if (latestProducts && latestProducts.length > 0) {
-        products = JSON.parse(JSON.stringify(latestProducts));
-      }
-    }
-
-    if (dbBanners && dbBanners.length > 0) {
-      banners = JSON.parse(JSON.stringify(dbBanners));
-    }
-  } catch (e) {
-    console.error('Prisma homepage fetch failed, using fallback data:', e);
-  }
-
-  const safeBanners = banners;
-  const safeProducts = products;
+  const [safeProducts, safeBanners] = await Promise.all([
+    getFeaturedProducts(),
+    getBanners(),
+  ]);
 
   return (
     <div className="space-y-12 pb-12">
